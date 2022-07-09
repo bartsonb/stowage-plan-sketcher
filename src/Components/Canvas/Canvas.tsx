@@ -56,8 +56,6 @@ export class Canvas extends React.Component<CanvasProps, any> {
     private drawGrid = (): void => {
         const { width, height } = this.state.windowDimensions;
 
-        console.log(width, ' ', height);
-
         for ( var x = 0; x <= width * 2; x += this.props.gridSize ) {
             this.ctx.moveTo(x, 0);
             this.ctx.lineTo(x, height * 2);
@@ -73,7 +71,11 @@ export class Canvas extends React.Component<CanvasProps, any> {
     }
 
     // Updating the cursor position state on every mouse movement.
-    public handleMouseMove = ({ clientX, clientY }: any) => this.setState({ coords: { x: clientX, y: clientY } });
+    // 0,0 is set to be the top-left of the canvas element by using the getBoundingClientRect func.
+    public handleMouseMove = ({ clientX, clientY }: any) => {
+        const boundingRect = this.canvasRef.current.getBoundingClientRect();
+        this.setState({ coords: { x: clientX - boundingRect.left, y: clientY - boundingRect.top } })
+    };
 
     render() {
         return (
