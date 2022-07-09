@@ -20,7 +20,7 @@ export interface AppProps {
 
 export class App extends React.Component<AppProps, any> {
   public state = {
-    isAuthenticated: false
+    isAuthenticated: true
   }
 
   componentDidMount(): void {

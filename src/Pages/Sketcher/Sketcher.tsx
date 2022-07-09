@@ -40,7 +40,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                     <MenuBar />
                     <div className="Sketcher__Window">
                         <Toolbar selectedTool={this.state.tool} updateTool={this.updateTool} />
-                        <InfoPanel open={true} decks={this.state.decks} cargo={this.state.cargo} />
+                        <InfoPanel decks={this.state.decks} cargo={this.state.cargo} />
                         <Canvas divider={400} gridSize={20} />
                     </div>
                 </div>

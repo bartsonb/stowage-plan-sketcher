@@ -16,3 +16,5 @@ export class MainLayout extends React.Component<MainLayoutProps, any> {
         )
     }
 }
+
+export default MainLayout;
