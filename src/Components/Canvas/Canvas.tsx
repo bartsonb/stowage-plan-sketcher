@@ -1,70 +1,87 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './Canvas.scss';
+import React from "react";
+import "./Canvas.scss";
 
-export interface CanvasProps {
-  gridSize: number;
-  divider: number;
+export interface Canvas {
+    canvasRef: any | null;
+    ctx: any | null;
+    setCanvasRef: object;
 }
 
-export const Canvas = (props: CanvasProps) => {
-  const { gridSize, divider } = props;
-  const [ coords, setCoords ] = useState({ x: 0, y: 0 });
+export interface CanvasProps {
+    gridSize: number;
+    divider: number;
+}
 
-  const canvasRef = useRef(null)
+export class Canvas extends React.Component<CanvasProps, any> {
+    constructor(props: CanvasProps) {
+        super(props);
 
-  let getWindowDimensions = () => {
-    return { width: window.innerWidth, height: window.innerHeight };
-  }
+        this.canvasRef = React.createRef();
+        this.ctx = null;
+    }
 
-  const [ windowDimensions, setWindowDimensions ] = useState(getWindowDimensions());
-
-  useEffect(() => {
-    let handleResize = () => {
-      setWindowDimensions(getWindowDimensions());
+    public state = {
+        windowDimensions: { width: null, height: null },
+        coords: { x: null, y: null },
     };
 
-    window.addEventListener('resize', handleResize);
+    componentDidMount(): void {
+        // Get context via canvas ref
+        this.ctx = this.canvasRef.current.getContext("2d");
+        this.handleResize()
 
-    // Get canvas context via ref
-    const canvas = canvasRef.current
-    const context = canvas.getContext('2d')
-    
-    
-    // Set size of the canvas element
-    context.canvas.width = windowDimensions.width * 2;
-    context.canvas.height = windowDimensions.height * 2;
-
-    function drawGrid(){
-      for (var x = 0; x <= windowDimensions.width * 2; x += gridSize) {
-          context.moveTo(x, 0);
-          context.lineTo(x, windowDimensions.height * 2);
-      }
-
-      for (var y = 0; y <= windowDimensions.height * 2; y += gridSize) {
-        context.moveTo(0, y);
-        context.lineTo(windowDimensions.width * 2, y);
+        window.addEventListener("resize", this.handleResize);
     }
 
-      context.strokeStyle = "#ccc";
-      context.stroke();
+    componentWillUnmount(): void {
+        window.removeEventListener("resize", this.handleResize);
     }
-    
-    drawGrid();
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
+    // Get height and width of the current browser window.
+    public getWindowDimensions = (): any => {
+        return { width: window.innerWidth, height: window.innerHeight }        
+    };
+
+    // Update windowDimensions and adjust the canvas size + grid accordingly.
+    // windowDimensions are doubled to get a higher resolution image.
+    private handleResize = () => {
+        this.setState({ windowDimensions: this.getWindowDimensions() }, () => {
+            this.canvasRef.current.width = this.state.windowDimensions.width * 2;
+            this.canvasRef.current.height = this.state.windowDimensions.height * 2;
+            this.drawGrid();
+        });
+    };
+
+    // Draw background grid depending on the given gridSize.
+    private drawGrid = (): void => {
+        const { width, height } = this.state.windowDimensions;
+
+        console.log(width, ' ', height);
+
+        for ( var x = 0; x <= width * 2; x += this.props.gridSize ) {
+            this.ctx.moveTo(x, 0);
+            this.ctx.lineTo(x, height * 2);
+        }
+
+        for ( var y = 0; y <= height * 2; y += this.props.gridSize ) {
+            this.ctx.moveTo(0, y);
+            this.ctx.lineTo(width * 2, y);
+        }
+
+        this.ctx.strokeStyle = "#ccc";
+        this.ctx.stroke();
     }
-  })
 
-  let handleMouseMove = (e: any) => {
-    const { clientX: x, clientY: y } = e;
-    setCoords({ x, y });
-  }
+    // Updating the cursor position state on every mouse movement.
+    public handleMouseMove = ({ clientX, clientY }: any) => this.setState({ coords: { x: clientX, y: clientY } });
 
-  return (
-    <canvas ref={canvasRef} onMouseMove={handleMouseMove}>
-    </canvas>
-  )
+    render() {
+        return (
+            <canvas
+                ref={this.canvasRef}
+                onMouseMove={this.handleMouseMove} />
+        );
+    }
 }
 
 export default Canvas;
