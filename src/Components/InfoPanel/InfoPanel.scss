@@ -1,0 +1,9 @@
+@import '../../Assets/Styles/_shared.scss';
+
+.InfoPanel {
+    @include box; 
+    
+    position: absolute;
+    right: 1em;
+    top: 1em;
+}

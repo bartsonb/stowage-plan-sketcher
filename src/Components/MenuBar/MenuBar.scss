@@ -1,0 +1,12 @@
+@import '../../Assets/Styles/_variables.scss';
+
+.MenuBar {
+    background: $color_general_black;
+    color: $color_general_white;
+    display: flex;
+    padding: .2em 0 .2em .7em;
+
+    p {
+        margin-right: 1em;
+    }
+}

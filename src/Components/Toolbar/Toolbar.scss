@@ -1,0 +1,12 @@
+@import '../../Assets/Styles/_shared.scss';
+
+.Toolbar {
+    @include box;
+
+    position: absolute;
+    left: 1em;
+    top: 1em;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+}

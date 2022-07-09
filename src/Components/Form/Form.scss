@@ -1,0 +1,10 @@
+.Form {
+    margin: auto;
+    max-width: 30vw;
+    display: flex;
+    flex-direction: column;
+
+    input {
+        padding: .5em 1em;
+    }
+}
