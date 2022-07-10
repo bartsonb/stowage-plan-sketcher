@@ -19,7 +19,8 @@ export const Toolbar = (props: ToolbarProps) => {
   const buttons = [
     { name: 'select', imgSrc: '' }, 
     { name: 'container', imgSrc: '' }, 
-    { name: 'box', imgSrc: '' }
+    { name: 'box', imgSrc: '' },
+    { name: 'clear', imgSrc: '' }
   ];
 
   const buttonElements = buttons.map((el, index) => {

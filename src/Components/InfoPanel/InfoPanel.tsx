@@ -27,6 +27,7 @@ export const InfoPanel = (props: InfoPanelProps) => {
       <p onClick={handleClick}>collapse</p>
       <p>InfoPanel: I am {`${isCollapsed ? 'closed' : 'open'}`}.</p>
       <hr />
+      <p>{JSON.stringify(cargo)}</p>
     </div>
   );
 }
