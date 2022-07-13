@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import './InfoPanel.scss';
 
 export interface InfoPanelProps {
   decks: object;
-  cargo: object;
+  cargo: any;
 }
 
 export const InfoPanel = (props: InfoPanelProps) => {
@@ -22,12 +22,14 @@ export const InfoPanel = (props: InfoPanelProps) => {
     }
   });
 
+  const cargoList = cargo.map(el => `${el.cargoType}, `);
+
   return (
     <div className="InfoPanel">
       <p onClick={handleClick}>collapse</p>
       <p>InfoPanel: I am {`${isCollapsed ? 'closed' : 'open'}`}.</p>
       <hr />
-      <p>{JSON.stringify(cargo)}</p>
+      <p style={{ display: `${isCollapsed ? 'none' : 'inline-block' }`}}>{cargoList}</p>
     </div>
   );
 }

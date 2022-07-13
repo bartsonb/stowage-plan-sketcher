@@ -1,0 +1,27 @@
+.Ship {
+    position: absolute;
+    border: solid 2px #222;
+    font-size: .7em;
+    min-width: 400px;
+    min-height: 500px;
+    left: calc(50% - 200px);
+    top: calc(50% - 280px);
+    background: rgba(0, 0, 0, 0.05);
+
+    &__Description {
+        padding: .5em;
+        font-size: 1em;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__Deck {
+        width: 94%;
+        height: 80%;
+        left: 3%;
+        bottom: 3%;
+        border: solid 1px #333;
+        position: absolute;
+        background-color: white;
+    }
+}

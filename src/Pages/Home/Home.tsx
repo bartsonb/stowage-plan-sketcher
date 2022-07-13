@@ -1,8 +1,10 @@
+import MainLayout from "../../Layouts/MainLayout/MainLayout";
+import Sketcher from "../Sketcher/Sketcher";
 
 export default function Home() {
     return (
-      <div>
-        <h2>Home</h2>
-      </div>
+        <MainLayout>
+            <Sketcher />
+        </MainLayout>
     );
-  }
+}
