@@ -2,14 +2,25 @@ import React from "react";
 import Toolbar from "../../Components/Toolbar/Toolbar";
 import InfoPanel from "../../Components/InfoPanel/InfoPanel";
 import MenuBar from "../../Components/MenuBar/MenuBar";
-import "./Sketcher.scss";
 import Ship from "../../Components/Ship/Ship";
 import Cargo from "../../Components/Cargo/Cargo";
 import EditPanel from "../../Components/EditPanel/EditPanel";
+import "./Sketcher.scss";
 
 export interface Sketcher {
     canvasRef: any;
     ctx: any;
+}
+
+export interface cargo {
+    coords: {
+        x: number,
+        y: number
+    };
+    deckIndex: number;
+    cargoIndex: number;
+    cargoType: string;
+    selected: boolean;
 }
 
 export interface SketcherProps {}
@@ -48,6 +59,8 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         window.removeEventListener("resize", this.handleResize);
     }
 
+    // Updating the selected tool in state
+    // and recovering the selected tool from localStorage
     private updateTool = (tool) => {
         this.setState({
             tool: tool,
@@ -56,11 +69,15 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         localStorage.setItem("tool", tool);
     };
 
+    // Handeling the clicks on the ship and cargo elements
+    // Event is needed to stop the eventPropagation
+    // cargoIndex is used to indentify the click cargo element
     private handleClick = (event: any, cargoIndex: number | null, coords?: object): void => {
         const { tool } = this.state;
         event.stopPropagation();
 
-        if (tool === 'select' && cargoIndex) {
+        // De-/select the cargo with the given index
+        if (tool === 'select' && cargoIndex !== null) {
             this.state.cargo[cargoIndex].selected = !this.state.cargo[cargoIndex].selected;
 
             this.setState({
@@ -68,10 +85,17 @@ export class Sketcher extends React.Component<SketcherProps, any> {
             });
         } 
 
+        // Deselect all cargo, if background is clicked while any selection is active
+        if (tool === 'select'  && cargoIndex == null) {
+            this.deselectCargo();
+        }
+
+        // Create new cargo
         if (tool === 'container' || tool === 'box') {
             this.setState({
                 cargo: [...this.state.cargo, { 
                     cargoType: tool, 
+                    cargoIndex: this.state.cargo.length,
                     deckIndex: this.state.selectedDeck, 
                     coords, 
                     selected: false 
@@ -79,6 +103,34 @@ export class Sketcher extends React.Component<SketcherProps, any> {
             });
         }
     };
+
+    // Sorting the selected cargo by their x or y coordiantes.
+    // The first element will have the smallest point.
+    public alignCargo = (direction: string): void => {
+        const axisToAlign = (direction === 'horizontal') ? 'y' : 'x';
+        let smallestPoint = null;
+
+        // Get smallest coordinate
+        this.getSelectedCargo().forEach(el => {
+            if (smallestPoint === null) {
+                smallestPoint = el.coords[axisToAlign];
+            } else {
+                smallestPoint = (smallestPoint > el.coords[axisToAlign]) ? el.coords[axisToAlign] : smallestPoint;
+            }
+        });
+
+        // Set all selected cargos with the smallest coordiante
+        this.state.cargo.map(el => {
+            if (el.selected) { el.coords[axisToAlign] = smallestPoint; }
+        });
+
+        this.setState({
+            cargo: [...this.state.cargo ]
+        });
+    }
+
+    // Return only the cargo elements that have been selected.
+    public getSelectedCargo = (): cargo[] => this.state.cargo.filter(el => el.selected);
 
     // Get height and width of the current browser window.
     public getWindowDimensions = (): any => {
@@ -117,11 +169,35 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         this.ctx.closePath();
     };
 
-    private deleteCargoElement = (cargoIndex: number): void => {};
+    private deleteCargo = (): void => {
+        this.setState({
+            cargo: [ ...this.state.cargo.filter(el => !el.selected) ]
+        })
+    };
+
+    private deselectCargo = (): void => {
+        const allCargoDeselected = this.state.cargo.map(el => {
+            el.selected = false;
+            return el;
+        })
+
+        this.setState({
+            cargo: [ ...allCargoDeselected ]
+        });
+    }
 
     public render() {
-        const cargoElements = this.state.cargo.map((el, index) => {
-            return (<Cargo key={index} handleClick={this.handleClick} index={index} selected={el.selected} coords={el.coords} type={el.cargoType} />);
+        const cargoElements = this.state.cargo.map(el => {
+            return (
+                <Cargo 
+                    key={el.cargoIndex} 
+                    handleClick={this.handleClick}
+                    index={el.cargoIndex} 
+                    selected={el.selected} 
+                    preview={false}
+                    coords={el.coords} 
+                    type={el.cargoType} />
+            );
         });
 
         return (
@@ -138,12 +214,17 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                         cargo={this.state.cargo}
                     />
 
-                    <EditPanel cargo={this.state.cargo} />
+                    <EditPanel 
+                        deselectCargo={this.deselectCargo}
+                        deleteCargo={this.deleteCargo}
+                        alignCargo={this.alignCargo}
+                        cargo={this.state.cargo} />
 
                     <Ship 
                         name={'Nautica'}
                         decks={[{ width: '350px', height: '500px' }]}
                         handleClick={this.handleClick}>
+                        
                         {cargoElements}
                     </Ship>
 

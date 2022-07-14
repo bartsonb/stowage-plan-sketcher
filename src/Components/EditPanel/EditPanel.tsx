@@ -1,25 +1,22 @@
 import { useState } from "react";
+import { cargo } from "../../Pages/Sketcher/Sketcher";
 import "./EditPanel.scss";
 
 export interface EditPanelProps {
-    cargo: any[];
+    cargo: cargo[];
+    alignCargo: any;
+    deleteCargo: any;
+    deselectCargo: any;
 }
 
 export const EditPanel = (props: EditPanelProps) => {
     const { cargo } = props;
 
-    const handleClick = (e): void => {};
-
     const selectedCargoList = cargo
-        .map((el, index) => {
-            el.index = index;
-            return el;
-        })
         .filter(el => el.selected)
-        .map((el, index) => <p key={index}>{el.cargoType} ({el.index})</p>);
-    const open = selectedCargoList.length > 0;
+        .map((el, index) => <p key={index}>{el.cargoType} ({el.cargoIndex})</p>);
 
-    console.log(selectedCargoList);
+    const open = selectedCargoList.length > 0;
 
     return (
         <div
@@ -31,8 +28,10 @@ export const EditPanel = (props: EditPanelProps) => {
             </div>
 
             <div className="EditPanel__Buttons">
-                <button>Edit</button>
-                <button>Delete</button>
+                <button onClick={() => {props.alignCargo('vertical')}}>Align Vertically</button>
+                <button className="EditPanel__Buttons EditPanel__Buttons--edit">Edit</button>
+                <button onClick={props.deselectCargo} className="EditPanel__Buttons EditPanel__Buttons--deselect">De-Select</button>
+                <button onClick={props.deleteCargo} className="EditPanel__Buttons EditPanel__Buttons--delete">Delete</button>
             </div>
         </div>
     );

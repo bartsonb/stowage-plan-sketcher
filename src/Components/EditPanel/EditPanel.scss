@@ -16,5 +16,9 @@
     &__Buttons {
         display: flex;
         justify-content: center;
+
+        &--delete {
+            background: red;
+        }
     }
 }
