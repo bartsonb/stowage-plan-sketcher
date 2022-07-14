@@ -4,9 +4,9 @@ export interface CargoProps {
     coords: any;
     type: string;
     preview: boolean;
-    selected: boolean;
-    index: number;
-    handleClick: any;
+    selected?: boolean;
+    index?: number;
+    handleClick?: any;
 }
 
 export const Cargo = (props: CargoProps) => {

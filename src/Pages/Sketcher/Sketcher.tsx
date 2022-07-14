@@ -221,6 +221,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                         cargo={this.state.cargo} />
 
                     <Ship 
+                        tool={this.state.tool}
                         name={'Nautica'}
                         decks={[{ width: '350px', height: '500px' }]}
                         handleClick={this.handleClick}>
