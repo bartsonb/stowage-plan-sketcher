@@ -1,3 +1,4 @@
+import { timeStamp } from "console";
 import React from "react";
 import Cargo from "../Cargo/Cargo";
 import './Ship.scss';
@@ -12,6 +13,7 @@ export interface ShipProps {
     decks: any;
     handleClick: any;
     children?: any;
+    getSelectionBoxCoords: any;
 }
 
 export class Ship extends React.Component<ShipProps, any> {
@@ -19,29 +21,79 @@ export class Ship extends React.Component<ShipProps, any> {
         super(props);
         
         this.state = {
-            mousePosition: { x: null, y: null },
-            displayPreviewCargo: false
+            mousePos: { x: null, y: null },
+            selectionBox: { pos: { x: 0, y: 0 }, width: 0, height: 0 },
+            displayPreviewCargo: false,
+            isDragging: false
         }
 
         this.deckRef = React.createRef();
     }
 
+    // Handling the mouse movement to save mouse position
+    // and normalizing the coords to be relative to the deck div.
     public handleMouseMove = ({ clientX, clientY }): void => {
         const boundingRect = this.deckRef.current.getBoundingClientRect();
-        this.setState({ mousePosition: { x: clientX - boundingRect.left, y: clientY - boundingRect.top } });
+        this.setState({ mousePos: { x: clientX - boundingRect.left, y: clientY - boundingRect.top } }, () => {
+
+            // Set width and height for selection box while dragging
+            if (this.state.isDragging) {
+                const w = this.state.mousePos.x - this.state.selectionBox.pos.x;
+                const h = this.state.mousePos.y - this.state.selectionBox.pos.y;
+
+                this.setState({
+                    selectionBox: { width: w + 'px', height: h + 'px', pos: this.state.selectionBox.pos }
+                });
+
+                this.props.getSelectionBoxCoords(this.state.mousePos, this.state.selectionBox.pos);
+            }
+        });
     }
 
-    private getPreviewCargo = (show: boolean) => {
-        if (show && ['container', 'box'].includes(this.props.tool)) {
-            return <Cargo type={this.props.tool} preview={true} coords={this.state.mousePosition} /> 
+    //  Return the preview cargo element that is positioned at the user's mouse cursor.
+    private getPreviewCargo = () => {
+        if (this.state.displayPreviewCargo && ['container', 'box'].includes(this.props.tool)) {
+            return <Cargo type={this.props.tool} preview={true} coords={this.state.mousePos} /> 
         }
     }
 
-    private handleMouseEnter = () => { this.setState({ displayPreviewCargo: true }) };
-    private handleMouseLeave = () => { this.setState({ displayPreviewCargo: false }) };
+    // Return the selection box
+    private getSelectionBox = () => {
+        // checking if the user is dragging and making sure that the selection box
+        // coords have already been updated.
+        if (this.state.isDragging && this.state.selectionBox.pos.hasOwnProperty('x')) {
+            return (
+                <div 
+                    className="Ship__Deck__Selection"
+                    style={{ 
+                        left: this.state.selectionBox.pos.x,  
+                        top: this.state.selectionBox.pos.y,
+                        width: this.state.selectionBox.width, 
+                        height: this.state.selectionBox.height
+                    }}>
+                </div>
+            )
+        }
+    }
 
-    private handleMouseUp = () => {  }
-    private handleMouseDown = () => {  }
+    // Handle mouseEnter and mouseLeave
+    private handleMouseEnter = () => { this.setState({ displayPreviewCargo: true }) };
+    private handleMouseLeave = () => { this.setState({ displayPreviewCargo: false, isDragging: false }) };
+
+    private handleMouseDown = () => { 
+        if (this.props.tool === 'select') {
+            this.setState({ 
+                isDragging: true,
+                selectionBox: { pos: this.state.mousePos }
+            }) 
+        }
+    }
+
+    private handleMouseUp = () => { 
+        if (this.props.tool === 'select') {
+            this.setState({ isDragging: false }) 
+        }
+    }
 
     render() {
         return (
@@ -56,13 +108,14 @@ export class Ship extends React.Component<ShipProps, any> {
                 <div 
                     className="Ship__Deck" 
                     ref={this.deckRef}
-                    onClick={(event) => {this.props.handleClick(event, null, this.state.mousePosition)}}
+                    onClick={(event) => {this.props.handleClick(event, null, this.state.mousePos)}}
                     onMouseEnter={this.handleMouseEnter}
                     onMouseLeave={this.handleMouseLeave}
                     onMouseDown={this.handleMouseDown}
-                    onMouseUp={this.handleMouseUp}>      
-                    
-                    {this.getPreviewCargo(this.state.displayPreviewCargo)}
+                    onMouseUp={this.handleMouseUp}>   
+
+                    {this.getSelectionBox()}
+                    {this.getPreviewCargo()}
                     {this.props.children}
                 </div>
 

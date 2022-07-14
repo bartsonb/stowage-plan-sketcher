@@ -23,5 +23,12 @@
         border: solid 1px #333;
         position: absolute;
         background-color: white;
+
+        &__Selection {
+            position: absolute;
+            z-index: 9999;
+            border: solid 1px #ccc;
+            background:rgba(0, 0, 0, 0.02);
+        }
     }
 }

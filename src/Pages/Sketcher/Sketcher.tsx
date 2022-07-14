@@ -132,6 +132,11 @@ export class Sketcher extends React.Component<SketcherProps, any> {
     // Return only the cargo elements that have been selected.
     public getSelectedCargo = (): cargo[] => this.state.cargo.filter(el => el.selected);
 
+    // Get the coords of the selection box and determine which cargo gets selected.
+    public getSelectionBoxCoords = ([ { x1, y1 }, { x2, y2 } ]): void => {
+        const selectedCargo = null;
+    }
+
     // Get height and width of the current browser window.
     public getWindowDimensions = (): any => {
         return { width: window.innerWidth, height: window.innerHeight };
@@ -224,7 +229,8 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                         tool={this.state.tool}
                         name={'Nautica'}
                         decks={[{ width: '350px', height: '500px' }]}
-                        handleClick={this.handleClick}>
+                        handleClick={this.handleClick}
+                        getSelectionBoxCoords={this.getSelectionBoxCoords}>
                         
                         {cargoElements}
                     </Ship>
