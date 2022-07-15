@@ -81,12 +81,13 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         const { tool } = this.state;
         event.stopPropagation();
 
-        // De-/select the cargo with the given index
+        // Select the cargo with the given index
+        // (Deselecting by click was removed - caused problems during mouseUp event during moving of cargo)
         if (tool === 'select' && cargoIndex !== null) {
-            this.state.ship.cargo[cargoIndex].selected = !this.state.ship.cargo[cargoIndex].selected;
+            this.state.ship.cargo[cargoIndex].selected = true;
 
             this.setState({
-                ship: { cargo: [ ...this.state.ship.cargo ], ...this.state.ship }
+                ship: { ...this.state.ship, cargo: [ ...this.state.ship.cargo ] }
             });
         } 
 
@@ -127,8 +128,8 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         const axisToAlign = (direction === 'horizontal') ? 'y' : 'x';
         let smallestPoint = null;
 
-        // Get smallest coordinate
-        this.getSelectedCargo().forEach(el => {
+        // Get smallest coordinate from selected cargo
+        this.state.ship.cargo.filter(el => el.selected).forEach(el => {
             if (smallestPoint === null) {
                 smallestPoint = el.coords[axisToAlign];
             } else {
@@ -145,9 +146,6 @@ export class Sketcher extends React.Component<SketcherProps, any> {
             ship: { ...this.state.ship, cargo: [...this.state.ship.cargo ] }
         });
     }
-
-    // Return only the cargo elements that have been selected.
-    public getSelectedCargo = (): cargo[] => this.state.ship.cargo.filter(el => el.selected);
 
     // Get the coords of the selection box (top-left and bottom-right) and determine which cargo gets selected.
     public getSelectionBoxCoords = ({ x: x1, y: y1 }, { x: x2, y: y2 }): void => {
@@ -202,9 +200,33 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         this.ctx.closePath();
     };
 
+    private moveCargo = (x1: number, y1: number, x2: number, y2: number): void => {
+        let differenceX = x2 - x1;
+        let differenceY = y2 - y1;
+
+        const newCargoState = this.state.ship.cargo.map(el => {
+            if (el.selected) {
+                el.coords.x = el.coords.x + differenceX;
+                el.coords.y = el.coords.y + differenceY;
+                return el;
+            }
+
+            return el;
+        });
+
+        this.setState(prevState => {
+            return {
+                ship: {
+                    ...prevState.ship,
+                    cargo: [ ...newCargoState ]
+                }
+            }
+        })
+    }
+
     private deleteCargo = (): void => {
         this.setState({
-            ship: { cargo: [ ...this.state.ship.cargo.filter(el => !el.selected) ], ...this.state.ship }
+            ship: { ...this.state.ship, cargo: [ ...this.state.ship.cargo.filter(el => !el.selected) ] }
         })
     };
 
@@ -258,6 +280,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                     name={this.state.ship.name}
                     decks={this.state.ship.decks}
                     handleClick={this.handleClick}
+                    moveCargo={this.moveCargo}
                     getSelectionBoxCoords={this.getSelectionBoxCoords}>
                     
                     {cargoElements}

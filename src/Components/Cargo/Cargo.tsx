@@ -5,7 +5,7 @@ export interface CargoProps {
     type: string;
     preview: boolean;
     selected?: boolean;
-    hazardous: boolean;
+    hazardous?: boolean;
     index?: number;
     handleClick?: any;
 }
