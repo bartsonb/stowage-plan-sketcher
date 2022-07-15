@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Box from "../Box/Box";
 import "./InfoPanel.scss";
 
 export interface InfoPanelProps {
@@ -30,14 +31,12 @@ export const InfoPanel = (props: InfoPanelProps) => {
     if (props.cargo) { cargoList = cargo.map(el => `${el.cargoType}, `) }
 
     return (
-        <div className="InfoPanel">
+        <Box cssClass="InfoPanel">
             <p onClick={handleClick}>collapse</p>
-            <p>InfoPanel: I am {`${isCollapsed ? "closed" : "open"}`}.</p>
-            <hr />
             <p style={{ display: `${isCollapsed ? "none" : "inline-block"}` }}>
                 {cargoList}
             </p>
-        </div>
+        </Box>
     );
 };
 

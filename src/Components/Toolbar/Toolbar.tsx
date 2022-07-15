@@ -1,4 +1,5 @@
 import ToolbarButton from "../ToolbarButton/ToolbarButton";
+import Box from "../Box/Box";
 
 import './Toolbar.scss';
 
@@ -34,9 +35,9 @@ export const Toolbar = (props: ToolbarProps) => {
 
 
   return (
-    <div className="Toolbar">
+    <Box cssClass="Toolbar">
       {buttonElements}
-    </div>
+    </Box>
   );
 }
 
