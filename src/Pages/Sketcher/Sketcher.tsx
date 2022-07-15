@@ -23,6 +23,7 @@ export interface cargo {
     cargoIndex: number;
     cargoType: string;
     selected: boolean;
+    hazardous: boolean;
 }
 
 export interface SketcherProps {}
@@ -103,7 +104,6 @@ export class Sketcher extends React.Component<SketcherProps, any> {
             });
 
             this.setState(prevState => {
-
                 return {
                     ship: {
                         ...prevState.ship,
@@ -112,7 +112,8 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                             cargoIndex: this.state.ship.cargo.length,
                             deckIndex: this.state.selectedDeck, 
                             coords, 
-                            selected: false 
+                            selected: false,
+                            hazardous: false
                         }],
                     }
                 }
@@ -241,6 +242,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                     handleClick={this.handleClick}
                     index={el.cargoIndex} 
                     selected={el.selected} 
+                    hazardous={el.hazardous}
                     preview={false}
                     coords={el.coords} 
                     type={el.cargoType} />

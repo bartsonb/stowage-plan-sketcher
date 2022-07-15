@@ -35,10 +35,20 @@ export const EditPanel = (props: EditPanelProps) => {
             </div>
 
             <div className="EditPanel__Buttons">
-                <button onClick={() => {props.alignCargo('vertical')}}>Align Vertically</button>
-                <button className="EditPanel__Buttons EditPanel__Buttons--edit">Edit</button>
-                <button onClick={props.deselectCargo} className="EditPanel__Buttons EditPanel__Buttons--deselect">De-Select</button>
-                <button onClick={props.deleteCargo} className="EditPanel__Buttons EditPanel__Buttons--delete">Delete</button>
+                <button 
+                    onClick={() => {props.alignCargo('vertical')}}>Align Vertically
+                </button>
+                <button 
+                    className="EditPanel__Buttons EditPanel__Buttons--edit">Edit
+                </button>
+                <button 
+                    onClick={props.deselectCargo} 
+                    className="EditPanel__Buttons EditPanel__Buttons--deselect">Close
+                </button>
+                <button 
+                    onClick={props.deleteCargo} 
+                    className="EditPanel__Buttons EditPanel__Buttons--delete">Delete
+                </button>
             </div>
         </div>
     );

@@ -14,6 +14,11 @@
         border: solid 1px red;
     }
 
+    &--hazardous {
+        background: rgba($color: #f43232, $alpha: 0.2)
+        
+    }
+
     &--selected {
         border-color: rgb(245, 72, 72);
         border-width: 2px;

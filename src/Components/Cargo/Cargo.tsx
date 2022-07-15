@@ -5,6 +5,7 @@ export interface CargoProps {
     type: string;
     preview: boolean;
     selected?: boolean;
+    hazardous: boolean;
     index?: number;
     handleClick?: any;
 }
@@ -35,13 +36,14 @@ export const Cargo = (props: CargoProps) => {
     } else {
         return (
             <div 
-                className={`Cargo Cargo__${props.type} ${props.selected ? 'Cargo--selected' : ''}`}
+                className={`Cargo Cargo__${props.type} ${props.selected ? 'Cargo--selected' : ''} ${props.hazardous ? 'Cargo--hazardous' : ''}`}
                 style={{width: width, height: height, top: props.coords.y, left: props.coords.x}}
                 onClick={(event) => { props.handleClick(event, props.index) }}>
     
                 <div className="Cargo__Description">
                     <p style={{ display: props.preview ? 'hidden' : 'inline-block'}}>{Math.round(props.coords.x)}, {Math.round(props.coords.y)}</p>
                     <p style={{ display: props.preview ? 'hidden' : 'inline-block'}}>{props.type} ({props.index})</p>
+                    <p style={{ display: props.preview ? 'hidden' : 'inline-block'}}>{props.hazardous ? 'x' : ''}</p>
                 </div>
             </div> 
         )
