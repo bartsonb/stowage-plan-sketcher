@@ -24,7 +24,7 @@ export const Cargo = (props: CargoProps) => {
 
     const [ width, height ] = getSize(props.type);
 
-    // Return a simplified version of the cargo, if the preview param is set.
+    // Return a simplified version of the cargo, if the preview param is true.
     if (props.preview) {
         return (
             <div 

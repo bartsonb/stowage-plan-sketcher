@@ -1,0 +1,19 @@
+.CreationPanel {
+    position: absolute;
+    width: 50vw;
+    height: 50vh;
+    top: calc(50vh - (50vh / 2));
+    left: calc(50vw - (50vw / 2));
+    display: flex;
+    justify-content: center;
+    background: #333;
+    border: solid 1px #333;
+    border-radius: 5px;
+
+    h1 {
+        color: white;
+        font-size: 1em;
+        text-align: center;
+        margin-bottom: 1em;
+    }
+}

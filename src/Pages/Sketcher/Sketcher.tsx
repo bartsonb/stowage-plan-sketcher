@@ -5,8 +5,9 @@ import MenuBar from "../../Components/MenuBar/MenuBar";
 import Ship from "../../Components/Ship/Ship";
 import Cargo from "../../Components/Cargo/Cargo";
 import EditPanel from "../../Components/EditPanel/EditPanel";
-import "./Sketcher.scss";
+import Defuser from "../../Components/Defuser/Defuser";
 import CreationPanel from "../../Components/CreationPanel/CreationPanel";
+import "./Sketcher.scss";
 
 export interface Sketcher {
     canvasRef: any;
@@ -32,8 +33,8 @@ export class Sketcher extends React.Component<SketcherProps, any> {
 
         this.state = {
             ship: {
-                name: null,
-                decks: [],
+                name: 'Armin',
+                decks: [{ width: 100, height: 100 }],
                 cargo: []
             },
             tool: "select",
@@ -84,12 +85,12 @@ export class Sketcher extends React.Component<SketcherProps, any> {
             this.state.ship.cargo[cargoIndex].selected = !this.state.ship.cargo[cargoIndex].selected;
 
             this.setState({
-                ship: { cargo: [ ...this.state.ship.cargo ]}
+                ship: { cargo: [ ...this.state.ship.cargo ], ...this.state.ship }
             });
         } 
 
         // Deselect all cargo, if background is clicked while any selection is active.
-        if (tool === 'select'  && cargoIndex == null) {
+        if (tool === 'select' && cargoIndex == null) {
             this.deselectCargo();
         }
 
@@ -101,15 +102,19 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                 return el;
             });
 
-            this.setState({
-                ship: {
-                    cargo: [...newCargoState, { 
-                        cargoType: tool, 
-                        cargoIndex: this.state.cargo.length,
-                        deckIndex: this.state.selectedDeck, 
-                        coords, 
-                        selected: false 
-                    }]
+            this.setState(prevState => {
+
+                return {
+                    ship: {
+                        ...prevState.ship,
+                        cargo: [...newCargoState, { 
+                            cargoType: tool, 
+                            cargoIndex: this.state.ship.cargo.length,
+                            deckIndex: this.state.selectedDeck, 
+                            coords, 
+                            selected: false 
+                        }],
+                    }
                 }
             });
         }
@@ -131,12 +136,12 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         });
 
         // Set all selected cargos with the smallest coordiante
-        this.state.cargo.map(el => {
+        this.state.ship.cargo.map(el => {
             if (el.selected) { el.coords[axisToAlign] = smallestPoint; }
         });
 
         this.setState({
-            ship: { cargo: [...this.state.cargo ]}
+            ship: { ...this.state.ship, cargo: [...this.state.ship.cargo ] }
         });
     }
 
@@ -155,7 +160,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         });
 
         this.setState({
-            ship: { cargo: [ ...newCargoState ]}
+            ship: { ...this.state.ship, cargo: [ ...newCargoState ]}
         });
     }
 
@@ -198,19 +203,34 @@ export class Sketcher extends React.Component<SketcherProps, any> {
 
     private deleteCargo = (): void => {
         this.setState({
-            ship: { cargo: [ ...this.state.cargo.filter(el => !el.selected) ]}
+            ship: { cargo: [ ...this.state.ship.cargo.filter(el => !el.selected) ], ...this.state.ship }
         })
     };
 
     private deselectCargo = (): void => {
-        const allCargoDeselected = this.state.ship.cargo.map(el => {
-            el.selected = false;
-            return el;
-        })
+        this.setState(prevState => {
+            const allCargoDeselected = prevState.ship.cargo.map(el => {
+                el.selected = false;
+                return el;
+            })
+
+            return {
+                ship: {  ...prevState.ship, cargo: [ ...allCargoDeselected ] }
+            }
+        });
+    }
+
+    private createShip = (shipName: string, numberOfDecks: number): void => {
+        const defaultDeck = { width: 400, height: 500 };
+        let decks = [];
+
+        for (let x = 0; x < numberOfDecks; x++) {
+            decks.push(defaultDeck);
+        }
 
         this.setState({
-            ship: { cargo: [ ...allCargoDeselected ]}
-        });
+            ship: { name: shipName, decks: decks, cargo: [] }
+        })
     }
 
     public render() {
@@ -229,7 +249,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
 
         let shipElement;
 
-        if (this.state.ship.name === null) {
+        if (this.state.ship.name !== null) {
             shipElement = (
                 <Ship 
                     tool={this.state.tool}
@@ -253,8 +273,8 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                     />
 
                     <InfoPanel
-                        decks={this.state.decks}
-                        cargo={this.state.cargo}
+                        decks={this.state.ship.decks}
+                        cargo={this.state.ship.cargo}
                     />
 
                     <EditPanel 
@@ -263,7 +283,13 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                         alignCargo={this.alignCargo}
                         cargo={this.state.ship.cargo} />
 
-                    <CreationPanel show={shipElement} />
+                    <Defuser show={this.state.ship.name === null}>
+                        <CreationPanel 
+                            createShip={this.createShip}
+                            show={this.state.ship.name === null} />
+                    </Defuser>
+
+                    {shipElement}
 
                     <canvas ref={this.canvasRef} />
                 </div>

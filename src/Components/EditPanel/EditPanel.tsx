@@ -13,12 +13,16 @@ export const EditPanel = (props: EditPanelProps) => {
     const { cargo } = props;
 
     let selectedCargoList = [];
-    let open = (props.cargo.length > 0) ? true : false;
+    let open = false;
     
-    if (open) {
-        selectedCargoList =cargo
+    if (cargo.length > 0) {
+        // Get all cargos that are selected.
+        selectedCargoList = cargo
             .filter(el => el.selected)
             .map((el, index) => <p key={index}>{el.cargoType} ({el.cargoIndex})</p>);
+
+        // Display EditPanel if any cargo is selected.
+        open = (selectedCargoList.length > 0) ? true : false;
     }
 
     return (

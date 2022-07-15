@@ -89,13 +89,13 @@ export class Ship extends React.Component<ShipProps, any> {
         this.setState({ displayPreviewCargo: false, isDragging: false }) 
     };
 
-    // Subtract 2 from selection box position, so the selection box div doesn't get in the way of
+    // Added 4 to selection box position, so the selection box div doesn't get in the way of
     // all other click events.
     private handleMouseDown = () => { 
         if (this.props.tool === 'select') {
             this.setState({ 
                 isDragging: true,
-                selectionBox: { pos: { x: this.state.mousePos.x - 2, y: this.state.mousePos.y - 2 } }
+                selectionBox: { pos: { x: this.state.mousePos.x + 4, y: this.state.mousePos.y + 4 } }
             }) 
         }
     }
