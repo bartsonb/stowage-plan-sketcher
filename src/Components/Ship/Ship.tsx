@@ -10,8 +10,10 @@ export interface ShipProps {
     tool: string;
     name: string;
     decks: any;
+    selectedDeck: number;    
     handleClick: any;
     moveCargo: any;
+    changeDeck: any;
     children?: any;
     getSelectionBoxCoords: any;
 }
@@ -21,9 +23,10 @@ export class Ship extends React.Component<ShipProps, any> {
         super(props);
         
         this.state = {
-            oldMousePos : { x: 0, y: 0},
+            mousePosOld : { x: 0, y: 0},
             mousePos: { x: 0, y: 0 },
             selectionBox: { pos: { x: 0, y: 0 }, width: 0, height: 0 },
+            shipPadding: 50,
             displayPreviewCargo: false,
             isDragging: false,
             isMoving: false
@@ -138,29 +141,55 @@ export class Ship extends React.Component<ShipProps, any> {
     }
 
     render() {
+        const { name, selectedDeck, decks, changeDeck } = this.props;
+        const { shipPadding } = this.state;
+
+        const deckChangingButtons = decks.map((el, index) => {
+            return (
+                <button 
+                    className={`Ship__Tabs__Button Ship__Tabs__Button${index === selectedDeck ? '--active': ''}`}
+                    key={index} 
+                    onClick={() => {changeDeck(index)}}>
+                        {index + 1}
+                </button>
+            )
+        })
+
         return (
-            <div 
-                className="Ship"
-                onMouseMove={this.handleMouseMove}>
-
-                <div className="Ship__Description">
-                    <p>{this.props.name}</p>
-                </div>
-
+            <div className="ShipWindow">    
+                <div className="ShipWindow__Handle"></div>
                 <div 
-                    className="Ship__Deck Deck" 
-                    ref={this.deckRef}
-                    onClick={(event) => {this.props.handleClick(event, null, this.state.mousePos)}}
-                    onMouseEnter={this.handleMouseEnter}
-                    onMouseLeave={this.handleMouseLeave}
-                    onMouseDown={event => {this.handleMouseDown(event)}}
-                    onMouseUp={this.handleMouseUp}>   
+                    className="Ship"
+                    onMouseMove={this.handleMouseMove}
+                    style={{ 
+                        width: decks[selectedDeck].width + shipPadding, 
+                        height: decks[selectedDeck].height + shipPadding 
+                    }}>
+                    
+                    <div className="Ship__Tabs">
+                        {deckChangingButtons}
+                    </div>
 
-                    {this.getSelectionBox()}
-                    {this.getPreviewCargo()}
-                    {this.props.children}
+                    <div 
+                        className="Ship__Deck"
+                        style={{ 
+                            width: decks[selectedDeck].width, 
+                            height: decks[selectedDeck].height, 
+                            left: shipPadding / 2 
+                        }}
+                        ref={this.deckRef}
+                        onClick={(event) => {this.props.handleClick(event, null, this.state.mousePos)}}
+                        onMouseEnter={this.handleMouseEnter}
+                        onMouseLeave={this.handleMouseLeave}
+                        onMouseDown={event => {this.handleMouseDown(event)}}
+                        onMouseUp={this.handleMouseUp}>   
+
+                        {this.getSelectionBox()}
+                        {this.getPreviewCargo()}
+                        {this.props.children}
+                    </div>
+
                 </div>
-
             </div>
         )
     }

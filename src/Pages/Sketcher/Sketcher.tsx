@@ -34,8 +34,8 @@ export class Sketcher extends React.Component<SketcherProps, any> {
 
         this.state = {
             ship: {
-                name: 'Armin',
-                decks: [{ width: 100, height: 100 }],
+                name: null,
+                decks: [],
                 cargo: []
             },
             tool: "select",
@@ -256,8 +256,17 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         })
     }
 
+    private changeDeck = (deckIndex: number): void => {
+        this.setState({
+            selectedDeck: deckIndex
+        })
+    }
+
     public render() {
-        const cargoElements = this.state.ship.cargo.map(el => {
+        // Get all cargo elements for the currently selected deck
+        const cargoElements = this.state.ship.cargo
+            .filter(el => this.state.selectedDeck === el.deckIndex)
+            .map(el => {
             return (
                 <Cargo 
                     key={el.cargoIndex} 
@@ -278,9 +287,11 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                 <Ship 
                     tool={this.state.tool}
                     name={this.state.ship.name}
+                    selectedDeck={this.state.selectedDeck}
                     decks={this.state.ship.decks}
                     handleClick={this.handleClick}
                     moveCargo={this.moveCargo}
+                    changeDeck={this.changeDeck}
                     getSelectionBoxCoords={this.getSelectionBoxCoords}>
                     
                     {cargoElements}

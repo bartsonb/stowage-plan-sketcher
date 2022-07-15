@@ -4,6 +4,7 @@
     backdrop-filter: blur(2px);
     display: flex;
     flex-direction: column;
+    z-index: 9999;;
 
     &__Handle {
         background: #333;
