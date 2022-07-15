@@ -40,7 +40,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
             },
             tool: "select",
             selectedDeck: 0,
-            canvasOptions: { gridSize: 15, strokeColor: '#333', gridColor: '#c8c8c8' },
+            canvasOptions: { gridSize: 20, gridColor: '#efefef' },
             windowDimensions: { width: null, height: null },     
         }
 
