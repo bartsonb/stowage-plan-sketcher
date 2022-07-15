@@ -6,6 +6,7 @@ import Ship from "../../Components/Ship/Ship";
 import Cargo from "../../Components/Cargo/Cargo";
 import EditPanel from "../../Components/EditPanel/EditPanel";
 import "./Sketcher.scss";
+import CreationPanel from "../../Components/CreationPanel/CreationPanel";
 
 export interface Sketcher {
     canvasRef: any;
@@ -30,10 +31,12 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         super(props);
 
         this.state = {
-            decks: [{ width: '300px', height: '450px' }],
-            cargo: [],
+            ship: {
+                name: null,
+                decks: [],
+                cargo: []
+            },
             tool: "select",
-            mode: "new",
             selectedDeck: 0,
             canvasOptions: { gridSize: 15, strokeColor: '#333', gridColor: '#c8c8c8' },
             windowDimensions: { width: null, height: null },     
@@ -78,28 +81,36 @@ export class Sketcher extends React.Component<SketcherProps, any> {
 
         // De-/select the cargo with the given index
         if (tool === 'select' && cargoIndex !== null) {
-            this.state.cargo[cargoIndex].selected = !this.state.cargo[cargoIndex].selected;
+            this.state.ship.cargo[cargoIndex].selected = !this.state.ship.cargo[cargoIndex].selected;
 
             this.setState({
-                cargo: [ ...this.state.cargo ]
+                ship: { cargo: [ ...this.state.ship.cargo ]}
             });
         } 
 
-        // Deselect all cargo, if background is clicked while any selection is active
+        // Deselect all cargo, if background is clicked while any selection is active.
         if (tool === 'select'  && cargoIndex == null) {
             this.deselectCargo();
         }
 
-        // Create new cargo
-        if (tool === 'container' || tool === 'box') {
+        // Create new cargo if click was registered on the background and has deck coords.
+        if ((tool === 'container' || tool === 'box') && coords !== undefined) {
+            // Set new cargoIndexes
+            const newCargoState = this.state.ship.cargo.map((el, index) => {
+                el.cargoIndex = index;
+                return el;
+            });
+
             this.setState({
-                cargo: [...this.state.cargo, { 
-                    cargoType: tool, 
-                    cargoIndex: this.state.cargo.length,
-                    deckIndex: this.state.selectedDeck, 
-                    coords, 
-                    selected: false 
-                }]
+                ship: {
+                    cargo: [...newCargoState, { 
+                        cargoType: tool, 
+                        cargoIndex: this.state.cargo.length,
+                        deckIndex: this.state.selectedDeck, 
+                        coords, 
+                        selected: false 
+                    }]
+                }
             });
         }
     };
@@ -125,16 +136,27 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         });
 
         this.setState({
-            cargo: [...this.state.cargo ]
+            ship: { cargo: [...this.state.cargo ]}
         });
     }
 
     // Return only the cargo elements that have been selected.
-    public getSelectedCargo = (): cargo[] => this.state.cargo.filter(el => el.selected);
+    public getSelectedCargo = (): cargo[] => this.state.ship.cargo.filter(el => el.selected);
 
-    // Get the coords of the selection box and determine which cargo gets selected.
-    public getSelectionBoxCoords = ([ { x1, y1 }, { x2, y2 } ]): void => {
-        const selectedCargo = null;
+    // Get the coords of the selection box (top-left and bottom-right) and determine which cargo gets selected.
+    public getSelectionBoxCoords = ({ x: x1, y: y1 }, { x: x2, y: y2 }): void => {
+        const newCargoState = this.state.ship.cargo.map(el => {
+            if (el.coords.x > x1 && el.coords.x < x2 && el.coords.y > y1 && el.coords.y < y2) {
+                el.selected = true;
+                return el;
+            } else {
+                return el;
+            }
+        });
+
+        this.setState({
+            ship: { cargo: [ ...newCargoState ]}
+        });
     }
 
     // Get height and width of the current browser window.
@@ -176,23 +198,23 @@ export class Sketcher extends React.Component<SketcherProps, any> {
 
     private deleteCargo = (): void => {
         this.setState({
-            cargo: [ ...this.state.cargo.filter(el => !el.selected) ]
+            ship: { cargo: [ ...this.state.cargo.filter(el => !el.selected) ]}
         })
     };
 
     private deselectCargo = (): void => {
-        const allCargoDeselected = this.state.cargo.map(el => {
+        const allCargoDeselected = this.state.ship.cargo.map(el => {
             el.selected = false;
             return el;
         })
 
         this.setState({
-            cargo: [ ...allCargoDeselected ]
+            ship: { cargo: [ ...allCargoDeselected ]}
         });
     }
 
     public render() {
-        const cargoElements = this.state.cargo.map(el => {
+        const cargoElements = this.state.ship.cargo.map(el => {
             return (
                 <Cargo 
                     key={el.cargoIndex} 
@@ -204,6 +226,22 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                     type={el.cargoType} />
             );
         });
+
+        let shipElement;
+
+        if (this.state.ship.name === null) {
+            shipElement = (
+                <Ship 
+                    tool={this.state.tool}
+                    name={this.state.ship.name}
+                    decks={this.state.ship.decks}
+                    handleClick={this.handleClick}
+                    getSelectionBoxCoords={this.getSelectionBoxCoords}>
+                    
+                    {cargoElements}
+                </Ship>
+            )
+        }
 
         return (
             <div className="Sketcher">
@@ -223,17 +261,9 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                         deselectCargo={this.deselectCargo}
                         deleteCargo={this.deleteCargo}
                         alignCargo={this.alignCargo}
-                        cargo={this.state.cargo} />
+                        cargo={this.state.ship.cargo} />
 
-                    <Ship 
-                        tool={this.state.tool}
-                        name={'Nautica'}
-                        decks={[{ width: '350px', height: '500px' }]}
-                        handleClick={this.handleClick}
-                        getSelectionBoxCoords={this.getSelectionBoxCoords}>
-                        
-                        {cargoElements}
-                    </Ship>
+                    <CreationPanel show={shipElement} />
 
                     <canvas ref={this.canvasRef} />
                 </div>

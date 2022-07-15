@@ -44,8 +44,6 @@ export class Ship extends React.Component<ShipProps, any> {
                 this.setState({
                     selectionBox: { width: w + 'px', height: h + 'px', pos: this.state.selectionBox.pos }
                 });
-
-                this.props.getSelectionBoxCoords(this.state.mousePos, this.state.selectionBox.pos);
             }
         });
     }
@@ -77,21 +75,35 @@ export class Ship extends React.Component<ShipProps, any> {
     }
 
     // Handle mouseEnter and mouseLeave
-    private handleMouseEnter = () => { this.setState({ displayPreviewCargo: true }) };
-    private handleMouseLeave = () => { this.setState({ displayPreviewCargo: false, isDragging: false }) };
+    private handleMouseEnter = () => { 
+        if (['container', 'box'].includes(this.props.tool)) {
+            this.setState({ displayPreviewCargo: true }) 
+        }
+    };
 
+    private handleMouseLeave = () => { 
+        if (this.props.tool === 'select') {
+            this.props.getSelectionBoxCoords(this.state.selectionBox.pos, this.state.mousePos);
+        }
+
+        this.setState({ displayPreviewCargo: false, isDragging: false }) 
+    };
+
+    // Subtract 2 from selection box position, so the selection box div doesn't get in the way of
+    // all other click events.
     private handleMouseDown = () => { 
         if (this.props.tool === 'select') {
             this.setState({ 
                 isDragging: true,
-                selectionBox: { pos: this.state.mousePos }
+                selectionBox: { pos: { x: this.state.mousePos.x - 2, y: this.state.mousePos.y - 2 } }
             }) 
         }
     }
 
     private handleMouseUp = () => { 
         if (this.props.tool === 'select') {
-            this.setState({ isDragging: false }) 
+            this.props.getSelectionBoxCoords(this.state.selectionBox.pos, this.state.mousePos);
+            this.setState({ isDragging: false });
         }
     }
 

@@ -1,6 +1,10 @@
 import './Form.scss';
 
-export const Form = () => {
+export interface FormProps {
+    children?: any;
+}
+
+export const Form = (props: FormProps) => {
     return (
         <form className='Form'>
             <input type="text" placeholder="E-Mail" />

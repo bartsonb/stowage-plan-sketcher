@@ -10,6 +10,10 @@
     &__Box {
     }
 
+    &__Preview {
+        border: solid 1px red;
+    }
+
     &--selected {
         border-color: rgb(245, 72, 72);
         border-width: 2px;

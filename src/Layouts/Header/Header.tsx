@@ -11,7 +11,7 @@ export class Header extends React.Component<HeaderProps, any> {
         return (
             <header className="Header">
                 <NavBar />
-                <div className="AccountBar">
+                <div className="Header__AccountBar">
                     <h1>User Account</h1> 
                 </div>
             </header>

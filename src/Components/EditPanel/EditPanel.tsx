@@ -12,11 +12,14 @@ export interface EditPanelProps {
 export const EditPanel = (props: EditPanelProps) => {
     const { cargo } = props;
 
-    const selectedCargoList = cargo
-        .filter(el => el.selected)
-        .map((el, index) => <p key={index}>{el.cargoType} ({el.cargoIndex})</p>);
-
-    const open = selectedCargoList.length > 0;
+    let selectedCargoList = [];
+    let open = (props.cargo.length > 0) ? true : false;
+    
+    if (open) {
+        selectedCargoList =cargo
+            .filter(el => el.selected)
+            .map((el, index) => <p key={index}>{el.cargoType} ({el.cargoIndex})</p>);
+    }
 
     return (
         <div
