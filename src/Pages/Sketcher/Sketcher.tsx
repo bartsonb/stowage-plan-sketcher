@@ -14,7 +14,7 @@ export interface Sketcher {
     ctx: any;
 }
 
-export interface cargo {
+export type cargo = {
     coords: {
         x: number,
         y: number
@@ -42,7 +42,8 @@ export class Sketcher extends React.Component<SketcherProps, any> {
             selectedDeck: 0,
             canvasOptions: { gridSize: 20, gridColor: '#222' },
             windowDimensions: { width: null, height: null },    
-            progressSaved: false 
+            timestampLastSave: 1888299399,
+            changesMade: true
         }
 
         this.canvasRef = React.createRef();
@@ -303,7 +304,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
 
         return (
             <div className="Sketcher">
-                <MenuBar />
+                <MenuBar changesMade={this.state.changesMade} timestampLastSave={this.state.timestampLastSave} />
                 <div className="Sketcher__Window">
                     <Toolbar
                         selectedTool={this.state.tool}

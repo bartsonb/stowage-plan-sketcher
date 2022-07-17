@@ -10,9 +10,14 @@ import Register from "./Pages/Register/Register";
 import Login from "./Pages/Login/Login";
 import About from "./Pages/About/About";
 import UserProfile from "./Pages/UserProfile/UserProfile";
-
-import './Assets/Styles/_general.scss';
 import Home from "./Pages/Home/Home";
+import './Assets/Styles/_general.scss';
+
+export type User = {
+  name: string;
+  email: string;
+  profilePicture: string;
+}
 
 export interface AppProps {
 
@@ -20,7 +25,12 @@ export interface AppProps {
 
 export class App extends React.Component<AppProps, any> {
   public state = {
-    isAuthenticated: true
+    isAuthenticated: true,
+    user: {
+      name: 'Armin B.', 
+      email: 'armin.bartnik@gmail.com', 
+      profilePicture: ''
+    }
   }
 
   componentDidMount(): void {
@@ -43,7 +53,7 @@ export class App extends React.Component<AppProps, any> {
     if (this.state.isAuthenticated) {
       routes = (
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home isAuthenticated={this.state.isAuthenticated} user={this.state.user} />} />
           <Route path="/about" element={<About />} />
           <Route path="/user/:id" element={<UserProfile />} />
         </Routes>
