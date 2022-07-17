@@ -128,7 +128,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
     // Sorting the selected cargo by their x or y coordiantes.
     // The first element will have the smallest point.
     public alignCargo = (direction: string): void => {
-        const axisToAlign = (direction === 'horizontal') ? 'y' : 'x';
+        const axisToAlign = (direction === 'top') ? 'y' : 'x';
         let smallestPoint = null;
 
         // Get smallest coordinate from selected cargo
