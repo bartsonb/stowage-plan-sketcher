@@ -163,8 +163,8 @@ export class Ship extends React.Component<ShipProps, any> {
                 sizing={{ 
                     width: decks[selectedDeck].width + 32,
                     height: decks[selectedDeck].height + 55,
-                    x: 300, 
-                    y: 250
+                    x: (window.innerWidth / 2) - (decks[selectedDeck].width / 2), 
+                    y: (window.innerHeight / 2) - (decks[selectedDeck].height / 1.7)
                 }}>
                 <div 
                     className="Ship__Deck"

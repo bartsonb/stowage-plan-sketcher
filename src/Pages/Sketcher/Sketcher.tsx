@@ -203,6 +203,8 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         this.ctx.closePath();
     };
 
+    // x1,y1 are the coords before and x2,y2 after the mouse movement.
+    // The difference in direction gets applied to every cargo.
     private moveCargo = (x1: number, y1: number, x2: number, y2: number): void => {
         let differenceX = x2 - x1;
         let differenceY = y2 - y1;
