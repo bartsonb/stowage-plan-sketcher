@@ -1,55 +1,20 @@
-.ShipWindow {
+.Ship__Deck {
     position: absolute;
-    min-width: 200px;
-    min-height: 300px;
-
-    &__Handle {
-        background: #333;
-        height: 1em;
-        border-radius: 2px 2px 0 0;
-    }
-}
-
-.Ship {
-    align-items: center;
+    min-width: 50px;
+    min-height: 50px;
     border: solid 1px #333;
-    font-size: .7em;
-    background: rgba(0, 0, 0, 0.05);
+    background-color: #efefef;
+    border-radius: 4px;
 
-    &__Tabs{
-        padding-bottom: .5em;
-        font-size: 1em;
-        display: flex;
-
-        &__Button {
-            border: solid 1px transparent;
-            width: 50%;
-            flex-grow: 1;
-
-            &--active {
-                background: #3f9aff;
-                color: white;
-            }
-        }
-    }
-
-    &__Deck {
+    &__Selection {
         position: absolute;
-        min-width: 50px;
-        min-height: 50px;
-        border: solid 1px #333;
-        background-color: white;
-
-        &__Selection {
-            position: absolute;
-            z-index: 9999;
-            border: solid 1px #ccc;
-            background:rgba(0, 0, 0, 0.02);
-            -webkit-user-drag: none;
-            user-select: none;
-            -moz-user-select: none;
-            -webkit-user-select: none;
-            -ms-user-select: none;
-        }
+        z-index: 9999;
+        border: solid 1px #ccc;
+        background:rgba(0, 0, 0, 0.02);
+        -webkit-user-drag: none;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
     }
 }

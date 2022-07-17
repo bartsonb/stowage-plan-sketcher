@@ -34,14 +34,15 @@ export class Sketcher extends React.Component<SketcherProps, any> {
 
         this.state = {
             ship: {
-                name: null,
-                decks: [],
+                name: 'Arminius',
+                decks: [{ width: 400, height: 500 }],
                 cargo: []
             },
             tool: "select",
             selectedDeck: 0,
-            canvasOptions: { gridSize: 20, gridColor: '#efefef' },
-            windowDimensions: { width: null, height: null },     
+            canvasOptions: { gridSize: 20, gridColor: '#222' },
+            windowDimensions: { width: null, height: null },    
+            progressSaved: false 
         }
 
         this.canvasRef = React.createRef();
@@ -58,6 +59,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         this.handleResize();
 
         window.addEventListener("resize", this.handleResize);
+        // window.onbeforeunload = () => 'Leave page? You still have unsaved progress.';
     }
 
     componentWillUnmount(): void {

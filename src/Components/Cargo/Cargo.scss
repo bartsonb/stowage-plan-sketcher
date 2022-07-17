@@ -1,8 +1,9 @@
 .Cargo {
     position: absolute;
     border-radius: 2px;
-    border: solid 1px #333;
+    border: solid 2px #444;
     user-select: none;
+    transition: border .2s ease-in-out;
 
     &__Container {
     }
@@ -11,7 +12,8 @@
     }
 
     &__Preview {
-        border: solid 1px red;
+        border: dashed 2px #3f9aff;
+        transition: none;
     }
 
     &--hazardous {
@@ -20,15 +22,22 @@
     }
 
     &--selected {
-        border-color: rgb(245, 72, 72);
+        border-color: #3f9aff;
         border-width: 2px;
     }
 
     &__Description {
         padding: .2em;
-        font-size: .8em;
+        font-size: .7em;
         display: flex;
+        flex-grow: 0;
         flex-direction: column;
+        color: #222;
+
+        &__Element--index {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
     }
 
 }

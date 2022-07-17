@@ -40,10 +40,10 @@ export const Cargo = (props: CargoProps) => {
                 style={{width: width, height: height, top: props.coords.y, left: props.coords.x}}
                 onClick={(event) => { props.handleClick(event, props.index) }}>
     
-                <div className="Cargo__Description">
-                    <p className={"Cargo__Description__Element"}style={{ display: props.preview ? 'hidden' : 'inline-block'}}>{Math.round(props.coords.x)}, {Math.round(props.coords.y)}</p>
-                    <p className={"Cargo__Description__Element"}style={{ display: props.preview ? 'hidden' : 'inline-block'}}>{props.type} ({props.index})</p>
-                    <p className={"Cargo__Description__Element"}style={{ display: props.preview ? 'hidden' : 'inline-block'}}>{props.hazardous ? 'x' : ''}</p>
+                <div className="Cargo__Description" style={{ display: props.preview ? 'hidden' : 'flex'}}>
+                    <p className={"Cargo__Description__Element Cargo__Description__Element--index"}>{props.index}</p>
+                    <p className={"Cargo__Description__Element Cargo__Description__Element--type"}>{props.type}</p>
+                    <p className={"Cargo__Description__Element"}>{props.hazardous ? 'Hazardous' : ''}</p>
                 </div>
             </div> 
         )

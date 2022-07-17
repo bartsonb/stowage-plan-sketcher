@@ -1,4 +1,5 @@
 import React from "react";
+import { Box, BoxSizing } from "../Box/Box";
 import Cargo from "../Cargo/Cargo";
 import './Ship.scss';
 
@@ -155,42 +156,35 @@ export class Ship extends React.Component<ShipProps, any> {
             )
         })
 
-        return (
-            <div className="ShipWindow">    
-                <div className="ShipWindow__Handle"></div>
+        return (  
+            <Box 
+                cssClass="Ship" 
+                title={`Deck view [${selectedDeck + 1}]`}
+                sizing={{ 
+                    width: decks[selectedDeck].width + 32,
+                    height: decks[selectedDeck].height + 55,
+                    x: 300, 
+                    y: 250
+                }}>
                 <div 
-                    className="Ship"
+                    className="Ship__Deck"
+                    style={{
+                        width: decks[selectedDeck].width,
+                        height: decks[selectedDeck].height
+                    }}
                     onMouseMove={this.handleMouseMove}
-                    style={{ 
-                        width: decks[selectedDeck].width + shipPadding, 
-                        height: decks[selectedDeck].height + shipPadding 
-                    }}>
-                    
-                    <div className="Ship__Tabs">
-                        {deckChangingButtons}
-                    </div>
+                    ref={this.deckRef}
+                    onClick={(event) => {this.props.handleClick(event, null, this.state.mousePos)}}
+                    onMouseEnter={this.handleMouseEnter}
+                    onMouseLeave={this.handleMouseLeave}
+                    onMouseDown={event => {this.handleMouseDown(event)}}
+                    onMouseUp={this.handleMouseUp}>   
 
-                    <div 
-                        className="Ship__Deck"
-                        style={{ 
-                            width: decks[selectedDeck].width, 
-                            height: decks[selectedDeck].height, 
-                            left: shipPadding / 2 
-                        }}
-                        ref={this.deckRef}
-                        onClick={(event) => {this.props.handleClick(event, null, this.state.mousePos)}}
-                        onMouseEnter={this.handleMouseEnter}
-                        onMouseLeave={this.handleMouseLeave}
-                        onMouseDown={event => {this.handleMouseDown(event)}}
-                        onMouseUp={this.handleMouseUp}>   
-
-                        {this.getSelectionBox()}
-                        {this.getPreviewCargo()}
-                        {this.props.children}
-                    </div>
-
+                    {this.getSelectionBox()}
+                    {this.getPreviewCargo()}
+                    {this.props.children}
                 </div>
-            </div>
+            </Box>
         )
     }
 }

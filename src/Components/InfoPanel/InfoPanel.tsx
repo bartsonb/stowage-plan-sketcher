@@ -31,8 +31,8 @@ export const InfoPanel = (props: InfoPanelProps) => {
     if (props.cargo) { cargoList = cargo.map(el => `${el.cargoType}, `) }
 
     return (
-        <Box cssClass="InfoPanel">
-            <p onClick={handleClick}>collapse</p>
+        <Box cssClass="InfoPanel" title="Info Panel">
+            <p onClick={handleClick}>v</p>
             <p style={{ display: `${isCollapsed ? "none" : "inline-block"}` }}>
                 {cargoList}
             </p>

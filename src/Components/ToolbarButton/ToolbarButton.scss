@@ -1,5 +1,23 @@
 .ToolbarButton {
+    display: flex;
+    padding: .5em;
+    transition: all 0.1s ease-in-out;
+    border-radius: 5px;
+    border: solid 1px transparent;
+
+    img {
+        margin-right: 1em;
+    }
+
     &--selected {
         color: #3f9aff;
+        background: #2e2e2e;
+        padding: .5em;
+        border-radius: 5px;
     }
+}
+
+.ToolbarButton:hover {
+    border: solid 1px #333;
+    cursor: pointer;
 }

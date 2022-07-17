@@ -1,14 +1,23 @@
 .Box {
     border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: #212121;
     backdrop-filter: blur(2px);
     display: flex;
     flex-direction: column;
-    z-index: 9999;;
+    z-index: 9999;
+    position: absolute;
+    min-width: 13em;
+
 
     &__Handle {
+        cursor: grab;
+        color: #b1b1b1;
+        text-align: center;
         background: #333;
-        height: 1em;
+        font-size: .8em;
+        padding: .3em 0;
+        text-transform: uppercase;
+        font-weight: bold;
         border-radius: 3px 3px 0 0;
     }
 

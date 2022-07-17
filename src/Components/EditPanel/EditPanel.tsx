@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { cargo } from "../../Pages/Sketcher/Sketcher";
+import Box from "../Box/Box";
 import "./EditPanel.scss";
 
 export interface EditPanelProps {
@@ -13,44 +14,58 @@ export const EditPanel = (props: EditPanelProps) => {
     const { cargo } = props;
 
     let selectedCargoList = [];
-    let open = false;
-    
+    let isCargoSelected = false;
+
     if (cargo.length > 0) {
         // Get all cargos that are selected.
         selectedCargoList = cargo
-            .filter(el => el.selected)
-            .map((el, index) => <p key={index}>{el.cargoType} ({el.cargoIndex})</p>);
+            .filter((el) => el.selected)
+            .map((el, index) => (
+                <div className="EditPanel__Cargo__Element" key={index}>
+                    <p>{el.cargoType} ({el.cargoIndex})</p>
+                    <input type="checkbox" checked={el.hazardous} />
+                </div>
+            ));
 
-        // Display EditPanel if any cargo is selected.
-        open = (selectedCargoList.length > 0) ? true : false;
+        isCargoSelected = selectedCargoList.length > 0;
     }
 
     return (
-        <div
-            className="EditPanel"
-            style={{ display: `${open ? "flex" : "none"}` }}
-        >
-            <div className="EditPanel__Cargo">
-                {selectedCargoList}
+        <Box cssClass="EditPanel" title="Editing">
+            <p className="EditPanel__Category">
+                Selected Cargo ({selectedCargoList.length})
+            </p>
+            <div className="EditPanel__Cargo">{selectedCargoList}</div>
+
+            <p className="EditPanel__Category">Alignment</p>
+            <div className="EditPanel__Buttons EditPanel__Buttons__Alignment">
+                <button
+                    className="EditPanel__Buttons__Alignment EditPanel__Buttons__Alignment--left"
+                    disabled={!isCargoSelected}
+                    onClick={() => {
+                        props.alignCargo("vertical");
+                    }}
+                >
+                    Left
+                </button>
             </div>
 
-            <div className="EditPanel__Buttons">
+            <p className="EditPanel__Category">Organization</p>
+            <div className="EditPanel__Buttons EditPanel__Buttons__Organization">
                 <button 
-                    onClick={() => {props.alignCargo('vertical')}}>Align Vertically
+                    className="EditPanel__Buttons__Organization EditPanel__Buttons__Organization--edit"
+                    disabled={selectedCargoList.length !== 1}>
+                    Edit
                 </button>
-                <button 
-                    className="EditPanel__Buttons EditPanel__Buttons--edit">Edit
-                </button>
-                <button 
-                    onClick={props.deselectCargo} 
-                    className="EditPanel__Buttons EditPanel__Buttons--deselect">Close
-                </button>
-                <button 
-                    onClick={props.deleteCargo} 
-                    className="EditPanel__Buttons EditPanel__Buttons--delete">Delete
+                <button
+                    onClick={props.deleteCargo}
+                    className="EditPanel__Buttons__Organization EditPanel__Buttons__Organization--delete"
+                    disabled={!isCargoSelected}
+                >
+                    Delete
                 </button>
             </div>
-        </div>
+        </Box>
     );
 };
 

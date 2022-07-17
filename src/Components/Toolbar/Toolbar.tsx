@@ -1,44 +1,43 @@
 import ToolbarButton from "../ToolbarButton/ToolbarButton";
 import Box from "../Box/Box";
-
-import './Toolbar.scss';
+import "./Toolbar.scss";
 
 export interface ToolbarProps {
-  selectedTool: string;
-  updateTool: any;
+    selectedTool: string;
+    updateTool: any;
 }
 
 export const Toolbar = (props: ToolbarProps) => {
-  const { selectedTool, updateTool } = props;
+    const { selectedTool, updateTool } = props;
 
-  let handleOnClick = (e) => {
-    let { target } = e;
+    let handleOnClick = (toolName: string) => updateTool(toolName);
+
+    return (
+        <Box cssClass="Toolbar" title="Tools">
+            <p className="Toolbar__Category">Organization</p>
+            <ToolbarButton
+                onClick={() => {handleOnClick('select')}}
+                name={'Select'}
+                imgSrc={'http://via.placeholder.com/10x10'}
+                selected={selectedTool == 'select' ? true : false}
+            />
     
-    updateTool(target.innerHTML);
-  }
+            <p className="Toolbar__Category">Add</p>
+            <ToolbarButton
+                onClick={() => {handleOnClick('container')}}
+                name={'Container'}
+                imgSrc={'http://via.placeholder.com/10x10'}
+                selected={selectedTool == 'container' ? true : false}
+            />
 
-  const buttons = [
-    { name: 'select', imgSrc: '' }, 
-    { name: 'container', imgSrc: '' }, 
-    { name: 'box', imgSrc: '' }
-  ];
-
-  const buttonElements = buttons.map((el, index) => {
-    return <ToolbarButton 
-      onClick={handleOnClick}
-      key={index}
-      name={el.name} 
-      imgSrc={el.imgSrc} 
-      selected={selectedTool == el.name ? true : false} />
-  })
-
-
-
-  return (
-    <Box cssClass="Toolbar">
-      {buttonElements}
-    </Box>
-  );
-}
+            <ToolbarButton
+                onClick={() => {handleOnClick('box')}}
+                name={'Box'}
+                imgSrc={'http://via.placeholder.com/10x10'}
+                selected={selectedTool == 'box' ? true : false}
+            />
+        </Box>
+    );
+};
 
 export default Toolbar;
