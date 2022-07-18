@@ -248,6 +248,21 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         });
     }
 
+    // Edit cargo with given index
+    private editCargo = (cargoIndex: number, key: string, value: any): void => {
+        this.setState(prevState => {
+            const newCargoState = prevState.ship.cargo.map(el => {
+                if (el.cargoIndex === cargoIndex) { el[key] = value; }
+
+                return el;
+            })
+
+            return {
+                ship: { ...prevState.ship, cargo: [ ...newCargoState ] }
+            }
+        })
+    }
+
     private createShip = (shipName: string, numberOfDecks: number): void => {
         const defaultDeck = { width: 400, height: 500 };
         let decks = [];
@@ -320,7 +335,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                     />
 
                     <EditPanel 
-                        deselectCargo={this.deselectCargo}
+                        editCargo={this.editCargo}
                         deleteCargo={this.deleteCargo}
                         alignCargo={this.alignCargo}
                         cargo={this.state.ship.cargo} />

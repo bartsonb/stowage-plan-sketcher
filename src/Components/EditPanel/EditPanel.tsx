@@ -7,11 +7,15 @@ export interface EditPanelProps {
     cargo: cargo[];
     alignCargo: any;
     deleteCargo: any;
-    deselectCargo: any;
+    editCargo: any;
 }
 
 export const EditPanel = (props: EditPanelProps) => {
     const { cargo } = props;
+
+    const toggleHazardous = ({ target }: any, cargoIndex: number): void => {
+        props.editCargo(cargoIndex, 'hazardous', target.checked);
+    }
 
     let selectedCargoList = [];
     let isCargoSelected = false;
@@ -23,7 +27,10 @@ export const EditPanel = (props: EditPanelProps) => {
             .map((el, index) => (
                 <div className="EditPanel__Cargo__Element" key={index}>
                     <p>{el.cargoType} ({el.cargoIndex})</p>
-                    <input type="checkbox" checked={el.hazardous} />
+                    <input 
+                        onChange={event => {toggleHazardous(event, el.cargoIndex)}}
+                        type="checkbox" 
+                        checked={el.hazardous} />
                 </div>
             ));
 

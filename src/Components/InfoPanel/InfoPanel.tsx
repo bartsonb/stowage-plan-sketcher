@@ -38,7 +38,11 @@ export const InfoPanel = (props: InfoPanelProps) => {
     let cargoList = [];
     if (props.cargo) { 
         cargoList = cargo.map(el => {
-            return <p className="InfoPanel__Cargo__Element">{`${el.cargoIndex}.${abbreviations[el.cargoType]}`}</p>
+            return (
+                <p className="InfoPanel__Cargo__Element">
+                    {`${el.cargoIndex}.${abbreviations[el.cargoType]}${el.hazardous ? '(H)' : ''}`}
+                </p>
+            )
         }) 
     }
 

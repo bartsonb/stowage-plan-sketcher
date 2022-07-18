@@ -42,8 +42,9 @@ export const Cargo = (props: CargoProps) => {
     
                 <div className="Cargo__Description" style={{ display: props.preview ? 'hidden' : 'flex'}}>
                     <p className={"Cargo__Description__Element Cargo__Description__Element--index"}>{props.index}</p>
-                    <p className={"Cargo__Description__Element Cargo__Description__Element--type"}>{props.type}</p>
-                    <p className={"Cargo__Description__Element"}>{props.hazardous ? 'Hazardous' : ''}</p>
+                    <p className={"Cargo__Description__Element Cargo__Description__Element--type"}>
+                        {props.type} {props.hazardous ? '(H)' : ''}
+                    </p>
                 </div>
             </div> 
         )
