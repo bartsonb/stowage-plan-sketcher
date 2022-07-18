@@ -7,12 +7,14 @@
     border: solid 1px transparent;
     align-items: center;
 
-    img {
-        width: 1em;
-        height: 1em;
-    }
-
     &__Image {
+        display: flex;
+        align-items: center;
+
+        img {
+            width: 1.2em;
+            height: 1.2em;
+        }
     }
 
 

@@ -2,6 +2,10 @@ import ToolbarButton from "../ToolbarButton/ToolbarButton";
 import Box from "../Box/Box";
 import "./Toolbar.scss";
 
+import selectImage from '../../Assets/Icons/tool-select.svg';
+import containerImage from '../../Assets/Icons/tool-container.svg';
+import boxImage from '../../Assets/Icons/tool-box.svg';
+
 export interface ToolbarProps {
     selectedTool: string;
     updateTool: any;
@@ -19,7 +23,7 @@ export const Toolbar = (props: ToolbarProps) => {
                 shortcutButton="v"
                 onClick={() => {handleOnClick('select')}}
                 name={'Select'}
-                imgSrc={'http://via.placeholder.com/10x10'}
+                imgSrc={selectImage}
                 selected={selectedTool == 'select' ? true : false}
             />
     
@@ -28,7 +32,7 @@ export const Toolbar = (props: ToolbarProps) => {
                 shortcutButton="c"
                 onClick={() => {handleOnClick('container')}}
                 name={'Container'}
-                imgSrc={'http://via.placeholder.com/10x10'}
+                imgSrc={containerImage}
                 selected={selectedTool == 'container' ? true : false}
             />
 
@@ -36,7 +40,7 @@ export const Toolbar = (props: ToolbarProps) => {
                 shortcutButton="b"
                 onClick={() => {handleOnClick('box')}}
                 name={'Box'}
-                imgSrc={'http://via.placeholder.com/10x10'}
+                imgSrc={boxImage}
                 selected={selectedTool == 'box' ? true : false}
             />
         </Box>
