@@ -14,7 +14,6 @@ export interface ShipProps {
     selectedDeck: number;    
     handleClick: any;
     moveCargo: any;
-    changeDeck: any;
     children?: any;
     getSelectionBoxCoords: any;
 }
@@ -142,15 +141,14 @@ export class Ship extends React.Component<ShipProps, any> {
     }
 
     render() {
-        const { name, selectedDeck, decks, changeDeck } = this.props;
+        const { name, selectedDeck, decks } = this.props;
         const { shipPadding } = this.state;
 
         const deckChangingButtons = decks.map((el, index) => {
             return (
                 <button 
                     className={`Ship__Tabs__Button Ship__Tabs__Button${index === selectedDeck ? '--active': ''}`}
-                    key={index} 
-                    onClick={() => {changeDeck(index)}}>
+                    key={index}>
                         {index + 1}
                 </button>
             )

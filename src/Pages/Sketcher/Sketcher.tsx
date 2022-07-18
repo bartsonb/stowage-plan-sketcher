@@ -261,7 +261,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         })
     }
 
-    private changeDeck = (deckIndex: number): void => {
+    private toggleDecks = (deckIndex: number): void => {
         this.setState({
             selectedDeck: deckIndex
         })
@@ -296,7 +296,6 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                     decks={this.state.ship.decks}
                     handleClick={this.handleClick}
                     moveCargo={this.moveCargo}
-                    changeDeck={this.changeDeck}
                     getSelectionBoxCoords={this.getSelectionBoxCoords}>
                     
                     {cargoElements}
@@ -316,6 +315,8 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                     <InfoPanel
                         decks={this.state.ship.decks}
                         cargo={this.state.ship.cargo}
+                        toggleDecks={this.toggleDecks}
+                        selectedDeck={this.state.selectedDeck}
                     />
 
                     <EditPanel 
