@@ -1,12 +1,43 @@
 .ToolbarButton {
     display: flex;
     padding: .5em;
+    gap: .7em;
     transition: all 0.1s ease-in-out;
     border-radius: 5px;
     border: solid 1px transparent;
+    align-items: center;
 
     img {
-        margin-right: 1em;
+        width: 1em;
+        height: 1em;
+    }
+
+    &__Image {
+    }
+
+
+    &__Text {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        gap: .5em;
+
+        &__Shortcut {
+            display: flex;
+            font-size: .8em;
+            border-radius: 4px;
+            justify-content: center;
+            align-items: center;
+            width: 1.4em;
+            height: 1.4em;
+            color: rgb(106, 106, 106);
+            border: solid 1px rgb(106, 106, 106);
+        }
+
+        &__Name {
+
+        }
     }
 
     &--selected {

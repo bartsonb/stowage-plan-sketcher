@@ -16,6 +16,7 @@ export const Toolbar = (props: ToolbarProps) => {
         <Box cssClass="Toolbar" title="Tools">
             <p className="Toolbar__Category">Organization</p>
             <ToolbarButton
+                shortcutButton="v"
                 onClick={() => {handleOnClick('select')}}
                 name={'Select'}
                 imgSrc={'http://via.placeholder.com/10x10'}
@@ -24,6 +25,7 @@ export const Toolbar = (props: ToolbarProps) => {
     
             <p className="Toolbar__Category">Add</p>
             <ToolbarButton
+                shortcutButton="c"
                 onClick={() => {handleOnClick('container')}}
                 name={'Container'}
                 imgSrc={'http://via.placeholder.com/10x10'}
@@ -31,6 +33,7 @@ export const Toolbar = (props: ToolbarProps) => {
             />
 
             <ToolbarButton
+                shortcutButton="b"
                 onClick={() => {handleOnClick('box')}}
                 name={'Box'}
                 imgSrc={'http://via.placeholder.com/10x10'}
