@@ -11,7 +11,7 @@ export const MenuBar = (props: MenuBarProps) => {
     return (
         <div className="MenuBar">
             <div className="MenuBar__Button MenuBar__Button--create">Create new sketch</div>
-            <div className="MenuBar__Button MenuBar__Button--save">Save project<span>(Saved last {timestampLastSave}s ago)</span></div>
+            <div className="MenuBar__Button MenuBar__Button--save">Save sketch<span>(Saved last {timestampLastSave}s ago)</span></div>
         </div>
     );
 };

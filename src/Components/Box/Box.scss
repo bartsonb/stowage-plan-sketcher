@@ -15,10 +15,22 @@
         text-align: center;
         background: #333;
         font-size: .8em;
-        padding: .3em 0;
+        padding: .3em;
         text-transform: uppercase;
         font-weight: bold;
         border-radius: 3px 3px 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        img {
+            width: 1.2em;
+            height: 1.2em;
+        }
+
+        &__Action {
+            cursor: pointer;
+        }
     }
 
     &__Content {

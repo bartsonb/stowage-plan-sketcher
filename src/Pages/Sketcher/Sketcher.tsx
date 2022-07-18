@@ -62,11 +62,13 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         this.handleResize();
 
         window.addEventListener("resize", this.handleResize);
+        window.addEventListener("keypress", this.handleKeyPress);
         // window.onbeforeunload = () => 'Leave page? You still have unsaved progress.';
     }
 
     componentWillUnmount(): void {
         window.removeEventListener("resize", this.handleResize);
+        window.addEventListener("keypress", this.handleKeyPress);
     }
 
     // Updating the selected tool in state
@@ -78,6 +80,17 @@ export class Sketcher extends React.Component<SketcherProps, any> {
 
         localStorage.setItem("tool", tool);
     };
+
+    // Handeling key presses to check if a shortcut button for a tool was clicked.
+    private handleKeyPress = ({ key }: any): void => {
+        const keyToTool = {
+            'v': 'select', 
+            'b': 'box', 
+            'c': 'container'
+        }
+
+        this.updateTool(keyToTool[key]);
+    }
 
     // Handeling the clicks on the ship and cargo elements
     // Event is needed to stop the eventPropagation

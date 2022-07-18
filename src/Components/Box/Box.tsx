@@ -30,7 +30,9 @@ export const Box = (props: BoxProps) => {
     return (
         <div className={'Box ' + cssClass} style={styles}>
             <div className="Box__Handle">
-                {title}
+                <img className="Box__Handle__Icon" src="" alt="" />
+                <p className="Box__Handle__Title">{title}</p>
+                <img className="Box__Handle__Action" src="" alt="" />
             </div>
             <div className={`Box__Content`}>{children}</div>
         </div>

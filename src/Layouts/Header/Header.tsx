@@ -12,7 +12,8 @@ export class Header extends React.Component<HeaderProps, any> {
         return (
             <header className="Header">
                 <div className="Header__Logo">
-                    Logo
+                    Stowage Plan Sketcher
+                    <span>v1.0</span>
                 </div>
                 <div className="Header__Menu">
                     <div className="Header__Menu__Item Header__Menu__Item--pricing">

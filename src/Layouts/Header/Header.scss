@@ -8,8 +8,14 @@
 
     &__Logo {
         display: flex;
-        gap: 1em;
+        gap: .5em;
         padding: 1em 0;
+        font-weight: bold;
+
+        span {
+            font-weight: lighter;
+            color: rgba(204, 204, 204, 0.757);
+        }
     }
 
     &__Menu {
