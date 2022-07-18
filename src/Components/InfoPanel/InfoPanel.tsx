@@ -6,7 +6,6 @@ export interface InfoPanelProps {
     decks?: any;
     cargo?: any;
     toggleDecks: any;
-    selectedDeck: number;
 }
 
 export const InfoPanel = (props: InfoPanelProps) => {
@@ -37,22 +36,25 @@ export const InfoPanel = (props: InfoPanelProps) => {
     // Return the list of cargo
     let cargoList = [];
     if (props.cargo) { 
-        cargoList = cargo.map(el => {
+        cargoList = cargo.map((el, index) => {
             return (
-                <p className="InfoPanel__Cargo__Element">
-                    {`${el.cargoIndex}.${abbreviations[el.cargoType]}${el.hazardous ? '(H)' : ''}`}
+                <p 
+                    key={index}
+                    className="InfoPanel__Cargo__Element">
+                        {`${el.cargoIndex}.${abbreviations[el.cargoType]}${el.hazardous ? '(H)' : ''}`}
                 </p>
             )
         }) 
     }
 
-    // Return the buttons that are used to switch the deck view
+    // Return the buttons that are used to switch the deck view,
+    // hightlighting the currently visible decks.
     let deckSwitchButtons = props.decks.map((el, index) => {
         return (
             <button 
                 key={index}
-                onClick={() => {props.toggleDecks(index)}}
-                className={props.selectedDeck === index ? 'InfoPanel__Buttons__Button--active' : ''}>
+                onClick={() => {props.toggleDecks(index, el.visible)}}
+                className={el.visible ? 'InfoPanel__Buttons__Button--active' : ''}>
                     Deck {index + 1}
             </button>
         )

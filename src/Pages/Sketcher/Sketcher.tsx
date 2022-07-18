@@ -35,14 +35,16 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         this.state = {
             ship: {
                 name: 'Arminius',
-                decks: [{ width: 400, height: 500 }],
+                decks: [
+                    { width: 400, height: 500, visible: true },
+                    { width: 350, height: 400, visible: false }
+                ],
                 cargo: []
             },
             tool: "select",
-            selectedDeck: 0,
             canvasOptions: { gridSize: 20, gridColor: '#222' },
             windowDimensions: { width: null, height: null },    
-            timestampLastSave: 1888299399,
+            timestampLastSave: null,
             changesMade: true
         }
 
@@ -80,7 +82,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
     // Handeling the clicks on the ship and cargo elements
     // Event is needed to stop the eventPropagation
     // cargoIndex is used to indentify the click cargo element
-    private handleClick = (event: any, cargoIndex: number | null, coords?: object): void => {
+    private handleClick = (event: any, cargoIndex: number | null, coords?: object, deckIndex?: number): void => {
         const { tool } = this.state;
         event.stopPropagation();
 
@@ -114,7 +116,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                         cargo: [...newCargoState, { 
                             cargoType: tool, 
                             cargoIndex: this.state.ship.cargo.length,
-                            deckIndex: this.state.selectedDeck, 
+                            deckIndex: deckIndex, 
                             coords, 
                             selected: false,
                             hazardous: false
@@ -263,6 +265,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         })
     }
 
+    // Create a new ship object, after starting a new sketch.
     private createShip = (shipName: string, numberOfDecks: number): void => {
         const defaultDeck = { width: 400, height: 500 };
         let decks = [];
@@ -276,46 +279,66 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         })
     }
 
-    private toggleDecks = (deckIndex: number): void => {
-        this.setState({
-            selectedDeck: deckIndex
+    // Toggle visible decks.
+    private toggleDecks = (deckIndex: number, visible: boolean): void => {
+        this.setState(prevState => {
+            const newDeckState = prevState.ship.decks.map((el, index) => {
+                if (index === deckIndex) {
+                    el.visible = !visible;
+                    return el;
+                }
+
+                return el;
+            })
+
+            return {
+                ship: { ...prevState.ship, decks: [ ...newDeckState ] }
+            }
         })
     }
 
     public render() {
-        // Get all cargo elements for the currently selected deck
-        const cargoElements = this.state.ship.cargo
-            .filter(el => this.state.selectedDeck === el.deckIndex)
-            .map(el => {
-            return (
-                <Cargo 
-                    key={el.cargoIndex} 
-                    handleClick={this.handleClick}
-                    index={el.cargoIndex} 
-                    selected={el.selected} 
-                    hazardous={el.hazardous}
-                    preview={false}
-                    coords={el.coords} 
-                    type={el.cargoType} />
-            );
-        });
-
-        let shipElement;
+        // Return all visible Ship elements.
+        let shipElements;
 
         if (this.state.ship.name !== null) {
-            shipElement = (
-                <Ship 
-                    tool={this.state.tool}
-                    name={this.state.ship.name}
-                    selectedDeck={this.state.selectedDeck}
-                    decks={this.state.ship.decks}
-                    handleClick={this.handleClick}
-                    moveCargo={this.moveCargo}
-                    getSelectionBoxCoords={this.getSelectionBoxCoords}>
-                    
-                    {cargoElements}
-                </Ship>
-            )
+            const { ship, tool } = this.state;
+
+            shipElements = ship.decks.map((deck, deckIndex) => {
+                // Get all cargo elements for the currently selected deck
+                const cargoElements = this.state.ship.cargo
+                    .filter(cargo => cargo.deckIndex === deckIndex)
+                    .map(cargo => {
+                        return (
+                            <Cargo 
+                                key={cargo.cargoIndex} 
+                                handleClick={this.handleClick}
+                                index={cargo.cargoIndex} 
+                                selected={cargo.selected} 
+                                hazardous={cargo.hazardous}
+                                preview={false}
+                                coords={cargo.coords} 
+                                type={cargo.cargoType} />
+                        );
+                    });
+
+                return (
+                    <Ship 
+                        key={deckIndex}
+                        deckIndex={deckIndex}
+                        width={deck.width}
+                        height={deck.height}
+                        visible={ship.decks[deckIndex].visible}
+                        tool={tool}
+                        name={ship.name}
+                        handleClick={this.handleClick}
+                        moveCargo={this.moveCargo}
+                        getSelectionBoxCoords={this.getSelectionBoxCoords}>
+                        
+                        {cargoElements}
+                    </Ship>
+                )
+            })
         }
 
         return (
@@ -331,7 +354,6 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                         decks={this.state.ship.decks}
                         cargo={this.state.ship.cargo}
                         toggleDecks={this.toggleDecks}
-                        selectedDeck={this.state.selectedDeck}
                     />
 
                     <EditPanel 
@@ -346,7 +368,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                             show={this.state.ship.name === null} />
                     </Defuser>
 
-                    {shipElement}
+                    {shipElements}
 
                     <canvas ref={this.canvasRef} />
                 </div>
