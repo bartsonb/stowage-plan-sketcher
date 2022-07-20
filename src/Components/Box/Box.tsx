@@ -2,6 +2,8 @@ import React from "react";
 import Draggable from "react-draggable";
 import "./Box.scss";
 
+import dragIcon from '../../Assets/Icons/drag.svg';
+
 export type BoxSizing = {
     x: number;
     y: number;
@@ -41,7 +43,7 @@ export const Box = (props: BoxProps) => {
                 style={styles}
                 ref={boxRef}>
                 <div className="Box__Handle">
-                    <img className="Box__Handle__Icon" src="" alt="" />
+                    <img className="Box__Handle__Icon" src={dragIcon} alt="" />
                     <p className="Box__Handle__Title">{title}</p>
                     <img className="Box__Handle__Action" src="" alt="" />
                 </div>
