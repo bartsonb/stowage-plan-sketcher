@@ -114,7 +114,7 @@ export class Ship extends React.Component<ShipProps, any> {
         this.setState({ displayPreviewCargo: false, isDragging: false }) 
     };
 
-    // Substract 2px from selection box position, so the selection box div doesn't get in the way of
+    // Adding 4px to selection box position, so the selection box div doesn't get in the way of
     // other click events.
     // Also making sure that the drag only registers on the background and not on a cargo element.
     private handleMouseDown = (event: any): void => {
@@ -123,7 +123,7 @@ export class Ship extends React.Component<ShipProps, any> {
         if (this.props.tool === 'select' && className.includes('Deck')) {
             this.setState({ 
                 isDragging: true,
-                selectionBox: { pos: { x: this.state.mousePos.x - 2, y: this.state.mousePos.y - 2 } }
+                selectionBox: { pos: { x: this.state.mousePos.x + 4, y: this.state.mousePos.y + 4 } }
             }) 
         }
 
