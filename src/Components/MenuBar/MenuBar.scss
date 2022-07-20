@@ -13,9 +13,18 @@
         align-items: center;
         margin-right: .3em;
         padding: .5em;
+        gap: .5em;
         cursor: pointer;
 
+        img {
+            width: 1.1em;
+        }
+
         &--create {
+
+        }
+
+        &--export {
 
         }
 
