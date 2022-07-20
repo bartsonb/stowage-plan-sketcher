@@ -94,7 +94,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
 
     // Handeling the clicks on the ship and cargo elements
     // Event is needed to stop the eventPropagation
-    // cargoIndex is used to indentify the click cargo element
+    // cargoIndex is used to indentify the clicked cargo element
     private handleClick = (event: any, cargoIndex: number | null, coords?: object, deckIndex?: number): void => {
         const { tool } = this.state;
         event.stopPropagation();
