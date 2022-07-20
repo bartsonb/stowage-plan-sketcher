@@ -61,6 +61,22 @@ export const EditPanel = (props: EditPanelProps) => {
                     }}
                 >
                 </button>
+                <button
+                    className="EditPanel__Buttons__Alignment EditPanel__Buttons__Alignment--right"
+                    disabled={!isCargoSelected}
+                    onClick={() => {
+                        props.alignCargo("right");
+                    }}
+                >
+                </button>
+                <button
+                    className="EditPanel__Buttons__Alignment EditPanel__Buttons__Alignment--bottom"
+                    disabled={!isCargoSelected}
+                    onClick={() => {
+                        props.alignCargo("bottom");
+                    }}
+                >
+                </button>
             </div>
 
             <p className="EditPanel__Category">Organization</p>

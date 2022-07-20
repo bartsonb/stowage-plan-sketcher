@@ -3,7 +3,7 @@ import Box from "../Box/Box";
 import "./Toolbar.scss";
 
 import selectImage from '../../Assets/Icons/tool-select-2.svg';
-import containerImage from '../../Assets/Icons/tool-container.svg';
+import containerImage from '../../Assets/Icons/tool-container-2.svg';
 import boxImage from '../../Assets/Icons/tool-box-2.svg';
 
 export interface ToolbarProps {

@@ -144,23 +144,31 @@ export class Sketcher extends React.Component<SketcherProps, any> {
     };
 
     // Sorting the selected cargo by their x or y coordiantes.
-    // The first element will have the smallest point.
+    // After sorting fhe first element will have the smallest coordiante.
     public alignCargo = (direction: string): void => {
-        const axisToAlign = (direction === 'top') ? 'y' : 'x';
-        let smallestPoint = null;
+        let axisToAlign = (direction === 'top' || direction === 'bottom')
+            ? 'y'
+            : 'x';
+        let value = null;
 
-        // Get smallest coordinate from selected cargo
+        // Get smallest/highest coordinate from selected cargo
         this.state.ship.cargo.filter(el => el.selected).forEach(el => {
-            if (smallestPoint === null) {
-                smallestPoint = el.coords[axisToAlign];
+            if (value === null) {
+                value = el.coords[axisToAlign];
             } else {
-                smallestPoint = (smallestPoint > el.coords[axisToAlign]) ? el.coords[axisToAlign] : smallestPoint;
+                // top and left alignment need the SMALLEST point
+                // bottom and right alignment need the HIGHTEST point 
+                if (direction === 'top' || direction === 'left') {
+                    value = (value > el.coords[axisToAlign]) ? el.coords[axisToAlign] : value;
+                } else {
+                    value = (value < el.coords[axisToAlign]) ? el.coords[axisToAlign] : value;
+                }
             }
         });
 
         // Set all selected cargos with the smallest coordiante
         this.state.ship.cargo.forEach(el => {
-            if (el.selected) { el.coords[axisToAlign] = smallestPoint; }
+            if (el.selected) { el.coords[axisToAlign] = value; }
         });
 
         this.setState({
