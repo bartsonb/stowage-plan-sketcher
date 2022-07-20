@@ -1,5 +1,6 @@
-import "./Box.scss";
+import React from "react";
 import Draggable from "react-draggable";
+import "./Box.scss";
 
 export type BoxSizing = {
     x: number;
@@ -17,10 +18,11 @@ export interface BoxProps {
 
 export const Box = (props: BoxProps) => {
     const { title, children, cssClass, sizing } = props;
-    let styles = null;
+    const boxRef = React.useRef(null);
 
     // Using Object: Sizing to adjust the box width and height
     // and place it with absolute positioning.
+    let styles = null;
     if (sizing) {
         styles = {
             width: sizing.width,
@@ -30,17 +32,14 @@ export const Box = (props: BoxProps) => {
         };
     }
 
-    const handleDragStop = (event: any): void => {
-        console.log(event);
-    }
-
     return (
-        <Draggable 
-            allowAnyClick={true}
-            axis="both"
+        <Draggable
             handle=".Box__Handle"
-            onStop={handleDragStop}>
-            <div className={"Box " + cssClass} style={styles}>
+            nodeRef={boxRef}>
+            <div 
+                className={"Box " + cssClass} 
+                style={styles}
+                ref={boxRef}>
                 <div className="Box__Handle">
                     <img className="Box__Handle__Icon" src="" alt="" />
                     <p className="Box__Handle__Title">{title}</p>
