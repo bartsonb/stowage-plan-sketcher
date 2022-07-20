@@ -177,11 +177,16 @@ export class Sketcher extends React.Component<SketcherProps, any> {
     }
 
     // Get the coords of the selection box (top-left and bottom-right) and determine which cargo gets selected.
-    public getSelectionBoxCoords = ({ x: x1, y: y1 }, { x: x2, y: y2 }): void => {
+    // deckIndex needs to be given to identify the correct deck.
+    public getSelectionBoxCoords = ({ x: x1, y: y1 }, { x: x2, y: y2 }, deckIndex: number): void => {
         const newCargoState = this.state.ship.cargo.map(el => {
-            if (el.coords.x > x1 && el.coords.x < x2 && el.coords.y > y1 && el.coords.y < y2) {
-                el.selected = true;
-                return el;
+            if (el.deckIndex === deckIndex) {
+                if (el.coords.x > x1 && el.coords.x < x2 && el.coords.y > y1 && el.coords.y < y2) {
+                    el.selected = true;
+                    return el;
+                } else {
+                    return el;
+                }
             } else {
                 return el;
             }

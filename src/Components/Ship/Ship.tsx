@@ -25,7 +25,6 @@ export class Ship extends React.Component<ShipProps, any> {
         super(props);
         
         this.state = {
-            deckIndex: null,
             mousePosOld : { x: 0, y: 0},
             mousePos: { x: 0, y: 0 },
             selectionBox: { pos: { x: 0, y: 0 }, width: 0, height: 0 },
@@ -109,13 +108,13 @@ export class Ship extends React.Component<ShipProps, any> {
 
     private handleMouseLeave = () => { 
         if (this.props.tool === 'select') {
-            this.props.getSelectionBoxCoords(this.state.selectionBox.pos, this.state.mousePos);
+            this.props.getSelectionBoxCoords(this.state.selectionBox.pos, this.state.mousePos, this.props.deckIndex);
         }
 
         this.setState({ displayPreviewCargo: false, isDragging: false }) 
     };
 
-    // Added 4px to selection box position, so the selection box div doesn't get in the way of
+    // Substract 2px from selection box position, so the selection box div doesn't get in the way of
     // other click events.
     // Also making sure that the drag only registers on the background and not on a cargo element.
     private handleMouseDown = (event: any): void => {
@@ -124,7 +123,7 @@ export class Ship extends React.Component<ShipProps, any> {
         if (this.props.tool === 'select' && className.includes('Deck')) {
             this.setState({ 
                 isDragging: true,
-                selectionBox: { pos: { x: this.state.mousePos.x + 4, y: this.state.mousePos.y + 4 } }
+                selectionBox: { pos: { x: this.state.mousePos.x - 2, y: this.state.mousePos.y - 2 } }
             }) 
         }
 
@@ -139,7 +138,7 @@ export class Ship extends React.Component<ShipProps, any> {
     // Only end dragging status if dragging status was true.
     private handleMouseUp = (): void => { 
         if (this.props.tool === 'select' && this.state.isDragging) {
-            this.props.getSelectionBoxCoords(this.state.selectionBox.pos, this.state.mousePos);
+            this.props.getSelectionBoxCoords(this.state.selectionBox.pos, this.state.mousePos, this.props.deckIndex);
             this.setState({ isDragging: false });
         }
 
