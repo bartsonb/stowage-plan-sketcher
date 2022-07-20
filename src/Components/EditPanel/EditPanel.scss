@@ -50,17 +50,30 @@
             border-radius: 3px;
             padding: .4em;
             text-align: center;
+            min-height: 2.4em;
         }
 
         button:disabled {
-            background: #777;
+            background-color: #777;
             color: #414141;
         }
 
         &__Alignment {
             flex-grow: 1;
-            &--left {
 
+            button {
+                background-repeat: no-repeat;
+                background-color: #efefef;
+                background-position: center;
+                background-size: 20%;
+            }
+
+            &--top {
+                background-image: url(../../Assets/Icons/alignTop.svg);
+            }
+
+            &--left {
+                background-image: url(../../Assets/Icons/alignLeft.svg);
             }
         }
 

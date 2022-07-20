@@ -2,9 +2,9 @@ import ToolbarButton from "../ToolbarButton/ToolbarButton";
 import Box from "../Box/Box";
 import "./Toolbar.scss";
 
-import selectImage from '../../Assets/Icons/tool-select.svg';
+import selectImage from '../../Assets/Icons/tool-select-2.svg';
 import containerImage from '../../Assets/Icons/tool-container.svg';
-import boxImage from '../../Assets/Icons/tool-box.svg';
+import boxImage from '../../Assets/Icons/tool-box-2.svg';
 
 export interface ToolbarProps {
     selectedTool: string;

@@ -52,7 +52,6 @@ export const EditPanel = (props: EditPanelProps) => {
                         props.alignCargo("left");
                     }}
                 >
-                    Left
                 </button>
                 <button
                     className="EditPanel__Buttons__Alignment EditPanel__Buttons__Alignment--top"
@@ -61,7 +60,6 @@ export const EditPanel = (props: EditPanelProps) => {
                         props.alignCargo("top");
                     }}
                 >
-                    Top
                 </button>
             </div>
 
