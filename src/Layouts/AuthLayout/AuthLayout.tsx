@@ -1,5 +1,4 @@
-import React, { Children } from "react";
-import Header from "../Header/Header";
+import React from "react";
 import './AuthLayout.scss';
 
 export interface AuthLayoutProps {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, BoxSizing } from "../Box/Box";
+import Box from "../Box/Box";
 import Cargo from "../Cargo/Cargo";
 import './Ship.scss';
 

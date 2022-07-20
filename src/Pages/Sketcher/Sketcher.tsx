@@ -100,12 +100,15 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         event.stopPropagation();
 
         // Select the cargo with the given index
-        // (Deselecting by click was removed - caused problems during mouseUp event during moving of cargo)
+        // (Deselecting by clicking again was removed - caused problems during mouseUp 
+        // event during moving of cargo)
         if (tool === 'select' && cargoIndex !== null) {
-            this.state.ship.cargo[cargoIndex].selected = true;
+            this.setState(prevState => {
+                prevState.ship.cargo[cargoIndex].selected = true;
 
-            this.setState({
-                ship: { ...this.state.ship, cargo: [ ...this.state.ship.cargo ] }
+                return {
+                    ship: { ...this.state.ship, cargo: [ ...prevState.ship.cargo ] }
+                }
             });
         } 
 
@@ -156,7 +159,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         });
 
         // Set all selected cargos with the smallest coordiante
-        this.state.ship.cargo.map(el => {
+        this.state.ship.cargo.forEach(el => {
             if (el.selected) { el.coords[axisToAlign] = smallestPoint; }
         });
 

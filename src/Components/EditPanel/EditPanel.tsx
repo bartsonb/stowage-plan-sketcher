@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { cargo } from "../../Pages/Sketcher/Sketcher";
 import Box from "../Box/Box";
 import "./EditPanel.scss";

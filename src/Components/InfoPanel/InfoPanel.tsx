@@ -73,9 +73,9 @@ export const InfoPanel = (props: InfoPanelProps) => {
                     Cargo Information 
                 <span className={'InfoPanel__Category__Toggle ' + (isCollapsed ? 'InfoPanel__Category__Toggle--active' : '')}>&#9660;</span>
             </p>
-            <p className="InfoPanel__Cargo" style={{ display: `${isCollapsed ? "none" : "flex"}` }}>
+            <div className="InfoPanel__Cargo" style={{ display: `${isCollapsed ? "none" : "flex"}` }}>
                 {cargoList}
-            </p>
+            </div>
         </Box>
     );
 };

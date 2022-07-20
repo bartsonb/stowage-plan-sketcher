@@ -24,7 +24,7 @@ export const Toolbar = (props: ToolbarProps) => {
                 onClick={() => {handleOnClick('select')}}
                 name={'Select'}
                 imgSrc={selectImage}
-                selected={selectedTool == 'select' ? true : false}
+                selected={selectedTool === 'select' ? true : false}
             />
     
             <p className="Toolbar__Category">Add</p>
@@ -33,7 +33,7 @@ export const Toolbar = (props: ToolbarProps) => {
                 onClick={() => {handleOnClick('container')}}
                 name={'Container'}
                 imgSrc={containerImage}
-                selected={selectedTool == 'container' ? true : false}
+                selected={selectedTool === 'container' ? true : false}
             />
 
             <ToolbarButton
@@ -41,7 +41,7 @@ export const Toolbar = (props: ToolbarProps) => {
                 onClick={() => {handleOnClick('box')}}
                 name={'Box'}
                 imgSrc={boxImage}
-                selected={selectedTool == 'box' ? true : false}
+                selected={selectedTool === 'box' ? true : false}
             />
         </Box>
     );

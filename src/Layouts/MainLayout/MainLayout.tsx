@@ -1,6 +1,7 @@
-import React, { Children } from "react";
+import React from "react";
 import Header from "../Header/Header";
 import { User } from "../../App";
+import './MainLayout.scss';
 
 export interface MainLayoutProps {
     children: any;
@@ -12,10 +13,10 @@ export class MainLayout extends React.Component<MainLayoutProps, any> {
 
     render() {
         return (
-            <div>
+            <main className="Main">
                 <Header isAuthenticated={this.props.isAutheticated} user={this.props.user} />
                 {this.props.children}
-            </div>
+            </main >
         )
     }
 }
