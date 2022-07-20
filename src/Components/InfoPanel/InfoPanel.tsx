@@ -26,7 +26,7 @@ export const InfoPanel = (props: InfoPanelProps) => {
         );
 
         return () => {};
-    });
+    }, []);
 
     const abbreviations = {
         'container': 'cn',
