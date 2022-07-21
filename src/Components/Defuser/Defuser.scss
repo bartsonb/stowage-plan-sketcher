@@ -4,4 +4,7 @@
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(3px);
     z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
