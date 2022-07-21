@@ -1,16 +1,20 @@
+@import '../../Assets/Styles/variables';
+
 .Form {
     margin: auto;
-    max-width: 30vw;
     display: flex;
     flex-direction: column;
 
-    input {
+    input, 
+    button {
         padding: .5em 1em;
         border-radius: 2px;
         border: solid 1px transparent;
+        min-height: 3em;
     }
 
-    input:not(:last-child) {
-        margin-bottom: .5em;
+    input[type="submit"]:enabled {
+        background-color: $color__general;
+        color: #fff;
     }
 }
