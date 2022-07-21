@@ -86,7 +86,10 @@ export class Sketcher extends React.Component<SketcherProps, any> {
             'c': 'container'
         }
 
-        this.updateTool(keyToTool[key]);
+        // Only update tool if the pressed key exists in the keyToTool object
+        if (Object.keys(keyToTool).includes(key)) {
+            this.updateTool(keyToTool[key]);
+        }
     }
 
     // Handeling the clicks on the ship and cargo elements
