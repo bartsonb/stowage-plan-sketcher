@@ -7,8 +7,8 @@ import dragIcon from '../../Assets/Icons/drag.svg';
 export type BoxSizing = {
     x: number;
     y: number;
-    width: number;
-    height: number;
+    width: number | string;
+    height: number | string;
 };
 
 export interface BoxProps {
@@ -37,6 +37,9 @@ export const Box = (props: BoxProps) => {
     return (
         <Draggable
             handle=".Box__Handle"
+            defaultClassName="Draggable"
+            defaultClassNameDragged="Draggable--Dragged"
+            defaultClassNameDragging="Box--Dragging"
             nodeRef={boxRef}>
             <div 
                 className={"Box " + cssClass} 
