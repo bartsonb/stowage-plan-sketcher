@@ -34,11 +34,8 @@ export class Sketcher extends React.Component<SketcherProps, any> {
 
         this.state = {
             ship: {
-                name: 'Arminius',
-                decks: [
-                    { width: 400, height: 500, visible: true },
-                    { width: 350, height: 400, visible: false }
-                ],
+                name: null,
+                decks: [],
                 cargo: []
             },
             tool: "select",
@@ -295,14 +292,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
     }
 
     // Create a new ship object, after starting a new sketch.
-    private createShip = (shipName: string, numberOfDecks: number): void => {
-        const defaultDeck = { width: 400, height: 500 };
-        let decks = [];
-
-        for (let x = 0; x < numberOfDecks; x++) {
-            decks.push(defaultDeck);
-        }
-
+    private createShip = (shipName: string, decks: object): void => {
         this.setState({
             ship: { name: shipName, decks: decks, cargo: [] }
         })
@@ -334,7 +324,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
             const { ship, tool } = this.state;
 
             shipElements = ship.decks.map((deck, deckIndex) => {
-                // Get all cargo elements for the currently selected deck
+                // Get all cargo elements for the current deck
                 const cargoElements = this.state.ship.cargo
                     .filter(cargo => cargo.deckIndex === deckIndex)
                     .map(cargo => {
@@ -357,9 +347,10 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                         deckIndex={deckIndex}
                         width={deck.width}
                         height={deck.height}
-                        visible={ship.decks[deckIndex].visible}
+                        visible={deck.visible}
                         tool={tool}
                         name={ship.name}
+                        deckName={deck.name}
                         handleClick={this.handleClick}
                         moveCargo={this.moveCargo}
                         getSelectionBoxCoords={this.getSelectionBoxCoords}>

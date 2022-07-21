@@ -1,14 +1,62 @@
 .CreationPanel {
-    position: absolute;
-    width: 50vw;
-    height: 50vh;
-    top: calc(50vh - (50vh / 2));
-    left: calc(50vw - (50vw / 2));
     display: flex;
     justify-content: center;
-    background: #333;
-    border: solid 1px #333;
-    border-radius: 5px;
+    min-width: 40em;
+
+    &__Main {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+        justify-content: space-between;
+        margin-bottom: .5em;
+
+        &__ShipName {
+            flex-grow: 1;
+        }
+        &__AddDeck {
+            width: 7em;
+        }
+    }
+
+    &__Deck {
+        display: flex;
+        flex-direction: column;
+
+        &__Element {
+            display: flex;
+            flex-direction: column;
+            margin: 1em 0;
+
+            &__Title {        
+                font-size: .8em;
+                text-transform: uppercase;
+                font-weight: bold;
+                margin-bottom: .7em;
+            }
+    
+            &__Inputs {
+                display: flex;
+                flex-direction: row;
+                gap: 0.5em;
+
+                fieldset {
+                    display: flex;
+                    flex-direction: column;
+                    border: none;
+                    flex-grow: 1;
+
+                    label {
+                        margin-bottom: 0.3em;
+                        font-size: 0.8em;
+                    }
+                }
+            }
+        }
+    }
+
+    &__Submit {
+        margin-top: .5em;
+    }
 
     h1 {
         color: white;

@@ -9,11 +9,12 @@ export interface Ship {
 
 export interface ShipProps {
     deckIndex: number;
+    deckName: string;
+    name: string;
     width: number;
     height: number;
     visible: boolean;
     tool: string;
-    name: string;
     handleClick: any;
     moveCargo: any;
     children?: any;
@@ -148,25 +149,25 @@ export class Ship extends React.Component<ShipProps, any> {
     }
 
     render() {
-        const { name, deckIndex, width, height, visible } = this.props;
+        const { deckName, name, deckIndex, width, height, visible } = this.props;
 
         // Only show Ship element if "visible" prop is true.
         if (visible) {
             return (
                 <Box 
                     cssClass="Ship" 
-                    title={`${name} [Deck ${deckIndex + 1}]`}
+                    title={`${name} - ${deckName} [${deckIndex + 1}]`}
                     sizing={{ 
-                        width: width + 32,
-                        height: height + 55,
+                        width: (width + 32) + "px",
+                        height: (height + 55) + "px",
                         x: (window.innerWidth / 2) - (width / 2), 
                         y: (window.innerHeight / 2) - (height / 1.7)
                     }}>
                     <div 
                         className="Ship__Deck"
                         style={{
-                            width: width,
-                            height: height
+                            width: width + "px",
+                            height: height + "px"
                         }}
                         onMouseMove={this.handleMouseMove}
                         ref={this.deckRef}
