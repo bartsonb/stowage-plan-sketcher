@@ -1,14 +1,35 @@
 import React from "react";
 import "./Header.scss";
 import { User } from "../../App";
+import { Link } from "react-router-dom";
 
 export interface HeaderProps {
-    isAuthenticated: boolean;
-    user: User;
+    isAuthenticated?: boolean;
+    user?: User;
 }
 
 export class Header extends React.Component<HeaderProps, any> {
     render() {
+        let userDependentMenuItems = [];
+
+        if (this.props.isAuthenticated) {
+            userDependentMenuItems.push(
+                <div className="Header__Menu__Item Header__Menu__Item--account">
+                    <img src="" alt="" />
+                    <p>{this.props.user.email}</p>
+                </div>
+            );
+        } else {
+            userDependentMenuItems.push([
+                <div className="Header__Menu__Item Header__Menu__Item--register">
+                    <Link to={'/register'}>Register</Link>
+                </div>,
+                <div className="Header__Menu__Item Header__Menu__Item--login">
+                    <Link to={'/login'}>Login</Link>
+                </div>,
+            ]);
+        }
+
         return (
             <header className="Header">
                 <div className="Header__Logo">
@@ -22,10 +43,7 @@ export class Header extends React.Component<HeaderProps, any> {
                     <div className="Header__Menu__Item Header__Menu__Item--about">
                         About
                     </div>
-                    <div className="Header__Menu__Item Header__Menu__Item--account">
-                        <img src="" alt="" />
-                        <p>{this.props.user.email}</p>
-                    </div>
+                    {userDependentMenuItems}
                 </div>
             </header>
         );

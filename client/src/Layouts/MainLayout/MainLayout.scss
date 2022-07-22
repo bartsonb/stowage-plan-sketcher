@@ -1,0 +1,12 @@
+.Main {
+    width: 100%;
+    height: 100%;
+    background: #efefef;
+
+    &__Content {
+
+        &--Overflow {
+            overflow-y: scroll;
+        }
+    }
+}

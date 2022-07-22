@@ -9,10 +9,13 @@ export interface HomeProps {
 
 export const Home = (props: HomeProps) => {
     return (
-        <MainLayout isAutheticated={props.isAuthenticated} user={props.user}>
+        <MainLayout
+            isAutheticated={props.isAuthenticated}
+            user={props.user}
+        >
             <Sketcher />
         </MainLayout>
     );
-}
+};
 
 export default Home;

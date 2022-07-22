@@ -17,7 +17,6 @@ import axios from "axios";
 export type User = {
   name: string;
   email: string;
-  profilePicture: string;
 }
 
 export interface AppProps {
@@ -26,11 +25,10 @@ export interface AppProps {
 
 export class App extends React.Component<AppProps, any> {
   public state = {
-    isAuthenticated: true,
+    isAuthenticated: null,
     user: {
-      name: 'Armin B.', 
-      email: 'armin.bartnik@gmail.com', 
-      profilePicture: ''
+      name: null, 
+      email: null
     }
   }
 
@@ -51,7 +49,7 @@ export class App extends React.Component<AppProps, any> {
   render() {
     let routes = (
       <Routes>
-        <Route path="/login" element={<Login isAuthenticated={this.state.isAuthenticated} />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<SplashScreen />} />
       </Routes>
