@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 import { Link } from "react-router-dom";
 import Form from "../../Components/Form/Form";
@@ -6,8 +7,38 @@ import "./Register.scss";
 export interface RegisterProps {}
 
 export class Register extends React.Component<RegisterProps, any> {
+    constructor(props: RegisterProps) {
+        super(props);
+
+        this.state = {
+            email: null,
+            password: null
+        }
+    }
+
+    private handleChange = ({ target }) => {
+        this.setState({
+            [target.name]: target.value
+        });
+    }
+
     private handleSubmit = (event) => {
         event.preventDefault();
+
+        axios({
+            url: 'http://localhost:5000/api/users', 
+            method: 'post', 
+            data: {
+                email: this.state.email, 
+                password: this.state.password
+            }
+        })
+            .then(res => {
+                console.log(res);
+            })
+            .catch(error => {
+                console.log(error);
+            })
     };
 
     render() {
@@ -22,15 +53,17 @@ export class Register extends React.Component<RegisterProps, any> {
                     <Form handleSubmit={this.handleSubmit}>
                         <input
                             type="text"
+                            name="email"
                             placeholder="E-Mail"
                             autoComplete="current-email"
+                            onChange={this.handleChange}
                         />
                         <input
                             type="password"
                             placeholder="Password"
-                            name=""
-                            id=""
+                            name="password"
                             autoComplete="current-password"
+                            onChange={this.handleChange}
                         />
 
                         <input type="submit" value="Register" />

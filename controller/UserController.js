@@ -10,20 +10,19 @@ const jwt = require('jsonwebtoken');
  */
 exports.store = (req, res) => {
     let { value, error } = Joi.object({
-        name: Joi.string().required(),
         email: Joi.string().email().required(),
-        password: Joi.string().min(8).required()
+        password: Joi.string().required()
     }).validate(req.body, { abortEarly: false, allowUnknown: true });
 
     if (error) return res.status(400).json(error);
 
-    let { name, email, password } = value;
+    let { email, password } = value;
 
     User.findOne({ email }, (err, user) => {
         if (user) return res.status(400).json({'message': `User with Email '${email}' already exists.`});
 
         bcrypt.hash(password, 10, function(err, password) {
-            User.create({ name, email, password }, (err, user) => {
+            User.create({ email, password }, (err, user) => {
                 if (error) return res.status(500).json({ 'message': 'User creation failed.' });
 
                 jwt.sign(
