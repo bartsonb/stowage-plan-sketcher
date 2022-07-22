@@ -1,0 +1,97 @@
+@import '../../Assets/Styles/_variables.scss';
+
+.EditPanel {
+    position: absolute;
+    left: 20px;
+    top: 300px;
+    background: #222;
+    color: white;
+    display:flex;
+    flex-direction: column;
+    z-index: 9999;
+
+    &__Cargo {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        font-size: .9em;
+        flex-wrap: wrap;
+
+        &__Element {
+            display: flex;
+            justify-content: space-between;
+            text-transform: uppercase;
+        }
+    }
+
+    &__Category {
+        text-transform: uppercase;
+        font-size: .7em;
+        font-weight: bold;
+        color: $color_box_category;
+        text-align: center;
+        display: flex;
+        margin-bottom: .5em;
+    }
+
+    &__Category:not(:first-child) {
+        margin-top: 1em;
+    }
+
+    &__Buttons {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        max-width: 500px;
+        gap: .5em;
+
+        button {
+            border: solid 1px transparent;
+            border-radius: 3px;
+            padding: .4em;
+            text-align: center;
+            min-height: 2.4em;
+        }
+
+        button:disabled {
+            background-color: #777;
+            color: #414141;
+        }
+
+        &__Alignment {
+            flex-grow: 1;
+
+            button {
+                background-repeat: no-repeat;
+                background-color: #efefef;
+                background-position: center;
+                background-size: 50%;
+            }
+
+            &--top {
+                background-image: url(../../Assets/Icons/alignTop.svg);
+            }
+
+            &--left {
+                background-image: url(../../Assets/Icons/alignLeft.svg);
+            }
+
+            &--bottom {
+                background-image: url(../../Assets/Icons/alignBottom.svg);
+            }
+
+            &--right {
+                background-image: url(../../Assets/Icons/alignRight.svg);
+            }
+        }
+
+        &__Organization {
+            flex-grow: 1;
+
+            &--delete {
+                color: #fff;
+                background: #e84128;
+            }
+        }
+    }
+}

@@ -1,0 +1,55 @@
+.ToolbarButton {
+    display: flex;
+    padding: .5em;
+    gap: .7em;
+    transition: all 0.1s ease-in-out;
+    border-radius: 5px;
+    border: solid 1px transparent;
+    align-items: center;
+
+    &__Image {
+        display: flex;
+        align-items: center;
+
+        img {
+            width: 1.2em;
+            height: 1.2em;
+        }
+    }
+
+
+    &__Text {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        gap: .5em;
+
+        &__Shortcut {
+            display: flex;
+            font-size: .8em;
+            border-radius: 4px;
+            justify-content: center;
+            align-items: center;
+            width: 1.4em;
+            height: 1.4em;
+            color: rgb(106, 106, 106);
+            border: solid 1px rgb(106, 106, 106);
+        }
+
+        &__Name {
+
+        }
+    }
+
+    &--selected {
+        background: #2e2e2e;
+        padding: .5em;
+        border-radius: 5px;
+    }
+}
+
+.ToolbarButton:hover {
+    border: solid 1px #333;
+    cursor: pointer;
+}

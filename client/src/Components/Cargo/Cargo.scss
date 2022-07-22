@@ -1,0 +1,45 @@
+@import '../../Assets/Styles/variables';
+
+.Cargo {
+    position: absolute;
+    border-radius: 2px;
+    border: solid 2px #444;
+    user-select: none;
+    transition: border .2s ease-in-out;
+
+    &__Container {
+    }
+
+    &__Box {
+    }
+
+    &__Preview {
+        border: dashed 2px #3f9aff;
+        transition: none;
+    }
+
+    &--hazardous {
+        background: rgba($color: #f43232, $alpha: 0.2)
+        
+    }
+
+    &--selected {
+        border-color: $color__accent;
+        border-width: 2px;
+    }
+
+    &__Description {
+        padding: .2em;
+        font-size: .7em;
+        display: flex;
+        flex-grow: 0;
+        flex-direction: column;
+        color: #222;
+
+        &__Element--index {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+    }
+
+}

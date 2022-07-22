@@ -1,0 +1,23 @@
+@import '../../Assets/Styles/_variables.scss';
+
+.Toolbar {
+    position: absolute;
+    left: 1em;
+    top: 1em;
+    display: flex;
+    flex-direction: column;
+
+    &__Category {
+        text-transform: uppercase;
+        font-size: .7em;
+        font-weight: bold;
+        color: $color_box_category;
+        display: flex;
+        text-align: center;
+        margin-bottom: .5em;
+    }
+
+    &__Category:not(:first-child) {
+        margin-top: 1em;
+    }
+}
