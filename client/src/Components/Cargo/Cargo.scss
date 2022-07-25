@@ -7,6 +7,20 @@
     user-select: none;
     transition: border .2s ease-in-out;
 
+    &__Description {
+        padding: .2em;
+        font-size: .7em;
+        display: flex;
+        flex-grow: 0;
+        flex-direction: column;
+        color: #222;
+
+        &__Element--index {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+    }
+
     &__Container {
     }
 
@@ -26,20 +40,6 @@
     &--selected {
         border-color: $color__accent;
         border-width: 2px;
-    }
-
-    &__Description {
-        padding: .2em;
-        font-size: .7em;
-        display: flex;
-        flex-grow: 0;
-        flex-direction: column;
-        color: #222;
-
-        &__Element--index {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
     }
 
 }
