@@ -3,11 +3,23 @@ import { Link } from "react-router-dom";
 import Form from "../../Components/Form/Form";
 import "./Login.scss";
 
-export interface LoginProps {}
+export interface LoginProps {
+    handleUserLogin: any;
+}
 
 export class Login extends React.Component<LoginProps, any> {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            email: null,
+            password: null
+        }
+    }
+    
     private handleSubmit = (event) => {
         event.preventDefault();
+        this.props.handleUserLogin()
     };
 
     render() {

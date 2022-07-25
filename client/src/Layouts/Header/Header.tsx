@@ -21,10 +21,10 @@ export class Header extends React.Component<HeaderProps, any> {
             );
         } else {
             userDependentMenuItems.push([
-                <div className="Header__Menu__Item Header__Menu__Item--register">
+                <div key={0} className="Header__Menu__Item Header__Menu__Item--register">
                     <Link to={'/register'}>Register</Link>
                 </div>,
-                <div className="Header__Menu__Item Header__Menu__Item--login">
+                <div key={1} className="Header__Menu__Item Header__Menu__Item--login">
                     <Link to={'/login'}>Login</Link>
                 </div>,
             ]);
