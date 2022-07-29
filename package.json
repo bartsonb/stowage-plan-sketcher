@@ -4,7 +4,8 @@
     "author": "Armin Bartnik <armin.bartnik@gmail.com> (http://www.arminbartnik.de/)",
     "scripts": {
         "start": "node server.js",
-        "dev": "nodemon -L server.js"
+        "dev": "nodemon -L server.js",
+        "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false"
     },
     "dependencies": {
         "@hapi/joi": "^17.1.1",
