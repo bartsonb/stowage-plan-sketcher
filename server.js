@@ -41,7 +41,7 @@ if (process.env.NODE_ENV === 'production') {
 // API Routes
 app.use('/api/sketches', require('./routes/api/sketches'));
 app.use('/api/users', require('./routes/api/users'));
-// app.use('/api/auth', require('./routes/api/auth'));
+app.use('/api/auth', require('./routes/api/auth'));
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}.`);
