@@ -1,0 +1,56 @@
+@import "../../Assets/Styles/variables";
+
+.AuthForm {
+    display: flex;
+    flex-direction: column;
+
+    &__Input,
+    &__Submit {
+        padding: 0.5em 1em;
+        border-radius: 4px;
+        border: solid 2px transparent;
+        min-height: 3em;
+        transition: all 0.2s ease-in-out;
+    }
+
+    &__Submit {
+        font-size: 0.9em;
+        font-weight: bold;
+    }
+
+    &__Submit:enabled {
+        background-color: $color__general;
+        color: #fff;
+    }
+
+    &__Submit:hover {
+        background-color: darken($color__general, 5%);
+        cursor: pointer;
+    }
+
+    &__Input:not(:last-child) {
+        margin-bottom: 1em;
+    }
+
+    &__Input:hover {
+        background: #f8f8f8;
+    }
+
+    &__Input:focus {
+        border: solid 2px #a3a3a3;
+        background: #f8f8f8;
+    }
+
+    &__Input--error, 
+    &__Input--error:focus {
+        border: solid 2px #b1311e;
+    }
+
+    &__ErrorMessage {
+        color: #fff;
+        border-radius: 4px;
+        padding: 0.5em;
+        margin-bottom: 1em;
+        background-color: #b1311e;
+    }
+}
