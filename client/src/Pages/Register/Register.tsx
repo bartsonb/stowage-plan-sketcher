@@ -23,8 +23,6 @@ export class Register extends React.Component<RegisterProps, any> {
     }
 
     private handleSubmit = (event) => {
-        event.preventDefault();
-
         axios({
             url: 'http://localhost:5000/api/users', 
             method: 'post', 

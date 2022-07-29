@@ -7,6 +7,7 @@ export interface CreationPanel {
     deckMinWidth: number;
     deckMinHeight: number;
     shipNameMinLength: number;
+    deckNameMinLength: number;
 }
 
 export interface CreationPanelProps {
@@ -24,13 +25,13 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
             numberOfDecks: 0,
         };
 
-        this.deckMinWidth = 200;
+        this.deckMinWidth = 199;
         this.deckMinHeight = this.deckMinWidth;
-        this.shipNameMinLength = 3;
+        this.shipNameMinLength = 5;
+        this.deckNameMinLength = 3;
     }
 
     private handleSubmit = (event: any): void => {
-        event.preventDefault();
         if (this.isFormValid()) {
             this.props.createShip(this.state.shipName, this.state.decks);
         }

@@ -6,8 +6,14 @@ export interface FormProps {
 }
 
 export const Form = (props: FormProps) => {
+    
+    const formSubmitted = (event: any): any => {
+        event.preventDefault();
+        props.handleSubmit(event);
+    }
+
     return (
-        <form className='Form' onSubmit={event => { props.handleSubmit(event) }}>
+        <form className='Form' onSubmit={formSubmitted}>
             {props.children}
         </form>
     )
