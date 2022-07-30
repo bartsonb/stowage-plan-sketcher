@@ -104,7 +104,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
             this.setState(prevState => {
                 const newCargoState = prevState.cargo.map(el => ({
                     ...el,
-                    selected: el.cargoIndex === cargoIndex ? true : false
+                    selected: el.selected ? true : false
                 }));
 
                 return { cargo: newCargoState }
@@ -229,24 +229,22 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         this.ctx.closePath();
     };
 
-    // x1,y1 are the coords before and x2,y2 after the mouse movement.
+    // x, y are the relative movements from the last mouse position
     // The difference in direction gets applied to every cargo.
-    private moveCargo = (x1: number, y1: number, x2: number, y2: number): void => {
-        let differenceX = x2 - x1;
-        let differenceY = y2 - y1;
-
-        // console.log(`${differenceX} ${differenceY}`);
-
+    // TODO fix weird behaviour
+    private moveCargo = (x: number, y: number): void => {
         this.setState(prevState => {
             const newCargoState = prevState.cargo.map(el => ({
                 ...el,
                 coords: {
-                    x: (el.selected) ? el.coords.x + differenceX : el.coords.x,
-                    y: (el.selected) ? el.coords.y + differenceY : el.coords.y
+                    x: (el.selected) ? el.coords.x + x : el.coords.x,
+                    y: (el.selected) ? el.coords.y + y : el.coords.y
                 }
             }));
 
             return { cargo: newCargoState }
+        }, () => {
+            console.log('cargo pos saved')
         })
     }
 

@@ -26,8 +26,7 @@ export class Ship extends React.Component<ShipProps, any> {
         super(props);
         
         this.state = {
-            mousePosOld : { x: 0, y: 0},
-            mousePos: { x: 0, y: 0 },
+            mousePos: { x: 0, y: 0, moveX: 0, moveY: 0 },
             selectionBox: { pos: { x: 0, y: 0 }, width: 0, height: 0 },
             displayPreviewCargo: false,
             isDragging: false,
@@ -45,32 +44,35 @@ export class Ship extends React.Component<ShipProps, any> {
 
     // Handling the mouse movement to save mouse position
     // and normalizing the coords to be relative to the deck div.
-    public handleMouseMove = ({ clientX, clientY }): void => {
+    public handleMouseMove = ({ clientX, clientY, movementX, movementY }): void => {
+        const { mousePos, selectionBox, isDragging, isMoving } = this.state;
         const boundingRect = this.deckRef.current.getBoundingClientRect();
 
-        this.setState(prevState => {
+        this.setState(() => {
             return { 
-                mousePosOld: { ...prevState.mousePos },
-                mousePos: { x: clientX - boundingRect.left, y: clientY - boundingRect.top }
+                mousePos: { 
+                    x: clientX - boundingRect.left, 
+                    y: clientY - boundingRect.top,
+                    moveX: movementX,
+                    moveY: movementY
+                }
             }
         }, () => {
 
             // Set width and height for selection box while dragging
-            if (this.state.isDragging) {
-                const w = this.state.mousePos.x - this.state.selectionBox.pos.x;
-                const h = this.state.mousePos.y - this.state.selectionBox.pos.y;
+            if (isDragging) {
+                const w = mousePos.x - selectionBox.pos.x;
+                const h = mousePos.y - selectionBox.pos.y;
 
                 this.setState({
-                    selectionBox: { width: w + 'px', height: h + 'px', pos: this.state.selectionBox.pos }
+                    selectionBox: { width: w + 'px', height: h + 'px', pos: selectionBox.pos }
                 });
             }
 
             // Move cargo while isMoving is true
-            if (this.state.isMoving) {
-                this.props.moveCargo(
-                    this.state.mousePosOld.x, this.state.mousePosOld.y, 
-                    this.state.mousePos.x, this.state.mousePos.y
-                );
+            if (isMoving) {
+                console.log('mouse pos saved')
+                this.props.moveCargo(mousePos.moveX, mousePos.moveY);
             }
         });
     }
