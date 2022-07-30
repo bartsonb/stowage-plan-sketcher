@@ -3,12 +3,6 @@ import "./AuthForm.scss";
 import { SyncLoader } from "react-spinners";
 import axios from "axios";
 
-type errorObject = {
-    message?: any[],
-    password: Boolean,
-    email: Boolean
-}
-
 export enum AuthFormType {
     Login = "Login",
     Register = "Register",
@@ -24,15 +18,18 @@ export const AuthForm = (props: AuthFormProps) => {
 
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
-    const [error, setError] = useState<errorObject | null>(null);
     const [loading, setLoading] = useState(false);
+
+    const [errorMessage, setErrorMessage] = useState([]);
+    const [errorPassword, setErrorPassword] = useState(false);
+    const [errorEmail, setErrorEmail] = useState(false);
 
     const handleSubmit = (event: any): any => {
         event.preventDefault();
 
         if (!loading) {
             setLoading(true);
-            setError(null);
+            resetErrors();
 
             const route = type === AuthFormType.Login 
                 ? 'auth'
@@ -50,7 +47,7 @@ export const AuthForm = (props: AuthFormProps) => {
 
     const handleSuccessfulRequest = (res) => {
         setLoading(false);
-        setError(null);
+        resetErrors();
 
         console.log(res);
     };
@@ -58,20 +55,19 @@ export const AuthForm = (props: AuthFormProps) => {
     const handleFailedRequest = (error) => {
         setLoading(false);
 
-        let errorObject: errorObject = {
-            message: [],
-            email: false, 
-            password: false
-        };
+        let errorMessage = [];
 
         const parsedResponse = JSON.parse(error.request.responseText);
-
         parsedResponse.details.map((el, index) => {
-            errorObject.message.push(<p key={index}>- {el.message}.</p>);
-            errorObject[el.context.key] = true;
+            errorMessage.push(<p key={index}>{el.message}.</p>);
+    
+            // Set state flag for wrong password or email.
+            // el.context.key syntax is based on JOI Error Object
+            if (el?.context?.key === 'password') setErrorPassword(true);
+            if (el?.context?.key === 'email') setErrorEmail(true);
         });
 
-        setError(errorObject);
+        setErrorMessage(errorMessage);
     };
 
     const updateEmail = (event: any): void => {
@@ -82,24 +78,30 @@ export const AuthForm = (props: AuthFormProps) => {
         setPassword(event.target.value);
     };
 
+    const resetErrors = () => {
+        setErrorEmail(false);
+        setErrorPassword(false);
+        setErrorMessage([]);
+    }
+
     return (
         <form className="AuthForm" onSubmit={handleSubmit}>
             <input
-                className={`AuthForm__Input ${error?.email ? 'AuthForm__Input--error' : ''}`}
+                className={`AuthForm__Input ${errorEmail ? 'AuthForm__Input--error' : ''}`}
                 type="text"
                 onChange={updateEmail}
                 placeholder="E-Mail"
                 autoComplete="current-email"
             />
             <input
-                className={`AuthForm__Input ${error?.password ? 'AuthForm__Input--error' : ''}`}
+                className={`AuthForm__Input ${errorPassword ? 'AuthForm__Input--error' : ''}`}
                 type="password"
                 onChange={updatePassword}
                 placeholder="Password"
                 autoComplete="current-password"
             />
 
-            {error ? <div className="AuthForm__ErrorMessage">{error.message}</div> : ""}
+            {errorMessage.length > 0 ? <div className="AuthForm__ErrorMessage">{errorMessage}</div> : ""}
 
             <button type="submit" className="AuthForm__Submit">
                 {loading ? (
