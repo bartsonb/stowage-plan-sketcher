@@ -14,7 +14,7 @@ export class Header extends React.Component<HeaderProps, any> {
 
         if (this.props.isAuthenticated) {
             userDependentMenuItems.push(
-                <div className="Header__Menu__Item Header__Menu__Item--account">
+                <div key={1} className="Header__Menu__Item Header__Menu__Item--account">
                     <img src="" alt="" />
                     <p>{this.props.user.email}</p>
                 </div>
