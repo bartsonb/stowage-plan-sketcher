@@ -5,14 +5,15 @@ import "./MainLayout.scss";
 
 export interface MainLayoutProps {
     children?: any;
-    isAutheticated?: boolean;
+    isAutheticated?: Boolean;
     user?: User;
+    className?: String;
 }
 
 export class MainLayout extends React.Component<MainLayoutProps, any> {
     render() {
         return (
-            <main className="Main">
+            <main className={`Main${this.props.className ? ' Main__' + this.props.className : ''}`}>
                 <Header
                     isAuthenticated={this.props.isAutheticated}
                     user={this.props.user}

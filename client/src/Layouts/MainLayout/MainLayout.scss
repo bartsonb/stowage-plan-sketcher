@@ -9,4 +9,9 @@
             overflow-y: scroll;
         }
     }
+
+    &__Sketcher {
+        display: flex;
+        flex-direction: column;
+    }
 }

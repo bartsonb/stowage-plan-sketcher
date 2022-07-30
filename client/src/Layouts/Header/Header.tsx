@@ -4,7 +4,7 @@ import { User } from "../../App";
 import { Link } from "react-router-dom";
 
 export interface HeaderProps {
-    isAuthenticated?: boolean;
+    isAuthenticated?: Boolean;
     user?: User;
 }
 

@@ -12,6 +12,7 @@ export const Home = (props: HomeProps) => {
         <MainLayout
             isAutheticated={props.isAuthenticated}
             user={props.user}
+            className="Sketcher"
         >
             <Sketcher />
         </MainLayout>
