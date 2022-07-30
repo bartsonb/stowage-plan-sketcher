@@ -50,6 +50,7 @@ export const AuthForm = (props: AuthFormProps) => {
         resetErrors();
 
         console.log(res);
+        callback();
     };
 
     const handleFailedRequest = (error) => {
