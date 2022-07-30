@@ -18,12 +18,14 @@ exports.store = (req, res) => {
 
     let { email, password } = value;
 
+    return res.json({ email, password });
+
     User.findOne({ email }, (err, user) => {
-        if (user) return res.status(400).json({'message': `User with Email '${email}' already exists.`});
+        if (user) return res.status(400).json({ details: [{ message: 'User with this email already exists' }]});
 
         bcrypt.hash(password, 10, function(err, password) {
             User.create({ email, password }, (err, user) => {
-                if (error) return res.status(500).json({ 'message': 'User creation failed.' });
+                if (error) return res.status(500).json({ details: [{ message: 'User creation failed unexpectedly' }]});
 
                 jwt.sign(
                     { user: { id: user.id }},
