@@ -3,7 +3,7 @@ import {
     BrowserRouter as Router,
     Routes,
     Route,
-    Navigate,
+    Navigate
 } from "react-router-dom";
 
 import SplashScreen from "./Pages/SplashScreen/SplashScreen";
@@ -23,9 +23,9 @@ export interface AppProps {}
 
 export class App extends React.Component<AppProps, any> {
     public state = {
-        isAuthenticated: null,
+        isAuthenticated: true,
         user: {
-            email: null,
+            email: 'Armin.Bartnik@Web.de',
         },
     };
 
@@ -55,7 +55,7 @@ export class App extends React.Component<AppProps, any> {
             <Routes>
                 <Route
                     path="/login"
-                    element={<Login handleUserLogin={this.handleUserLogin} />}
+                    element={<Login isAuthenticated={this.state.isAuthenticated} handleUserLogin={this.handleUserLogin} />}
                 />
                 <Route path="/register" element={<Register />} />
                 <Route path="/" element={<SplashScreen />} />
