@@ -47,6 +47,7 @@ export class Ship extends React.Component<ShipProps, any> {
     // and normalizing the coords to be relative to the deck div.
     public handleMouseMove = ({ clientX, clientY }): void => {
         const boundingRect = this.deckRef.current.getBoundingClientRect();
+
         this.setState(prevState => {
             return { 
                 mousePosOld: { ...prevState.mousePos },
@@ -108,7 +109,7 @@ export class Ship extends React.Component<ShipProps, any> {
     };
 
     private handleMouseLeave = () => { 
-        if (this.props.tool === 'select') {
+        if (this.props.tool === 'select' && this.state.isDragging) {
             this.props.getSelectionBoxCoords(this.state.selectionBox.pos, this.state.mousePos, this.props.deckIndex);
         }
 
