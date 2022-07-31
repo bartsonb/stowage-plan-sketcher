@@ -8,22 +8,11 @@ import EditPanel from "../../Components/EditPanel/EditPanel";
 import Diffuser from "../../Components/Diffuser/Diffuser";
 import CreationPanel from "../../Components/CreationPanel/CreationPanel";
 import "./Sketcher.scss";
+import LoadingPanel from "../../Components/LoadingPanel/LoadingPanel";
 
 export interface Sketcher {
     canvasRef: any;
     ctx: any;
-}
-
-export type cargo = {
-    coords: {
-        x: number,
-        y: number
-    };
-    deckIndex: number;
-    cargoIndex: number;
-    cargoType: string;
-    selected: boolean;
-    hazardous: boolean;
 }
 
 export interface SketcherProps {}
@@ -38,14 +27,11 @@ export class Sketcher extends React.Component<SketcherProps, any> {
             decks: [],
             cargo: [],
             tool: "select",
-            canvasOptions: { gridSize: 20, gridColor: '#222' },
-            windowDimensions: { width: null, height: null },    
-            timestampLastSave: null,
-            changesMade: true
+            savedTimestamp: null,
+            saved: true,
+            showCreationPanel: false,
+            showLoadingPanel: false
         }
-
-        this.canvasRef = React.createRef();
-        this.ctx = null;
     }
 
     componentDidMount(): void {
@@ -53,17 +39,11 @@ export class Sketcher extends React.Component<SketcherProps, any> {
             tool: localStorage.getItem("tool"),
         });
 
-        // Get context via canvas ref
-        this.ctx = this.canvasRef.current.getContext("2d");
-        this.handleResize();
-
-        window.addEventListener("resize", this.handleResize);
         window.addEventListener("keypress", this.handleKeyPress);
         // window.onbeforeunload = () => 'Leave page? You still have unsaved progress.';
     }
 
     componentWillUnmount(): void {
-        window.removeEventListener("resize", this.handleResize);
         window.addEventListener("keypress", this.handleKeyPress);
     }
 
@@ -76,6 +56,16 @@ export class Sketcher extends React.Component<SketcherProps, any> {
 
         localStorage.setItem("tool", tool);
     };
+
+    // Used to toggle Creation and Loading panels
+    private togglePanel = (name: string): void => {
+        switch (name) {
+            case "create":
+                return this.setState({ showCreationPanel: !this.state.showCreationPanel });
+            case "load":
+                return this.setState({ showLoadingPanel: !this.state.showLoadingPanel });
+        }
+    }
 
     // Handeling key presses to check if a shortcut button for a tool was clicked.
     private handleKeyPress = ({ key }: any): void => {
@@ -193,43 +183,6 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         });
     }
 
-    // Get height and width of the current browser window.
-    public getWindowDimensions = (): any => {
-        return { width: window.innerWidth, height: window.innerHeight };
-    };
-
-    // TODO redraw canvas elements on resize
-    // Update windowDimensions and adjust the canvas size + grid accordingly.
-    // Canvas render size is doubled to get a higher resolution image.
-    private handleResize = () => {
-        this.setState({ windowDimensions: this.getWindowDimensions() }, () => {
-            this.canvasRef.current.width = this.state.windowDimensions.width * 2;
-            this.canvasRef.current.height = this.state.windowDimensions.height * 2;
-
-            this.drawGrid();
-        });
-    };
-
-    // Draw background grid depending on the given gridSize.
-    private drawGrid = (): void => {
-        const { width, height } = this.state.windowDimensions;
-        this.ctx.beginPath();
-
-        for (var x = 0; x <= width * 2; x += this.state.canvasOptions.gridSize) {
-            this.ctx.moveTo(x, 0);
-            this.ctx.lineTo(x, height * 2);
-        }
-
-        for (var y = 0; y <= height * 2; y += this.state.canvasOptions.gridSize) {
-            this.ctx.moveTo(0, y);
-            this.ctx.lineTo(width * 2, y);
-        }
-
-        this.ctx.strokeStyle = this.state.canvasOptions.gridColor;
-        this.ctx.stroke();
-        this.ctx.closePath();
-    };
-
     // x, y are the relative movements from the last mouse position
     // The difference in direction gets applied to every cargo.
     // TODO fix weird behaviour
@@ -286,7 +239,14 @@ export class Sketcher extends React.Component<SketcherProps, any> {
     }
 
     // Create a new ship object, after starting a new sketch.
-    private createShip = (shipName: string, decks: object): void => {
+    private createSketch = (shipName: string, decks: object): void => {
+        this.setState({
+            name: shipName, decks: decks, cargo: []
+        })
+    }
+
+    // Load in sketch saved sketch
+    private loadSketch = (shipName: string, decks: object): void => {
         this.setState({
             name: shipName, decks: decks, cargo: []
         })
@@ -305,12 +265,15 @@ export class Sketcher extends React.Component<SketcherProps, any> {
     }
 
     public render() {
-        // Return all visible Ship elements.
+        const { 
+            saved, savedTimestamp, shipName, cargo, 
+            decks, tool, showCreationPanel, showLoadingPanel 
+        } = this.state;
+        
         let shipElements;
 
-        if (this.state.name !== null) {
-            const { name, cargo, decks, tool } = this.state;
-
+        if (this.state.shipName !== null) {
+            // Return all visible Ship elements.
             shipElements = decks.map((deck, deckIndex) => {
                 // Get all cargo elements for the current deck
                 const cargoElements = cargo
@@ -337,7 +300,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                         height={deck.height}
                         visible={deck.visible}
                         tool={tool}
-                        name={name}
+                        name={shipName}
                         deckName={deck.name}
                         handleClick={this.handleClick}
                         moveCargo={this.moveCargo}
@@ -352,20 +315,23 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         return (
             <div className="Sketcher">
                 <MenuBar 
-                    changesMade={this.state.changesMade} 
-                    timestampLastSave={this.state.timestampLastSave} 
-                    shipName={this.state.name}
+                    togglePanel={this.togglePanel}
+                    showCreationPanel={showCreationPanel}
+                    showLoadingPanel={showLoadingPanel}
+                    saved={saved} 
+                    savedTimestamp={savedTimestamp} 
+                    sketchLoaded={shipName !== null}
                     />
 
                 <div className="Sketcher__Window">
                     <Toolbar
-                        selectedTool={this.state.tool}
+                        selectedTool={tool}
                         updateTool={this.updateTool}
                     />
 
                     <InfoPanel
-                        decks={this.state.decks}
-                        cargo={this.state.cargo}
+                        decks={decks}
+                        cargo={cargo}
                         toggleDecks={this.toggleDecks}
                     />
 
@@ -373,12 +339,15 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                         editCargo={this.editCargo}
                         deleteCargo={this.deleteCargo}
                         alignCargo={this.alignCargo}
-                        cargo={this.state.cargo} />
+                        cargo={cargo} />
 
-                    <Diffuser show={this.state.name === null}>
-                        <CreationPanel 
-                            createShip={this.createShip}
-                            show={this.state.name === null} />
+                    <Diffuser show={showCreationPanel || showLoadingPanel}>
+                        <CreationPanel
+                            createSketch={this.createSketch}
+                            show={showCreationPanel} />
+                        <LoadingPanel 
+                            loadSketch={this.loadSketch}
+                            show={showLoadingPanel}/>
                     </Diffuser>
 
                     {shipElements}

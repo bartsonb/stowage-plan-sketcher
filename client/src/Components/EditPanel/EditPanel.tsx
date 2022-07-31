@@ -1,4 +1,4 @@
-import { cargo } from "../../Pages/Sketcher/Sketcher";
+import { cargo } from "../../Components/Cargo/Cargo";
 import Box from "../Box/Box";
 import "./EditPanel.scss";
 

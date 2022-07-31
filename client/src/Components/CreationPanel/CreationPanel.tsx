@@ -12,7 +12,7 @@ export interface CreationPanel {
 
 export interface CreationPanelProps {
     show: boolean;
-    createShip: any;
+    createSketch(shipName: string, decks: object): void;
 }
 
 export class CreationPanel extends React.Component<CreationPanelProps, any> {
@@ -33,7 +33,7 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
 
     private handleSubmit = (event: any): void => {
         if (this.isFormValid()) {
-            this.props.createShip(this.state.shipName, this.state.decks);
+            this.props.createSketch(this.state.shipName, this.state.decks);
         }
     };
 
