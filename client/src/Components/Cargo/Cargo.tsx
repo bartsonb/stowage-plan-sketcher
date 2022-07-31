@@ -1,5 +1,17 @@
 import './Cargo.scss';
 
+export type cargo = {
+    coords: {
+        x: number,
+        y: number
+    };
+    deckIndex: number;
+    cargoIndex: number;
+    cargoType: string;
+    selected: boolean;
+    hazardous: boolean;
+}
+
 export interface CargoProps {
     coords: any;
     type: string;
