@@ -1,4 +1,4 @@
-import './Diffuser.scss';
+import "./Diffuser.scss";
 
 export interface DiffuserProps {
     children?: any;
@@ -8,15 +8,7 @@ export interface DiffuserProps {
 export const Diffuser = (props: DiffuserProps) => {
     const { children, show } = props;
 
-    if (show) {
-        return (
-            <div className="Diffuser">
-                {children}
-            </div>
-        )
-    } else {
-        return;
-    }
-}
+    return <div className={`Diffuser${show ? ' Diffuser--active' : ' Diffuser--inactive'}`}>{children}</div>;
+};
 
 export default Diffuser;

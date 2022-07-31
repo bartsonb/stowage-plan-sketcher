@@ -12,6 +12,7 @@
         display: flex;
         align-items: center;
         margin-right: .3em;
+        border-bottom: solid 2px transparent;
         padding: .5em;
         gap: .5em;
         cursor: pointer;
@@ -26,6 +27,11 @@
 
         &--export {
 
+        }
+
+        &--active {
+            color: #fff;
+            border-bottom-color: $color__accent;
         }
 
         &--save {

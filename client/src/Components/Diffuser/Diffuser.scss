@@ -1,10 +1,32 @@
 .Diffuser {
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(3px);
+    top: 0;
+    left: 0;
+    right: 0;
     z-index: 99999;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    &--active {
+        transition: 
+            bottom 0s 0s,
+            background 0.5s 0s,
+            backdrop-filter 0.5s 0s;
+
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(2px);
+    }
+
+    &--inactive {
+        transition: 
+            bottom 0s 0.5s,
+            background 0.5s 0s,
+            backdrop-filter 0.5s 0s;
+
+        bottom: 100vh;
+        background: rgba(0, 0, 0, 0);
+        backdrop-filter: blur(0);
+    }
 }
