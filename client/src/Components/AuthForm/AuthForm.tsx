@@ -16,6 +16,7 @@ export interface AuthFormProps {
 export const AuthForm = (props: AuthFormProps) => {
     const { type, callback } = props;
 
+    const [name, setName] = useState(null);
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -23,6 +24,7 @@ export const AuthForm = (props: AuthFormProps) => {
     const [errorMessage, setErrorMessage] = useState([]);
     const [errorPassword, setErrorPassword] = useState(false);
     const [errorEmail, setErrorEmail] = useState(false);
+    const [errorName, setErrorName] = useState(false);
 
     const handleSubmit = (event: any): any => {
         event.preventDefault();
@@ -38,7 +40,7 @@ export const AuthForm = (props: AuthFormProps) => {
             axios({
                 url: "http://localhost:5000/api/" + route,
                 method: "post",
-                data: { email, password },
+                data: { name, email, password },
             })
                 .then((res) => handleSuccessfulRequest(res))
                 .catch((error) => handleFailedRequest(error));
@@ -46,11 +48,9 @@ export const AuthForm = (props: AuthFormProps) => {
     };
 
     const handleSuccessfulRequest = (res) => {
-        setLoading(false);
         resetErrors();
 
-        console.log(res);
-        callback();
+        callback(res);
     };
 
     const handleFailedRequest = (error) => {
@@ -66,6 +66,7 @@ export const AuthForm = (props: AuthFormProps) => {
             // el.context.key syntax is based on JOI Error Object
             if (el?.context?.key === 'password') setErrorPassword(true);
             if (el?.context?.key === 'email') setErrorEmail(true);
+            if (el?.context?.key === 'name') setErrorName(true);
         });
 
         setErrorMessage(errorMessage);
@@ -79,7 +80,12 @@ export const AuthForm = (props: AuthFormProps) => {
         setPassword(event.target.value);
     };
 
+    const updateName = (event: any): void => {
+        setName(event.target.value);
+    };
+
     const resetErrors = () => {
+        setErrorName(false);
         setErrorEmail(false);
         setErrorPassword(false);
         setErrorMessage([]);
@@ -87,6 +93,15 @@ export const AuthForm = (props: AuthFormProps) => {
 
     return (
         <form className="AuthForm" onSubmit={handleSubmit}>
+            { 
+                props.type === AuthFormType.Register ?
+                    <input
+                    className={`AuthForm__Input ${errorName ? 'AuthForm__Input--error' : ''}`}
+                    type="text"
+                    onChange={updateName}
+                    placeholder="Username"
+                /> : ''
+            }
             <input
                 className={`AuthForm__Input ${errorEmail ? 'AuthForm__Input--error' : ''}`}
                 type="text"

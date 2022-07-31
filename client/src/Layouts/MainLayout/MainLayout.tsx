@@ -6,22 +6,22 @@ import "./MainLayout.scss";
 export interface MainLayoutProps {
     children?: any;
     isAutheticated?: Boolean;
+    logoutUser: any;
     user?: User;
     className?: String;
 }
 
-export class MainLayout extends React.Component<MainLayoutProps, any> {
-    render() {
-        return (
-            <main className={`Main${this.props.className ? ' Main__' + this.props.className : ''}`}>
-                <Header
-                    isAuthenticated={this.props.isAutheticated}
-                    user={this.props.user}
-                />
-                {this.props.children}
-            </main>
-        );
-    }
+export const MainLayout = (props: MainLayoutProps) => {
+    return (
+        <main className={`Main${props.className ? ' Main__' + props.className : ''}`}>
+            <Header
+                logoutUser={props.logoutUser}
+                isAuthenticated={props.isAutheticated}
+                user={props.user}
+            />
+            {props.children}
+        </main>
+    );
 }
 
 export default MainLayout;

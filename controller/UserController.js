@@ -9,22 +9,21 @@ const jwt = require('jsonwebtoken');
  * @returns User after storing the new user
  */
 exports.store = (req, res) => {
-    let { value, error } = Joi.object({
+    let { value: { name, email, password }, error } = Joi.object({
+        name: Joi.string().required(),
         email: Joi.string().email().required(),
         password: Joi.string().required()
     }).validate(req.body, { abortEarly: false, allowUnknown: true });
 
     if (error) return res.status(400).json(error);
 
-    let { email, password } = value;
-
-    return res.json({ email, password });
-
+    // Check if user with given email address already exists.
     User.findOne({ email }, (err, user) => {
         if (user) return res.status(400).json({ details: [{ message: 'User with this email already exists' }]});
 
-        bcrypt.hash(password, 10, function(err, password) {
-            User.create({ email, password }, (err, user) => {
+        // Hash user password
+        bcrypt.hash(password, 10, (err, password) => {
+            User.create({ name, email, password }, (err, user) => {
                 if (error) return res.status(500).json({ details: [{ message: 'User creation failed unexpectedly' }]});
 
                 jwt.sign(

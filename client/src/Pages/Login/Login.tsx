@@ -1,19 +1,25 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, } from "react-router-dom";
 import AuthForm, { AuthFormType } from "../../Components/AuthForm/AuthForm";
 import "./Login.scss";
+import axios from "axios";
 
 export interface LoginProps {
-    handleUserLogin: any;
-    isAuthenticated: boolean;
+    loginUser(token: string, user: any): void;
 }
 
 export const Login = (props: LoginProps) => {
-    const navigate = useNavigate();
 
-    const handleSubmit = (event) => {
-        props.handleUserLogin();
+    const handleSubmit = (req) => {
+        const token = req.data.token;
 
-        navigate("/", { replace: true });
+        // GET on the AUTH route, returns the current user if token is correct.
+        axios
+            .get("http://localhost:5000/api/auth", {
+                headers: { "x-auth-token": token },
+            })
+            .then((res) => {
+                props.loginUser(token, res.data);
+            });
     };
 
     return (

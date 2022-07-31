@@ -1,3 +1,5 @@
+@import "../../Assets/Styles/variables";
+
 .Header {
     display: flex;
     justify-content: space-between;
@@ -5,6 +7,16 @@
     padding: 0 1em;
     background: #212121;
     color: #fff;
+    transition: all 0.2s ease-in-out;
+
+    a {
+        transition: all 0.2s ease-in-out;
+        text-decoration: none;    
+        
+        &:hover {
+            color: $color__accent;
+        }
+    }
 
     &__Logo {
         display: flex;
@@ -26,11 +38,19 @@
             display: flex;
             align-items: center;
 
-            img {
-                background: #ccc;
+            &--account {
+                p span {
+                    color: #888888;
+                }
+            }
+
+            div {
+                background: $color__accent;
                 height: 1.6em;       
                 width: 1.6em; 
                 display: flex;
+                align-items: center;
+                justify-content: center;
                 border-radius: 2000px;
                 margin-right: .5em;
             }

@@ -2,20 +2,18 @@ import React from "react";
 import {
     BrowserRouter as Router,
     Routes,
-    Route,
-    Navigate
+    Route
 } from "react-router-dom";
 
 import SplashScreen from "./Pages/SplashScreen/SplashScreen";
 import Register from "./Pages/Register/Register";
 import Login from "./Pages/Login/Login";
-import About from "./Pages/About/About";
-import UserProfile from "./Pages/UserProfile/UserProfile";
 import Home from "./Pages/Home/Home";
 import "./Assets/Styles/_general.scss";
-import axios from "axios";
+import ErrorPage from "./Components/404/404";
 
 export type User = {
+    name: string;
     email: string;
 };
 
@@ -23,31 +21,35 @@ export interface AppProps {}
 
 export class App extends React.Component<AppProps, any> {
     public state = {
-        isAuthenticated: true,
-        user: {
-            email: 'Armin.Bartnik@Web.de',
-        },
+        isAuthenticated: false,
+        user: JSON.parse(localStorage.getItem("user") as string) || null,
+        token: localStorage.getItem("token") || null,
     };
 
     componentDidMount(): void {
-        // TODO check if user is logged in ON MOUNT
-        axios({
-            method: "get",
-            url: "http://localhost:5000",
-        })
-            .then((res) => console.log(res))
-            .catch((error) => console.log(error));
+        const { user, token } = this.state;
+
+        if (token && token !== undefined && user && user !== undefined) {
+            this.setState({ isAuthenticated: true });
+        }
     }
 
-    public handleUserLogin = () => {
-        this.setState(
-            {
-                isAuthenticated: true,
-                user: {
-                    email: "armin.bartnik@web.de",
-                },
-            }
-        );
+    public handleUserLogin = (token: string, user: any) => {
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        this.setState({ token, user, isAuthenticated: true });
+    };
+
+    public handleUserLogout = () => {
+        this.setState({
+            isAuthenticated: false,
+            user: null,
+            token: null,
+        });
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
     };
 
     render() {
@@ -55,10 +57,23 @@ export class App extends React.Component<AppProps, any> {
             <Routes>
                 <Route
                     path="/login"
-                    element={<Login isAuthenticated={this.state.isAuthenticated} handleUserLogin={this.handleUserLogin} />}
+                    element={<Login loginUser={this.handleUserLogin} />}
                 />
-                <Route path="/register" element={<Register />} />
-                <Route path="/" element={<SplashScreen />} />
+                <Route
+                    path="/register"
+                    element={<Register loginUser={this.handleUserLogin} />}
+                />
+                <Route
+                    path="/"
+                    element={
+                        <SplashScreen
+                            isAuthenticated={this.state.isAuthenticated}
+                            logoutUser={this.handleUserLogout}
+                            user={this.state.user}
+                        />
+                    }
+                />
+                <Route path="*" element={<ErrorPage />} />
             </Routes>
         );
 
@@ -68,12 +83,24 @@ export class App extends React.Component<AppProps, any> {
                     <Route
                         path="/"
                         element={
-                            <Home
+                            <SplashScreen
                                 isAuthenticated={this.state.isAuthenticated}
+                                logoutUser={this.handleUserLogout}
                                 user={this.state.user}
                             />
                         }
                     />
+                    <Route
+                        path="/app"
+                        element={
+                            <Home
+                                isAuthenticated={this.state.isAuthenticated}
+                                logoutUser={this.handleUserLogout}
+                                user={this.state.user}
+                            />
+                        }
+                    />
+                    <Route path="*" element={<ErrorPage />} />
                 </Routes>
             );
         }

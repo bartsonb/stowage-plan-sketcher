@@ -1,4 +1,9 @@
-.Main {
+@import "../../Assets/Styles/variables";
+
+.SplashScreen {
+    a {
+        text-decoration: none;
+    }
 
     &__HeroImage {
         width: 100%;
@@ -8,6 +13,30 @@
         align-items: center;
         flex-direction: column;
         justify-content: center;
+
+        &__Button {
+            display: flex;
+            align-items: center;
+            padding: 1em 1.3em;
+            background: $color__general;
+            color: #fff;
+            margin-top: 1.5em;
+            font-weight: bold;
+            font-size: 1.2em;
+            border: solid 1px transparent;
+            border-radius: 4px;
+            box-shadow: 0 0 9px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease-in-out;
+
+            img { width: 1em; margin-right: .5em; }
+
+            &:hover {
+                transform:  scale(1.1);
+                background: darken($color__general, 5%);
+                box-shadow: 0 0 13px 7px rgba(0, 0, 0, 0.1);
+                cursor: pointer;
+            }
+        }
     }
 
     &__Reviews {

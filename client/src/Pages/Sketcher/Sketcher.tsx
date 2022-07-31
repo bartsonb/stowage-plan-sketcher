@@ -33,8 +33,9 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         super(props);
 
         this.state = {
-            name: 'Armin',
-            decks: [{ width: 400, height: 400 }],
+            shipName: null,
+            shipDestination: null,
+            decks: [],
             cargo: [],
             tool: "select",
             canvasOptions: { gridSize: 20, gridColor: '#222' },

@@ -16,34 +16,36 @@
     &__Submit {
         font-size: 0.9em;
         font-weight: bold;
+
+        &:enabled {
+            background-color: $color__general;
+            color: #fff;
+        }
+    
+        &:hover {
+            background-color: darken($color__general, 5%);
+            cursor: pointer;
+        }
     }
 
-    &__Submit:enabled {
-        background-color: $color__general;
-        color: #fff;
-    }
-
-    &__Submit:hover {
-        background-color: darken($color__general, 5%);
-        cursor: pointer;
-    }
-
-    &__Input:not(:last-child) {
-        margin-bottom: 1em;
-    }
-
-    &__Input:hover {
-        background: #f8f8f8;
-    }
-
-    &__Input:focus {
-        border: solid 2px #a3a3a3;
-        background: #f8f8f8;
-    }
-
-    &__Input--error, 
-    &__Input--error:focus {
-        border: solid 2px #b1311e;
+    &__Input {
+        &:not(:last-child) {
+            margin-bottom: 1em;
+        }
+    
+        &:hover {
+            background: #f8f8f8;
+        }
+    
+        &:focus {
+            border: solid 2px $color__accent;
+            background: #f8f8f8;
+        }
+    
+        &--error, 
+        &--error:focus {
+            border: solid 2px #b1311e;
+        }
     }
 
     &__ErrorMessage {
