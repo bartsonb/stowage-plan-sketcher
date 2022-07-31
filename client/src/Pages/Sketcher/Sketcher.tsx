@@ -3,7 +3,7 @@ import Toolbar from "../../Components/Toolbar/Toolbar";
 import InfoPanel from "../../Components/InfoPanel/InfoPanel";
 import MenuBar from "../../Components/MenuBar/MenuBar";
 import Ship from "../../Components/Ship/Ship";
-import Cargo from "../../Components/Cargo/Cargo";
+import Cargo, { cargo } from "../../Components/Cargo/Cargo";
 import EditPanel from "../../Components/EditPanel/EditPanel";
 import Diffuser from "../../Components/Diffuser/Diffuser";
 import CreationPanel from "../../Components/CreationPanel/CreationPanel";
@@ -17,7 +17,19 @@ export interface Sketcher {
 
 export interface SketcherProps {}
 
-export class Sketcher extends React.Component<SketcherProps, any> {
+export interface SketcherState {
+    shipName: string,
+    shipDestination: string,
+    decks: any[],
+    cargo: cargo[],
+    tool: string,
+    savedTimestamp: number,
+    saved: boolean,
+    showCreationPanel: boolean,
+    showLoadingPanel: boolean
+}
+
+export class Sketcher extends React.Component<SketcherProps, SketcherState> {
     constructor(props: SketcherProps) {
         super(props);
 
@@ -28,7 +40,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
             cargo: [],
             tool: "select",
             savedTimestamp: null,
-            saved: true,
+            saved: false,
             showCreationPanel: false,
             showLoadingPanel: false
         }
@@ -84,7 +96,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
     // Handeling the clicks on the ship and cargo elements
     // Event is needed to stop the eventPropagation
     // cargoIndex is used to indentify the clicked cargo element
-    private handleClick = (event: any, cargoIndex: number | null, coords?: object, deckIndex?: number): void => {
+    private handleClick = (event: any, cargoIndex: number | null, coords?: any, deckIndex?: number): void => {
         const { tool } = this.state;
         event.stopPropagation();
 
@@ -109,7 +121,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
 
         // Create new cargo if click was registered on the background and has deck coords.
         if ((tool === 'container' || tool === 'box') && coords !== undefined) {
-            this.setState(prevState => {
+            this.setState((prevState) => {
                 const newCargoState = prevState.cargo.map((el, index) => ({
                     ...el,
                     cargoIndex: index
@@ -120,7 +132,10 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                         cargoType: tool, 
                         cargoIndex: prevState.cargo.length,
                         deckIndex: deckIndex, 
-                        coords, 
+                        coords: {
+                            x: coords.x,
+                            y: coords.y
+                        }, 
                         selected: false,
                         hazardous: false
                     }]
@@ -231,7 +246,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
         this.setState(prevState => {
             const newCargoState = prevState.cargo.map(el => ({
                 ...el,
-                [key]: (el.cargoIdex === cargoIndex) ? value : el[key] 
+                [key]: (el.cargoIndex === cargoIndex) ? value : el[key] 
             }));
 
             return { cargo: newCargoState }
@@ -239,16 +254,16 @@ export class Sketcher extends React.Component<SketcherProps, any> {
     }
 
     // Create a new ship object, after starting a new sketch.
-    private createSketch = (shipName: string, decks: object): void => {
+    private createSketch = (shipName: string, decks: any): void => {
         this.setState({
-            name: shipName, decks: decks, cargo: []
+            shipName, decks: decks, cargo: []
         })
     }
 
     // Load in sketch saved sketch
-    private loadSketch = (shipName: string, decks: object): void => {
+    private loadSketch = (shipName: string, decks: any): void => {
         this.setState({
-            name: shipName, decks: decks, cargo: []
+            shipName, decks: decks, cargo: []
         })
     }
 
@@ -300,7 +315,7 @@ export class Sketcher extends React.Component<SketcherProps, any> {
                         height={deck.height}
                         visible={deck.visible}
                         tool={tool}
-                        name={shipName}
+                        name={deck.name}
                         deckName={deck.name}
                         handleClick={this.handleClick}
                         moveCargo={this.moveCargo}
@@ -343,9 +358,11 @@ export class Sketcher extends React.Component<SketcherProps, any> {
 
                     <Diffuser show={showCreationPanel || showLoadingPanel}>
                         <CreationPanel
+                            togglePanel={this.togglePanel}
                             createSketch={this.createSketch}
                             show={showCreationPanel} />
                         <LoadingPanel 
+                            togglePanel={this.togglePanel}
                             loadSketch={this.loadSketch}
                             show={showLoadingPanel}/>
                     </Diffuser>
