@@ -11,8 +11,8 @@
     &--active {
         transition: 
             bottom 0s 0s,
-            background 0.5s 0s,
-            backdrop-filter 0.5s 0s;
+            background 0.7s 0s,
+            backdrop-filter 0.7s 0s;
 
         bottom: 0;
         background: rgba(0, 0, 0, 0.2);
@@ -21,9 +21,9 @@
 
     &--inactive {
         transition: 
-            bottom 0s 0.5s,
-            background 0.5s 0s,
-            backdrop-filter 0.5s 0s;
+            bottom 0s 0.7s,
+            background 0.7s 0s,
+            backdrop-filter 0.7s 0s;
 
         bottom: 100vh;
         background: rgba(0, 0, 0, 0);
