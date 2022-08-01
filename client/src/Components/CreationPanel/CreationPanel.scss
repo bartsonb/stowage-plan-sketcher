@@ -1,7 +1,22 @@
+@import "../../Assets/Styles/variables";
+
 .CreationPanel {
     display: flex;
     justify-content: center;
     min-width: 40em;
+
+    input {
+        font-size: .9em;
+        padding: 0.5em 1em;
+        border-radius: 2px;
+        border: solid 2px transparent;
+        min-height: 3em;
+        transition: border .3s ease-in-out;
+
+        &:focus {
+            border: solid 2px $color__accent;
+        }
+    }
 
     &__Main {
         display: flex;
@@ -13,6 +28,11 @@
         &__ShipName {
             flex-grow: 1;
         }
+
+        &__ShipDestination {
+            flex-grow: 1;
+        }
+
         &__AddDeck {
             width: 7em;
         }
@@ -28,7 +48,7 @@
             margin: 1em 0;
 
             &__Title {        
-                font-size: .8em;
+                font-size: .9em;
                 text-transform: uppercase;
                 font-weight: bold;
                 margin-bottom: .7em;
@@ -43,11 +63,19 @@
                     display: flex;
                     flex-direction: column;
                     border: none;
+                    text-align: center;
                     flex-grow: 1;
 
                     label {
                         margin-bottom: 0.3em;
-                        font-size: 0.8em;
+                        font-size: 0.9em;
+                    }
+
+                    button {
+                        flex-grow: 1;
+                        background: #e84128;
+                        color: #fff;
+                        font-weight: bold;                        
                     }
                 }
             }
@@ -56,6 +84,7 @@
 
     &__Submit {
         margin-top: .5em;
+        font-size: 1em;
     }
 
     h1 {

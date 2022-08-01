@@ -11,8 +11,12 @@ export interface CreationPanel {
 }
 
 export interface CreationPanelProps {
+    shipName: string;
+    shipDestination: string;
+    decks: any[];
     show: boolean;
-    createSketch(shipName: string, decks: object): void;
+    updateSketch(shipName: string, shipDestination: string, decks: object): void;
+    togglePanel(name: string): void;
 }
 
 export class CreationPanel extends React.Component<CreationPanelProps, any> {
@@ -20,9 +24,9 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
         super(props);
 
         this.state = {
-            shipName: "",
-            decks: [],
-            numberOfDecks: 0,
+            shipName: this.props.shipName || "",
+            shipDestination: this.props.shipDestination || "",
+            decks: this.props.decks || []
         };
 
         this.deckMinWidth = 199;
@@ -33,9 +37,43 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
 
     private handleSubmit = (event: any): void => {
         if (this.isFormValid()) {
-            this.props.createSketch(this.state.shipName, this.state.decks);
+            this.props.updateSketch(this.state.shipName, this.state.shipDestination, this.state.decks);
+            this.props.togglePanel("create");
         }
     };
+
+    private addNewDeck = (event: any): void => {
+        this.setState((prevState) => {
+            // Gets the highest index in the decks array.
+            // If decks are empty, index is 0.
+            const deckIndex = prevState.decks.reduce((acculumator, el) => {
+                acculumator = (acculumator < el.index) 
+                    ? el.index 
+                    : acculumator;
+            }, 0);
+
+            return {
+                decks: [
+                    ...prevState.decks,
+                    {
+                        index: deckIndex,
+                        name: "",
+                        width: 0,
+                        height: 0,
+                        visible: true,
+                    },
+                ]
+            };
+        });
+    };
+
+    private removeDeck = (deckIndex): void => {
+        this.setState((prevState) => {
+            const newDeckState = prevState.decks.filter((el, index) => index !== deckIndex);
+
+            return { decks: newDeckState };
+        });
+    }
 
     // Handles change of ship name.
     private handleNameChange = ({ target }: any): void => {
@@ -44,22 +82,28 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
         });
     };
 
-    // Increases the number of decks by 1.
-    private increaseNumberOfDecks = (event: any): void => {
+    // Handles change of ship destination.
+    private handleDestinationChange = ({ target }: any): void => {
         this.setState({
-            numberOfDecks: this.state.numberOfDecks + 1,
+            shipDestination: target.value,
         });
     };
 
-    // Handle creation of decks
-    private handleDeckChange = (event: any, deckIndex: number, type: string) => {
-        const {target: { value }} = event;
+    // Handle data change on decks
+    private handleDeckChange = (
+        event: any,
+        deckIndex: number,
+        type: string
+    ) => {
+        const {
+            target: { value },
+        } = event;
 
         this.setState((prevState) => {
             // If deck with given index already exist, change value and setState.
             // Else create new deck object with a new given key.
             if (typeof prevState.decks[deckIndex] === "object") {
-                if (type === 'width' || type === 'height') {
+                if (type === "width" || type === "height") {
                     prevState.decks[deckIndex][type] = parseInt(value);
 
                     return { decks: [...prevState.decks] };
@@ -69,7 +113,7 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                     return { decks: [...prevState.decks] };
                 }
             } else {
-                return { decks: [...prevState.decks, { [type]: value, visible: true }] };
+                return { decks: [...prevState.decks, { [type]: value }] };
             }
         });
     };
@@ -88,18 +132,18 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
 
         return (
             finishedDecks.length > 0 &&
-            finishedDecks.length === this.state.numberOfDecks && 
+            finishedDecks.length === this.state.decks.length &&
             this.state.shipName.length > this.shipNameMinLength
-        )
-    }
+        );
+    };
 
     render() {
         const getDeckInputs = () => {
             let deckInputs = [];
 
-            for (let index = 0; index < this.state.numberOfDecks; index++) {
+            this.state.decks.map(el => {
                 deckInputs.push(
-                    <div className="CreationPanel__Deck__Element" key={index}>
+                    <div className="CreationPanel__Deck__Element" key={el.index}>
                         <div className="CreationPanel__Deck__Element__Inputs">
                             <fieldset>
                                 <label htmlFor="Deck name">Deck name</label>
@@ -107,10 +151,11 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                                     type="text"
                                     placeholder="Deck name"
                                     name="deckName"
+                                    value={el.name}
                                     onChange={(event) => {
                                         this.handleDeckChange(
                                             event,
-                                            index,
+                                            el.index,
                                             "name"
                                         );
                                     }}
@@ -121,11 +166,12 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                                 <input
                                     type="number"
                                     name="width"
+                                    value={el.width}
                                     placeholder="0"
                                     onChange={(event) => {
                                         this.handleDeckChange(
                                             event,
-                                            index,
+                                            el.index,
                                             "width"
                                         );
                                     }}
@@ -136,27 +182,32 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                                 <input
                                     type="number"
                                     name="height"
+                                    value={el.height}
                                     placeholder="0"
                                     onChange={(event) => {
                                         this.handleDeckChange(
                                             event,
-                                            index,
+                                            el.index,
                                             "height"
                                         );
                                     }}
                                 />
                             </fieldset>
+                            <fieldset>
+                                <label htmlFor="delete">Delete</label>
+                                <button onClick={() => {this.removeDeck(el.index)}} name="delete">x</button>
+                            </fieldset>
                         </div>
                     </div>
                 );
-            }
+            });
 
             return deckInputs;
         };
 
         if (this.props.show) {
             return (
-                <Box cssClass="CreationPanel" title="Create new sketch">
+                <Box cssClass="CreationPanel" title="Create & Edit">
                     <Form handleSubmit={this.handleSubmit}>
                         <div className="CreationPanel__Main">
                             <input
@@ -170,10 +221,20 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                                 value={this.state.shipName}
                             />
 
+                            <input
+                                onChange={(event) => {
+                                    this.handleDestinationChange(event);
+                                }}
+                                type="text"
+                                name="shipDestination"
+                                className="CreationPanel__Main__ShipDestination"
+                                placeholder="Ship destination"
+                                value={this.state.shipDestination}
+                            />
+
                             <button
-                                onClick={this.increaseNumberOfDecks}
+                                onClick={this.addNewDeck}
                                 className="CreationPanel__Main__AddDeck"
-                                value={this.state.numberOfDecks}
                             >
                                 Add Deck
                             </button>
@@ -187,6 +248,7 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                             type="submit"
                             className="CreationPanel__Submit"
                             disabled={!this.isFormValid()}
+                            value="Update sketch"
                         />
                     </Form>
                 </Box>

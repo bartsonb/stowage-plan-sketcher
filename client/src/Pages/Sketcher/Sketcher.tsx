@@ -212,9 +212,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             }));
 
             return { cargo: newCargoState }
-        }, () => {
-            console.log('cargo pos saved')
-        })
+        });
     }
 
     private deleteCargo = (): void => {
@@ -254,16 +252,22 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
     }
 
     // Create a new ship object, after starting a new sketch.
-    private createSketch = (shipName: string, decks: any): void => {
-        this.setState({
-            shipName, decks: decks, cargo: []
+    private updateSketch = (shipName: string, shipDestination: string, decks: any): void => {
+        this.setState(prevState => {
+            // Get array of all deck indices.
+            const deckIndicices = prevState.decks.map(el => el.index);
+
+            // Remove cargo that has no associated deck.
+            const newCargoState = prevState.cargo.filter(el => deckIndicices.includes(el.deckIndex));            
+
+            return { shipName, shipDestination, decks, cargo: newCargoState }
         })
     }
 
     // Load in sketch saved sketch
-    private loadSketch = (shipName: string, decks: any): void => {
+    private loadSketch = (shipName: string, shipDestination: string, decks: any): void => {
         this.setState({
-            shipName, decks: decks, cargo: []
+            shipName, shipDestination, decks, cargo: []
         })
     }
 
@@ -289,10 +293,10 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
         if (this.state.shipName !== null) {
             // Return all visible Ship elements.
-            shipElements = decks.map((deck, deckIndex) => {
+            shipElements = decks.map(deck => {
                 // Get all cargo elements for the current deck
                 const cargoElements = cargo
-                    .filter(cargo => cargo.deckIndex === deckIndex)
+                    .filter(cargo => cargo.deckIndex === deck.index)
                     .map(cargo => {
                         return (
                             <Cargo 
@@ -309,8 +313,8 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
                 return (
                     <Ship 
-                        key={deckIndex}
-                        deckIndex={deckIndex}
+                        key={deck.index}
+                        deckIndex={deck.index}
                         width={deck.width}
                         height={deck.height}
                         visible={deck.visible}
@@ -358,8 +362,11 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
                     <Diffuser show={showCreationPanel || showLoadingPanel}>
                         <CreationPanel
+                            shipName={this.state.shipName}
+                            shipDestination={this.state.shipDestination}
+                            decks={this.state.decks}
                             togglePanel={this.togglePanel}
-                            createSketch={this.createSketch}
+                            updateSketch={this.updateSketch}
                             show={showCreationPanel} />
                         <LoadingPanel 
                             togglePanel={this.togglePanel}

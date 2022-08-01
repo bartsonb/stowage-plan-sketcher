@@ -71,7 +71,6 @@ export class Ship extends React.Component<ShipProps, any> {
 
             // Move cargo while isMoving is true
             if (isMoving) {
-                console.log('mouse pos saved')
                 this.props.moveCargo(mousePos.moveX, mousePos.moveY);
             }
         });
