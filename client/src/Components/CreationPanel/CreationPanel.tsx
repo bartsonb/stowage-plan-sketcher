@@ -1,6 +1,7 @@
 import React from "react";
 import Box from "../Box/Box";
 import Form from "../Form/Form";
+import { v4 as uuidv4 } from 'uuid';
 import "./CreationPanel.scss";
 
 export interface CreationPanel {
@@ -11,6 +12,7 @@ export interface CreationPanel {
 }
 
 export interface CreationPanelProps {
+    uuid: string;
     shipName: string;
     shipDestination: string;
     decks: any[];
@@ -18,7 +20,8 @@ export interface CreationPanelProps {
     updateSketch(
         shipName: string,
         shipDestination: string,
-        decks: object
+        decks: object,
+        uuid?: string
     ): void;
     togglePanel(name: string): void;
 }
@@ -44,8 +47,10 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
             this.props.updateSketch(
                 this.state.shipName,
                 this.state.shipDestination,
-                this.state.decks
+                this.state.decks,
+                this.props.uuid || uuidv4()
             );
+
             this.props.togglePanel("create");
         }
     };

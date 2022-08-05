@@ -10,7 +10,6 @@ import LoadingPanel from "../../Components/LoadingPanel/LoadingPanel";
 import CreationPanel from "../../Components/CreationPanel/CreationPanel";
 import axios from "axios";
 import { User } from "../../App";
-import { v4 as uuidv4 } from 'uuid';
 import "./Sketcher.scss";
 import { MoonLoader } from "react-spinners";
 
@@ -52,10 +51,6 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
     }
 
     componentDidMount(): void {
-        this.setState({
-            uuid: uuidv4()
-        });
-     
         window.addEventListener("keypress", this.handleKeyPress);
         // window.onbeforeunload = () => 'Leave page? You still have unsaved progress.';
     }
@@ -255,16 +250,16 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         })
     }
 
-    // Create a new ship object, after starting a new sketch.
-    private updateSketch = (shipName: string, shipDestination: string, decks: any): void => {
+    // Update or create sketch
+    private updateSketch = (shipName: string, shipDestination: string, decks: any, uuid: string): void => {
         this.setState(prevState => {
             // Get array of all deck indices.
             const deckIndicices = prevState.decks.map(el => el.index);
 
             // Remove cargo that has no associated deck.
-            const newCargoState = prevState.cargo.filter(el => deckIndicices.includes(el.deckIndex));            
+            const cargo = prevState.cargo.filter(el => deckIndicices.includes(el.deckIndex));            
 
-            return { shipName, shipDestination, decks, cargo: newCargoState }
+            return { uuid, shipName, shipDestination, decks, cargo }
         })
     }
 
@@ -320,7 +315,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
     public render() {
         const { 
-            saved, savedTimestamp, shipName, shipDestination, cargo, 
+            uuid, saved, savedTimestamp, shipName, shipDestination, cargo, 
             decks, tool, showCreationPanel, showLoadingPanel, loading
         } = this.state;
         
@@ -398,6 +393,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
                     <Diffuser show={showCreationPanel || showLoadingPanel || loading}>
                         <CreationPanel
+                            uuid={uuid}
                             shipName={shipName}
                             shipDestination={shipDestination}
                             decks={decks}
