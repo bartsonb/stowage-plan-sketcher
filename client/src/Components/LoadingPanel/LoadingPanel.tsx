@@ -3,7 +3,8 @@ import './LoadingPanel.scss';
 
 export interface LoadingPanelProps {
     show: boolean;
-    loadSketch(shipName: string, decks: object): void;
+    loadSketch(shipName: string, shipDestination: string, decks: object): void;
+    togglePanel(name: string): void;
 }
 
 export const LoadingPanel = (props: LoadingPanelProps) => {

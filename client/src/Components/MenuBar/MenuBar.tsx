@@ -1,5 +1,6 @@
 import "./MenuBar.scss";
 
+import editIcon from "../../Assets/Icons/edit.svg";
 import createIcon from "../../Assets/Icons/create.svg";
 import saveIcon from "../../Assets/Icons/save.svg";
 import exportIcon from "../../Assets/Icons/export.svg";
@@ -24,8 +25,8 @@ export const MenuBar = (props: MenuBarProps) => {
                 }}
                 className={`MenuBar__Button MenuBar__Button--create${showCreationPanel ? " MenuBar__Button--active" : ""}`}
             >
-                <img src={createIcon} alt="" />
-                Create new
+                <img src={editIcon} alt="" />
+                Create & Edit
             </div>
 
             <div
@@ -35,7 +36,7 @@ export const MenuBar = (props: MenuBarProps) => {
                 className={`MenuBar__Button MenuBar__Button--load${showLoadingPanel ? " MenuBar__Button--active" : ""}`}
             >
                 <img src={createIcon} alt="" />
-                Load exisiting
+                Load
             </div>
 
             <div

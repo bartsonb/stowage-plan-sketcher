@@ -8,7 +8,7 @@ export interface MainLayoutProps {
     isAutheticated?: Boolean;
     logoutUser: any;
     user?: User;
-    className?: String;
+    className?: string;
 }
 
 export const MainLayout = (props: MainLayoutProps) => {
