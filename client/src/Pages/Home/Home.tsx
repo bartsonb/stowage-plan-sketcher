@@ -16,7 +16,7 @@ export const Home = (props: HomeProps) => {
             user={props.user}
             className="Sketcher"
         >
-            <Sketcher />
+            <Sketcher user={props.user} />
         </MainLayout>
     );
 };

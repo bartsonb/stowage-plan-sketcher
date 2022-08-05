@@ -11,10 +11,12 @@ import Login from "./Pages/Login/Login";
 import Home from "./Pages/Home/Home";
 import "./Assets/Styles/_general.scss";
 import ErrorPage from "./Components/404/404";
+import axios from "axios";
 
 export type User = {
     name: string;
     email: string;
+    _id: string;
 };
 
 export interface AppProps {}
@@ -31,22 +33,29 @@ export class App extends React.Component<AppProps, any> {
 
         if (token && token !== undefined && user && user !== undefined) {
             this.setState({ isAuthenticated: true });
+            axios.defaults.headers.common['x-auth-token'] = token;
         }
     }
 
     public handleUserLogin = (token: string, user: any) => {
+        this.setState({ token, user, isAuthenticated: true });
+
+        // Set default authorization header.
+        axios.defaults.headers.common['x-auth-token'] = token;
+
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
-
-        this.setState({ token, user, isAuthenticated: true });
     };
 
     public handleUserLogout = () => {
         this.setState({
             isAuthenticated: false,
             user: null,
-            token: null,
+            token: null
         });
+
+        // Remove default authorization header.
+        delete axios.defaults.headers.common['x-auth-token'];
 
         localStorage.removeItem("token");
         localStorage.removeItem("user");
