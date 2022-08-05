@@ -6,18 +6,20 @@ import Ship from "../../Components/Ship/Ship";
 import Cargo, { cargo } from "../../Components/Cargo/Cargo";
 import EditPanel from "../../Components/EditPanel/EditPanel";
 import Diffuser from "../../Components/Diffuser/Diffuser";
-import CreationPanel from "../../Components/CreationPanel/CreationPanel";
-import "./Sketcher.scss";
 import LoadingPanel from "../../Components/LoadingPanel/LoadingPanel";
+import CreationPanel from "../../Components/CreationPanel/CreationPanel";
+import axios from "axios";
+import { User } from "../../App";
+import { v4 as uuidv4 } from 'uuid';
+import "./Sketcher.scss";
+import { MoonLoader } from "react-spinners";
 
-export interface Sketcher {
-    canvasRef: any;
-    ctx: any;
+export interface SketcherProps {
+    user: User;
 }
 
-export interface SketcherProps {}
-
 export interface SketcherState {
+    uuid: string,
     shipName: string,
     shipDestination: string,
     decks: any[],
@@ -26,7 +28,8 @@ export interface SketcherState {
     savedTimestamp: number,
     saved: boolean,
     showCreationPanel: boolean,
-    showLoadingPanel: boolean
+    showLoadingPanel: boolean,
+    loading: boolean,
 }
 
 export class Sketcher extends React.Component<SketcherProps, SketcherState> {
@@ -34,6 +37,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         super(props);
 
         this.state = {
+            uuid: null,
             shipName: null,
             shipDestination: null,
             decks: [],
@@ -42,20 +46,22 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             savedTimestamp: null,
             saved: false,
             showCreationPanel: false,
-            showLoadingPanel: false
+            showLoadingPanel: false,
+            loading: false
         }
     }
 
     componentDidMount(): void {
         this.setState({
-            tool: localStorage.getItem("tool"),
+            uuid: uuidv4()
         });
-
+     
         window.addEventListener("keypress", this.handleKeyPress);
         // window.onbeforeunload = () => 'Leave page? You still have unsaved progress.';
     }
 
     componentWillUnmount(): void {
+        // Remove unneccessary event listeners
         window.addEventListener("keypress", this.handleKeyPress);
     }
 
@@ -65,8 +71,6 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         this.setState({
             tool: tool,
         });
-
-        localStorage.setItem("tool", tool);
     };
 
     // Used to toggle Creation and Loading panels
@@ -264,14 +268,45 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         })
     }
 
-    // Load in sketch saved sketch
-    private loadSketch = (shipName: string, shipDestination: string, decks: any): void => {
-        this.setState({
-            shipName, shipDestination, decks, cargo: []
-        })
+    private removeKeysFromObject = (obj: any, arr: string[]): any => {
+        const object = Object.assign({}, obj);
+
+        for (let key in object) {
+            if (arr.includes(key)) delete object[key];
+        }
+
+        return object;
     }
 
-    // Toggle visible decks.
+    private saveSketch = (): void => {
+        this.setState({ loading: true });
+
+        // Clear state from unnecessary keys.
+        const data = this.removeKeysFromObject(this.state, ['saved', 'savedTimestamp', 'showCreationPanel', 'showLoadingPanel', 'tool']);
+
+        axios({
+            method: 'post', 
+            url: 'http://localhost:5000/api/sketches',
+            data: {
+                ...data,
+                userId: this.props.user._id
+            }
+        })
+            .then(res =>  {
+                console.log(res);
+                this.setState({ loading: false });
+            })
+            .catch(error => {
+                console.log(error);
+                this.setState({ loading: false });
+            })
+    }
+
+    private exportSketch = (): void => {
+        console.log('export sketch');
+    }
+
+    // Toggle visibility of decks.
     private toggleDecks = (deckIndex: number, visible: boolean): void => {
         this.setState(prevState => {
             const newDeckState = prevState.decks.map((el, index) => ({
@@ -285,14 +320,13 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
     public render() {
         const { 
-            saved, savedTimestamp, shipName, cargo, 
-            decks, tool, showCreationPanel, showLoadingPanel 
+            saved, savedTimestamp, shipName, shipDestination, cargo, 
+            decks, tool, showCreationPanel, showLoadingPanel, loading
         } = this.state;
         
         let shipElements;
 
-        if (this.state.shipName !== null) {
-            // Return all visible Ship elements.
+        if (decks.length > 0) {
             shipElements = decks.map(deck => {
                 // Get all cargo elements for the current deck
                 const cargoElements = cargo
@@ -339,7 +373,9 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                     showLoadingPanel={showLoadingPanel}
                     saved={saved} 
                     savedTimestamp={savedTimestamp} 
-                    sketchLoaded={shipName !== null}
+                    sketchLoaded={decks.length > 0}
+                    saveSketch={this.saveSketch}
+                    exportSketch={this.exportSketch}
                     />
 
                 <div className="Sketcher__Window">
@@ -360,23 +396,22 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                         alignCargo={this.alignCargo}
                         cargo={cargo} />
 
-                    <Diffuser show={showCreationPanel || showLoadingPanel}>
+                    <Diffuser show={showCreationPanel || showLoadingPanel || loading}>
                         <CreationPanel
-                            shipName={this.state.shipName}
-                            shipDestination={this.state.shipDestination}
-                            decks={this.state.decks}
+                            shipName={shipName}
+                            shipDestination={shipDestination}
+                            decks={decks}
                             togglePanel={this.togglePanel}
                             updateSketch={this.updateSketch}
                             show={showCreationPanel} />
                         <LoadingPanel 
                             togglePanel={this.togglePanel}
-                            loadSketch={this.loadSketch}
+                            updateSketch={this.updateSketch}
                             show={showLoadingPanel}/>
+                        <MoonLoader loading={loading} size={35} color={"#fff"} />
                     </Diffuser>
 
                     {shipElements}
-
-                    <canvas ref={this.canvasRef} />
                 </div>
             </div>
         );

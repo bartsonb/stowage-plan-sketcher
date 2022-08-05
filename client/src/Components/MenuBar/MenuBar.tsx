@@ -12,10 +12,12 @@ export interface MenuBarProps {
     showCreationPanel: boolean;
     showLoadingPanel: boolean;
     togglePanel(name: string): void;
+    saveSketch(): void;
+    exportSketch(): void;
 }
 
 export const MenuBar = (props: MenuBarProps) => {
-    const { savedTimestamp, saved, sketchLoaded, togglePanel, showCreationPanel, showLoadingPanel } = props;
+    const { savedTimestamp, saved, sketchLoaded, togglePanel, saveSketch, exportSketch, showCreationPanel, showLoadingPanel } = props;
 
     return (
         <div className="MenuBar">
@@ -42,6 +44,7 @@ export const MenuBar = (props: MenuBarProps) => {
             <div
                 style={{ display: sketchLoaded ? "flex" : "none" }}
                 className="MenuBar__Button MenuBar__Button--save"
+                onClick={saveSketch}
             >
                 <img src={saveIcon} alt="" />
                 Save
@@ -51,6 +54,7 @@ export const MenuBar = (props: MenuBarProps) => {
             <div
                 style={{ display: sketchLoaded ? "flex" : "none" }}
                 className="MenuBar__Button MenuBar__Button--export"
+                onClick={exportSketch}
             >
                 <img src={exportIcon} alt="" />
                 Export
