@@ -15,7 +15,11 @@ export interface CreationPanelProps {
     shipDestination: string;
     decks: any[];
     show: boolean;
-    updateSketch(shipName: string, shipDestination: string, decks: object): void;
+    updateSketch(
+        shipName: string,
+        shipDestination: string,
+        decks: object
+    ): void;
     togglePanel(name: string): void;
 }
 
@@ -26,7 +30,7 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
         this.state = {
             shipName: this.props.shipName || "",
             shipDestination: this.props.shipDestination || "",
-            decks: this.props.decks || []
+            decks: this.props.decks || [],
         };
 
         this.deckMinWidth = 199;
@@ -37,43 +41,52 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
 
     private handleSubmit = (event: any): void => {
         if (this.isFormValid()) {
-            this.props.updateSketch(this.state.shipName, this.state.shipDestination, this.state.decks);
+            this.props.updateSketch(
+                this.state.shipName,
+                this.state.shipDestination,
+                this.state.decks
+            );
             this.props.togglePanel("create");
         }
     };
 
     private addNewDeck = (event: any): void => {
         this.setState((prevState) => {
-            // Gets the highest index in the decks array.
-            // If decks are empty, index is 0.
-            const deckIndex = prevState.decks.reduce((acculumator, el) => {
-                acculumator = (acculumator < el.index) 
-                    ? el.index 
-                    : acculumator;
-            }, 0);
+            const deckIndices = prevState.decks.map((el) => el.index);
+            let index = 0;
+
+            // Check for empty array, because empty arrays in Math.max return -Infinity
+            if (deckIndices.length > 0) {
+                // Gets the highest index in the decks array and increments it.
+                index = Math.max(...prevState.decks.map((el) => el.index)) + 1;
+            }
 
             return {
                 decks: [
                     ...prevState.decks,
                     {
-                        index: deckIndex,
+                        index: index,
                         name: "",
-                        width: 0,
-                        height: 0,
+                        width: "",
+                        height: "",
                         visible: true,
                     },
-                ]
+                ],
             };
         });
     };
 
+    // Remove deck with given index.
     private removeDeck = (deckIndex): void => {
         this.setState((prevState) => {
-            const newDeckState = prevState.decks.filter((el, index) => index !== deckIndex);
+            const newDeckState = prevState.decks.filter(el => el.index !== deckIndex);
 
             return { decks: newDeckState };
         });
-    }
+    };
+
+    // Handles onFocus
+    private handleFocus = (event) => event.target.select();
 
     // Handles change of ship name.
     private handleNameChange = ({ target }: any): void => {
@@ -89,32 +102,26 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
         });
     };
 
-    // Handle data change on decks
-    private handleDeckChange = (
-        event: any,
-        deckIndex: number,
-        type: string
-    ) => {
-        const {
-            target: { value },
-        } = event;
+    // Handle data change for decks
+    private handleDeckChange = (event: any, deckIndex: number, key: string) => {
+        const { target: { value }, } = event;
 
         this.setState((prevState) => {
-            // If deck with given index already exist, change value and setState.
-            // Else create new deck object with a new given key.
-            if (typeof prevState.decks[deckIndex] === "object") {
-                if (type === "width" || type === "height") {
-                    prevState.decks[deckIndex][type] = parseInt(value);
-
-                    return { decks: [...prevState.decks] };
-                } else {
-                    prevState.decks[deckIndex][type] = value;
-
-                    return { decks: [...prevState.decks] };
+            const newDeckState = prevState.decks.map(el => {
+                if (el.index === deckIndex) {
+                    switch (key) {
+                        case "name":
+                            return { ...el, [key]: value }
+                        case "width":
+                        case "height":
+                            return { ...el, [key]: parseInt(value) || 0 }
+                    }
                 }
-            } else {
-                return { decks: [...prevState.decks, { [type]: value }] };
-            }
+
+                return el;
+            });
+
+            return { decks: newDeckState };
         });
     };
 
@@ -141,17 +148,21 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
         const getDeckInputs = () => {
             let deckInputs = [];
 
-            this.state.decks.map(el => {
+            this.state.decks.map((el) => {
                 deckInputs.push(
-                    <div className="CreationPanel__Deck__Element" key={el.index}>
+                    <div
+                        className="CreationPanel__Deck__Element"
+                        key={el.index}
+                    >
                         <div className="CreationPanel__Deck__Element__Inputs">
                             <fieldset>
                                 <label htmlFor="Deck name">Deck name</label>
                                 <input
                                     type="text"
                                     placeholder="Deck name"
-                                    name="deckName"
+                                    name="name"
                                     value={el.name}
+                                    onFocus={this.handleFocus}
                                     onChange={(event) => {
                                         this.handleDeckChange(
                                             event,
@@ -168,6 +179,7 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                                     name="width"
                                     value={el.width}
                                     placeholder="0"
+                                    onFocus={this.handleFocus}
                                     onChange={(event) => {
                                         this.handleDeckChange(
                                             event,
@@ -184,6 +196,7 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                                     name="height"
                                     value={el.height}
                                     placeholder="0"
+                                    onFocus={this.handleFocus}
                                     onChange={(event) => {
                                         this.handleDeckChange(
                                             event,
@@ -195,7 +208,14 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                             </fieldset>
                             <fieldset>
                                 <label htmlFor="delete">Delete</label>
-                                <button onClick={() => {this.removeDeck(el.index)}} name="delete">x</button>
+                                <button
+                                    onClick={() => {
+                                        this.removeDeck(el.index);
+                                    }}
+                                    name="delete"
+                                >
+                                    x
+                                </button>
                             </fieldset>
                         </div>
                     </div>
@@ -218,6 +238,7 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                                 name="shipName"
                                 className="CreationPanel__Main__ShipName"
                                 placeholder="Name of ship"
+                                onFocus={this.handleFocus}
                                 value={this.state.shipName}
                             />
 
@@ -229,6 +250,7 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                                 name="shipDestination"
                                 className="CreationPanel__Main__ShipDestination"
                                 placeholder="Ship destination"
+                                onFocus={this.handleFocus}
                                 value={this.state.shipDestination}
                             />
 

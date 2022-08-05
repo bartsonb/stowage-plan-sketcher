@@ -319,7 +319,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                         height={deck.height}
                         visible={deck.visible}
                         tool={tool}
-                        name={deck.name}
+                        name={shipName}
                         deckName={deck.name}
                         handleClick={this.handleClick}
                         moveCargo={this.moveCargo}
