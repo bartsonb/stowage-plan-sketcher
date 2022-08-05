@@ -12,6 +12,15 @@
         flex-grow: 1;
         justify-content: center;
         align-items: center;
+
+        &::after {
+            position: absolute;
+            content: "";
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: url(../../Assets/Icons/grid-cross.png) repeat;
+            background-size: 2.5em;
+            opacity: 0.8;
+        }
     }
 
     canvas {
