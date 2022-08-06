@@ -16,7 +16,6 @@ export interface CreationPanelProps {
     shipName: string;
     shipDestination: string;
     decks: any[];
-    show: boolean;
     updateSketch(
         shipName: string,
         shipDestination: string,
@@ -31,6 +30,7 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
         super(props);
 
         this.state = {
+            uuid: this.props.uuid || uuidv4(),
             shipName: this.props.shipName || "",
             shipDestination: this.props.shipDestination || "",
             decks: this.props.decks || [],
@@ -48,10 +48,10 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                 this.state.shipName,
                 this.state.shipDestination,
                 this.state.decks,
-                this.props.uuid || uuidv4()
+                this.props.uuid
             );
 
-            this.props.togglePanel("create");
+            this.props.togglePanel("CreationPanel");
         }
     };
 
@@ -230,57 +230,55 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
             return deckInputs;
         };
 
-        if (this.props.show) {
-            return (
-                <Box cssClass="CreationPanel" title="Create & Edit">
-                    <Form handleSubmit={this.handleSubmit}>
-                        <div className="CreationPanel__Main">
-                            <input
-                                onChange={(event) => {
-                                    this.handleNameChange(event);
-                                }}
-                                type="text"
-                                name="shipName"
-                                className="CreationPanel__Main__ShipName"
-                                placeholder="Name of ship"
-                                onFocus={this.handleFocus}
-                                value={this.state.shipName}
-                            />
-
-                            <input
-                                onChange={(event) => {
-                                    this.handleDestinationChange(event);
-                                }}
-                                type="text"
-                                name="shipDestination"
-                                className="CreationPanel__Main__ShipDestination"
-                                placeholder="Ship destination"
-                                onFocus={this.handleFocus}
-                                value={this.state.shipDestination}
-                            />
-
-                            <button
-                                onClick={this.addNewDeck}
-                                className="CreationPanel__Main__AddDeck"
-                            >
-                                Add Deck
-                            </button>
-                        </div>
-
-                        <div className="CreationPanel__Deck">
-                            {getDeckInputs()}
-                        </div>
+        return (
+            <Box cssClass="CreationPanel" title="Create & Edit">
+                <Form handleSubmit={this.handleSubmit}>
+                    <div className="CreationPanel__Main">
+                        <input
+                            onChange={(event) => {
+                                this.handleNameChange(event);
+                            }}
+                            type="text"
+                            name="shipName"
+                            className="CreationPanel__Main__ShipName"
+                            placeholder="Name of ship"
+                            onFocus={this.handleFocus}
+                            value={this.state.shipName}
+                        />
 
                         <input
-                            type="submit"
-                            className="CreationPanel__Submit"
-                            disabled={!this.isFormValid()}
-                            value="Update sketch"
+                            onChange={(event) => {
+                                this.handleDestinationChange(event);
+                            }}
+                            type="text"
+                            name="shipDestination"
+                            className="CreationPanel__Main__ShipDestination"
+                            placeholder="Ship destination"
+                            onFocus={this.handleFocus}
+                            value={this.state.shipDestination}
                         />
-                    </Form>
-                </Box>
-            );
-        }
+
+                        <button
+                            onClick={this.addNewDeck}
+                            className="CreationPanel__Main__AddDeck"
+                        >
+                            Add Deck
+                        </button>
+                    </div>
+
+                    <div className="CreationPanel__Deck">
+                        {getDeckInputs()}
+                    </div>
+
+                    <input
+                        type="submit"
+                        className="CreationPanel__Submit"
+                        disabled={!this.isFormValid()}
+                        value="Update sketch"
+                    />
+                </Form>
+            </Box>
+        );
     }
 }
 

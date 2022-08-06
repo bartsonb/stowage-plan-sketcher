@@ -71,9 +71,9 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
     // Used to toggle Creation and Loading panels
     private togglePanel = (name: string): void => {
         switch (name) {
-            case "create":
+            case "CreationPanel":
                 return this.setState({ showCreationPanel: !this.state.showCreationPanel });
-            case "load":
+            case "LoadingPanel":
                 return this.setState({ showLoadingPanel: !this.state.showLoadingPanel });
         }
     }
@@ -392,18 +392,18 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                         cargo={cargo} />
 
                     <Diffuser show={showCreationPanel || showLoadingPanel || loading}>
-                        <CreationPanel
+                        {/* Unloading component to avoid prop-state conflict, after loading a new sketch. */}
+                        { showCreationPanel && <CreationPanel
                             uuid={uuid}
                             shipName={shipName}
                             shipDestination={shipDestination}
                             decks={decks}
                             togglePanel={this.togglePanel}
-                            updateSketch={this.updateSketch}
-                            show={showCreationPanel} />
-                        <LoadingPanel 
+                            updateSketch={this.updateSketch} />}
+
+                        { showLoadingPanel && <LoadingPanel 
                             togglePanel={this.togglePanel}
-                            updateSketch={this.updateSketch}
-                            show={showLoadingPanel}/>
+                            updateSketch={this.updateSketch} /> }
                         <MoonLoader loading={loading} size={35} color={"#fff"} />
                     </Diffuser>
 
