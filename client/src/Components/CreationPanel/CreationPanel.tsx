@@ -49,7 +49,7 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                 this.state.shipName,
                 this.state.shipDestination,
                 this.state.decks,
-                this.props.uuid
+                this.state.uuid
             );
 
             this.props.togglePanel("CreationPanel");
