@@ -6,11 +6,14 @@
 
     &__Input,
     &__Submit {
-        padding: 0.5em 1em;
+        font-size: 14px;
+        padding: .8em 1em;
         border-radius: 4px;
         border: solid 2px transparent;
+        background: #151515;
         min-height: 3em;
         transition: all 0.2s ease-in-out;
+        color: #ccc;
     }
 
     &__Submit {
@@ -23,7 +26,7 @@
         }
     
         &:hover {
-            background-color: darken($color__general, 5%);
+            background-color: darken($color__general, 10%);
             cursor: pointer;
         }
     }
@@ -34,12 +37,13 @@
         }
     
         &:hover {
-            background: #f8f8f8;
+            background: darken(#151515, 3%);
         }
     
         &:focus {
-            border: solid 2px $color__accent;
-            background: #f8f8f8;
+            background: darken(#151515, 3%);
+            border-color: $color__accent;
+            color: #fff;
         }
     
         &--error, 

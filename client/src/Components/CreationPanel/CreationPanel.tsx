@@ -1,7 +1,7 @@
 import React from "react";
 import Box from "../Box/Box";
 import Form from "../Form/Form";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import "./CreationPanel.scss";
 import { deck } from "../Ship/Ship";
 
@@ -85,7 +85,9 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
     // Remove deck with given index.
     private removeDeck = (deckIndex): void => {
         this.setState((prevState) => {
-            const newDeckState = prevState.decks.filter(el => el.index !== deckIndex);
+            const newDeckState = prevState.decks.filter(
+                (el) => el.index !== deckIndex
+            );
 
             return { decks: newDeckState };
         });
@@ -110,17 +112,19 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
 
     // Handle data change for decks
     private handleDeckChange = (event: any, deckIndex: number, key: string) => {
-        const { target: { value }, } = event;
+        const {
+            target: { value },
+        } = event;
 
         this.setState((prevState) => {
-            const newDeckState = prevState.decks.map(el => {
+            const newDeckState = prevState.decks.map((el) => {
                 if (el.index === deckIndex) {
                     switch (key) {
                         case "name":
-                            return { ...el, [key]: value }
+                            return { ...el, [key]: value };
                         case "width":
                         case "height":
-                            return { ...el, [key]: parseInt(value) || 0 }
+                            return { ...el, [key]: parseInt(value) || 0 };
                     }
                 }
 
@@ -161,68 +165,56 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                         key={el.index}
                     >
                         <div className="CreationPanel__Deck__Element__Inputs">
-                            <fieldset>
-                                <label htmlFor="Deck name">Deck name</label>
-                                <input
-                                    type="text"
-                                    placeholder="Deck name"
-                                    name="name"
-                                    value={el.name}
-                                    onFocus={this.handleFocus}
-                                    onChange={(event) => {
-                                        this.handleDeckChange(
-                                            event,
-                                            el.index,
-                                            "name"
-                                        );
-                                    }}
-                                />
-                            </fieldset>
-                            <fieldset>
-                                <label htmlFor="width">Width</label>
-                                <input
-                                    type="number"
-                                    name="width"
-                                    value={el.width}
-                                    placeholder="0"
-                                    onFocus={this.handleFocus}
-                                    onChange={(event) => {
-                                        this.handleDeckChange(
-                                            event,
-                                            el.index,
-                                            "width"
-                                        );
-                                    }}
-                                />
-                            </fieldset>
-                            <fieldset>
-                                <label htmlFor="height">Height</label>
-                                <input
-                                    type="number"
-                                    name="height"
-                                    value={el.height}
-                                    placeholder="0"
-                                    onFocus={this.handleFocus}
-                                    onChange={(event) => {
-                                        this.handleDeckChange(
-                                            event,
-                                            el.index,
-                                            "height"
-                                        );
-                                    }}
-                                />
-                            </fieldset>
-                            <fieldset>
-                                <label htmlFor="delete">Delete</label>
-                                <button
-                                    onClick={() => {
-                                        this.removeDeck(el.index);
-                                    }}
-                                    name="delete"
-                                >
-                                    x
-                                </button>
-                            </fieldset>
+                            <input
+                                type="text"
+                                placeholder="Deck name"
+                                name="name"
+                                value={el.name}
+                                onFocus={this.handleFocus}
+                                onChange={(event) => {
+                                    this.handleDeckChange(
+                                        event,
+                                        el.index,
+                                        "name"
+                                    );
+                                }}
+                            />
+                            <input
+                                type="number"
+                                name="width"
+                                value={el.width}
+                                placeholder="Width"
+                                onFocus={this.handleFocus}
+                                onChange={(event) => {
+                                    this.handleDeckChange(
+                                        event,
+                                        el.index,
+                                        "width"
+                                    );
+                                }}
+                            />
+                            <input
+                                type="number"
+                                name="height"
+                                value={el.height}
+                                placeholder="Height"
+                                onFocus={this.handleFocus}
+                                onChange={(event) => {
+                                    this.handleDeckChange(
+                                        event,
+                                        el.index,
+                                        "height"
+                                    );
+                                }}
+                            />
+                            <button
+                                onClick={() => {
+                                    this.removeDeck(el.index);
+                                }}
+                                name="delete"
+                            >
+                                Delete
+                            </button>
                         </div>
                     </div>
                 );
@@ -234,6 +226,7 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
         return (
             <Box cssClass="CreationPanel" title="Create & Edit">
                 <Form handleSubmit={this.handleSubmit}>
+                    <div className="CreationPanel__Category">Main Settings</div>
                     <div className="CreationPanel__Main">
                         <input
                             onChange={(event) => {
@@ -258,25 +251,35 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                             onFocus={this.handleFocus}
                             value={this.state.shipDestination}
                         />
+                    </div>
 
+                    <div
+                        className="CreationPanel__Category"
+                        style={{
+                            display:
+                                this.state.decks.length === 0 ? "none" : "flex",
+                        }}
+                    >
+                        Deck settings
+                    </div>
+                    <div className="CreationPanel__Deck">{getDeckInputs()}</div>
+
+                    <div className="CreationPanel__Category"></div>
+                    <div className="CreationPanel__Buttons">
                         <button
                             onClick={this.addNewDeck}
                             className="CreationPanel__Main__AddDeck"
                         >
-                            Add Deck
+                            +Deck
                         </button>
-                    </div>
 
-                    <div className="CreationPanel__Deck">
-                        {getDeckInputs()}
+                        <input
+                            type="submit"
+                            className="CreationPanel__Submit"
+                            disabled={!this.isFormValid()}
+                            value="Confirm"
+                        />
                     </div>
-
-                    <input
-                        type="submit"
-                        className="CreationPanel__Submit"
-                        disabled={!this.isFormValid()}
-                        value="Update sketch"
-                    />
                 </Form>
             </Box>
         );

@@ -1,10 +1,9 @@
-@import '../../Assets/Styles/_variables.scss';
+@import "../../Assets/Styles/_variables.scss";
 
 .MenuBar {
     background: $color__darkAccent;
     color: $color_general_white;
     display: flex;
-    gap: .5em;
     padding: 0 1em;
     align-items: center;
 
@@ -12,39 +11,31 @@
         display: flex;
         align-items: center;
         border-bottom: solid 2px transparent;
-        padding: 1em .5em;
-        gap: .5em;
+        padding: 1.2em 1em;
+        gap: 0.5em;
         cursor: pointer;
-        transition: all .2s ease-in-out;
+        transition: all 0.2s ease-in-out;
+
+        &:hover {
+            background: lighten($color__darkAccent, 5%);
+        }
 
         img {
             width: 1.1em;
         }
 
-        &--create {
-
-        }
-
-        &--export {
-
-        }
-
         &--active {
             color: #fff;
+            background: lighten($color__darkAccent, 10%);
             border-bottom-color: $color__accent;
         }
 
         &--save {
-
             span {
-                margin-left: .5em;
+                margin-left: 0.5em;
                 color: #666;
-                font-size: .8em;
+                font-size: 0.8em;
             }
         }
-    }
-
-    &__Button:hover {
-        background: lighten($color__darkAccent, 5%);
     }
 }

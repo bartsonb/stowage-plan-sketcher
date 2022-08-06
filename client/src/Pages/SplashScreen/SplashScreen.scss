@@ -13,6 +13,25 @@
         align-items: center;
         flex-direction: column;
         justify-content: center;
+        background-image: radial-gradient(
+            circle farthest-corner at 10% 20%,
+            rgba(37, 145, 251, 0.98) 0.1%,
+            rgba(0, 7, 128, 1) 99.8%
+        );
+        gap: 1em;
+
+        h1 {
+            color: #fff;
+            font-size: 3em;
+            span {
+                opacity: 0.15;
+            }
+        }
+
+        p {
+            color: #efefef;
+            font-size: 1.5em;
+        }
 
         &__Button {
             display: flex;
@@ -28,10 +47,13 @@
             box-shadow: 0 0 9px 3px rgba(0, 0, 0, 0.1);
             transition: all 0.2s ease-in-out;
 
-            img { width: 1em; margin-right: .5em; }
+            img {
+                width: 1em;
+                margin-right: 0.5em;
+            }
 
             &:hover {
-                transform:  scale(1.1);
+                transform: scale(1.1);
                 background: darken($color__general, 5%);
                 box-shadow: 0 0 13px 7px rgba(0, 0, 0, 0.1);
                 cursor: pointer;
@@ -42,17 +64,18 @@
     &__Reviews {
         width: 100%;
         height: 70vh;
-        background: rgb(152, 152, 152);
         display: flex;
         align-items: center;
         flex-direction: column;
         justify-content: center;
+        color: #fff;
+        background: #222;
     }
 
     &__Footer {
         width: 100%;
         height: 70vh;
-        background: #212121;
+        background: #111;
         display: flex;
         color: #fff;
         align-items: center;

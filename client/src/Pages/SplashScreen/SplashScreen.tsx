@@ -19,7 +19,7 @@ export const SplashScreen = (props: SplashScreenProps) => {
         >
             <div className="SplashScreen">
                 <div className="SplashScreen__HeroImage">
-                    <h1>SplashScreen</h1>
+                    <h1>Stowage Plan Sketcher <span>v1.0</span></h1>
                     <p>Efficiently make stowage plans.</p>
                     {props.isAuthenticated ? (
                         <Link to={"/app"}>
