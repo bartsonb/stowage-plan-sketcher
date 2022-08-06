@@ -4,35 +4,16 @@ import "./Box.scss";
 
 import dragIcon from '../../Assets/Icons/drag.svg';
 
-export type BoxSizing = {
-    x: number;
-    y: number;
-    width: number | string;
-    height: number | string;
-};
-
 export interface BoxProps {
     title?: string;
     children?: any;
     cssClass: string;
-    sizing?: BoxSizing;
+    sizing?: any;
 }
 
 export const Box = (props: BoxProps) => {
     const { title, children, cssClass, sizing } = props;
     const boxRef = React.useRef(null);
-
-    // Using Object: Sizing to adjust the box width and height
-    // and place it with absolute positioning.
-    let styles = null;
-    if (sizing) {
-        styles = {
-            width: sizing.width,
-            height: sizing.height,
-            left: sizing.x,
-            top: sizing.y,
-        };
-    }
 
     return (
         <Draggable
@@ -43,7 +24,7 @@ export const Box = (props: BoxProps) => {
             nodeRef={boxRef}>
             <div 
                 className={"Box"} 
-                style={styles}
+                style={sizing}
                 ref={boxRef}>
                 <div className="Box__Handle">
                     <img className="Box__Handle__Icon" src={dragIcon} alt="" />

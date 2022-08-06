@@ -95,7 +95,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
     // Handeling the clicks on the ship and cargo elements
     // Event is needed to stop the eventPropagation
     // cargoIndex is used to indentify the clicked cargo element
-    private handleClick = (event: any, cargoIndex: number | null, coords?: any, deckIndex?: number): void => {
+    private handleCargoClick = (event: any, cargoIndex: number | null, coords?: any, deckIndex?: number): void => {
         const { tool } = this.state;
         event.stopPropagation();
 
@@ -141,6 +141,12 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                 }
             });
         }
+    };
+
+    private handleDeckClick = (event: any, cargoIndex: number | null, coords?: any, deckIndex?: number): void => {
+        const { tool } = this.state;
+        event.stopPropagation();
+
     };
 
     // Sorting the selected cargo by their x or y coordiantes.
@@ -338,7 +344,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                         return (
                             <Cargo 
                                 key={cargo.cargoIndex} 
-                                handleClick={this.handleClick}
+                                handleClick={this.handleCargoClick}
                                 index={cargo.cargoIndex} 
                                 selected={cargo.selected} 
                                 hazardous={cargo.hazardous}
@@ -358,7 +364,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                         tool={tool}
                         name={shipName}
                         deckName={deck.name}
-                        handleClick={this.handleClick}
+                        handleClick={this.handleDeckClick}
                         moveCargo={this.moveCargo}
                         getSelectionBoxCoords={this.getSelectionBoxCoords}>
                         

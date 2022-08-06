@@ -5,7 +5,7 @@
     justify-content: space-between;
     font-size: 1em;
     padding: 0 1em;
-    background: #212121;
+    background: #111;
     color: #fff;
     transition: all 0.2s ease-in-out;
 
@@ -83,8 +83,8 @@
         top: 100%;
         left: -0.5em;
         right: -0.5em;
-        background: #212121;
-        z-index: 10000;
+        background: #111;
+        z-index: 999999;
         border-radius: 0 0 4px 4px;
         box-shadow: 0 7px 10px 1px rgb(0 0 0 / 30%);
         animation: growDown 300ms ease-in-out forwards;

@@ -1,19 +1,18 @@
 @import '../../Assets/Styles/_variables.scss';
 
 .MenuBar {
-    background: $color_general_black;
+    background: $color__darkAccent;
     color: $color_general_white;
     display: flex;
-
+    gap: .5em;
     padding: 0 1em;
     align-items: center;
 
     &__Button {
         display: flex;
         align-items: center;
-        margin-right: .3em;
         border-bottom: solid 2px transparent;
-        padding: .5em;
+        padding: 1em .5em;
         gap: .5em;
         cursor: pointer;
         transition: all .2s ease-in-out;
@@ -46,6 +45,6 @@
     }
 
     &__Button:hover {
-        background: lighten(#2e2e2e, 5%);
+        background: lighten($color__darkAccent, 5%);
     }
 }

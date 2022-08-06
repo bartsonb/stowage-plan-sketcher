@@ -160,18 +160,20 @@ export class Ship extends React.Component<ShipProps, any> {
 
     render() {
         const { deckName, name, deckIndex, width, height, visible } = this.props;
+        const [ paddingWidth, paddingHeight ] = [30, 55];
 
         // Only show Ship element if "visible" prop is true.
         if (visible) {
             return (
-                <Box 
+                <Box
                     cssClass="Ship" 
                     title={`${name} - ${deckName} [${deckIndex + 1}]`}
                     sizing={{ 
-                        width: (width + 32) + "px",
-                        height: (height + 55) + "px",
-                        x: (window.innerWidth / 2) - (width / 2), 
-                        y: (window.innerHeight / 2) - (height / 1.7)
+                        width: (width + paddingWidth) + "px",
+                        height: (height + paddingHeight) + "px",
+                        top: ((window.innerHeight / 2) - (height / 2) - paddingHeight) + "px", 
+                        left: ((window.innerWidth / 2) - (width / 2) - paddingWidth) + "px",
+                        position: "absolute"
                     }}>
                     <div 
                         className="Ship__Deck"
