@@ -23,7 +23,7 @@ export const MenuBar = (props: MenuBarProps) => {
         <div className="MenuBar">
             <div
                 onClick={() => {
-                    togglePanel("create");
+                    togglePanel("CreationPanel");
                 }}
                 className={`MenuBar__Button MenuBar__Button--create${showCreationPanel ? " MenuBar__Button--active" : ""}`}
             >
@@ -33,7 +33,7 @@ export const MenuBar = (props: MenuBarProps) => {
 
             <div
                 onClick={() => {
-                    togglePanel("load");
+                    togglePanel("LoadingPanel");
                 }}
                 className={`MenuBar__Button MenuBar__Button--load${showLoadingPanel ? " MenuBar__Button--active" : ""}`}
             >

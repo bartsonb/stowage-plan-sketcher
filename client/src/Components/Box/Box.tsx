@@ -42,7 +42,7 @@ export const Box = (props: BoxProps) => {
             defaultClassNameDragging="Box--Dragging"
             nodeRef={boxRef}>
             <div 
-                className={"Box " + cssClass} 
+                className={"Box"} 
                 style={styles}
                 ref={boxRef}>
                 <div className="Box__Handle">
@@ -50,7 +50,7 @@ export const Box = (props: BoxProps) => {
                     <p className="Box__Handle__Title">{title}</p>
                     <img className="Box__Handle__Action" src="" alt="" />
                 </div>
-                <div className={`Box__Content`}>{children}</div>
+                <div className={`Box__Content ` + cssClass}>{children}</div>
             </div>
         </Draggable>
     );
