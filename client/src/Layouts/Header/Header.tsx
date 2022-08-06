@@ -8,6 +8,7 @@ export interface HeaderProps {
     logoutUser: any;
 }
 
+
 export const Header = (props: HeaderProps) => {
     let userDependentMenuItems = [];
 
@@ -15,20 +16,24 @@ export const Header = (props: HeaderProps) => {
         const usenameFirstLetter = props.user.name[0].toUpperCase();
         
         userDependentMenuItems.push(
-            <div key={0} className="Header__Menu__Item Header__Menu__Item--account">
-                <div>{usenameFirstLetter}</div>
+            <div key={0} className="Header__Item_Account">
+                <div className="Header__ProfilePicture">{usenameFirstLetter}</div>
                 <p>{props.user.name} <span>({props.user.email})</span></p>
-            </div>,
-            <div key={1} className="Header__Menu__Item Header__Menu__Item--logout">
-                <a onClick={props.logoutUser} href="#">Logout</a>
+                <div className="Header__Indicator"></div>
+                <div className="Header__Dropdown">
+                    <ul>
+                        <li><a href="#">User settings</a></li>
+                        <li  onClick={props.logoutUser}><a href="#">Logout</a></li>
+                    </ul>
+                </div>
             </div>
         );
     } else {
         userDependentMenuItems.push([
-            <div key={0} className="Header__Menu__Item Header__Menu__Item--register">
+            <div key={0} className="Header__Item">
                 <Link to={'/register'}>Register</Link>
             </div>,
-            <div key={1} className="Header__Menu__Item Header__Menu__Item--login">
+            <div key={1} className="Header__Item">
                 <Link to={'/login'}>Login</Link>
             </div>,
         ]);
@@ -43,10 +48,10 @@ export const Header = (props: HeaderProps) => {
                 <span>v1.0</span>
             </div>
             <div className="Header__Menu">
-                <div className="Header__Menu__Item Header__Menu__Item--pricing">
+                <div className="Header__Item">
                     Our Team
                 </div>
-                <div className="Header__Menu__Item Header__Menu__Item--about">
+                <div className="Header__Item">
                     About
                 </div>
                 {userDependentMenuItems}

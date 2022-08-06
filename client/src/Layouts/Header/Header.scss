@@ -11,8 +11,8 @@
 
     a {
         transition: all 0.2s ease-in-out;
-        text-decoration: none;    
-        
+        text-decoration: none;
+
         &:hover {
             color: $color__accent;
         }
@@ -20,7 +20,7 @@
 
     &__Logo {
         display: flex;
-        gap: .5em;
+        gap: 0.5em;
         padding: 1em 0;
         font-weight: bold;
 
@@ -32,27 +32,90 @@
 
     &__Menu {
         display: flex;
-        gap: 1em;
+        gap: 1.3em;
+    }
 
-        &__Item {
+    &__Item {
+        display: flex;
+        align-items: center;
+
+        &_Account {
             display: flex;
             align-items: center;
+            position: relative;
+            gap: 0.6em;
 
-            &--account {
-                p span {
-                    color: #888888;
-                }
-            }
-
-            div {
-                background: $color__accent;
-                height: 1.6em;       
-                width: 1.6em; 
+            &:hover .Header__Dropdown {
                 display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 2000px;
-                margin-right: .5em;
+            }
+            &:hover .Header__Indicator {
+                transform: rotate(180deg);
+            }
+        }
+    }
+
+    &__ProfilePicture {
+        background: $color__accent;
+        height: 1.6em;
+        width: 1.6em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 2000px;
+
+        span {
+            color: #888888;
+        }
+    }
+
+    &__Indicator {
+        transition: all 0.1s ease-in-out;
+        width: 1.3em;
+        height: 1.3em;
+        background: url("../../Assets/Icons/chevron-down.svg") no-repeat center;
+        background-size: 100%;
+    }
+
+    &__Dropdown {
+        position: absolute;
+        padding: 0.8em 0;
+        display: none;
+        top: 100%;
+        left: -0.5em;
+        right: -0.5em;
+        background: #212121;
+        z-index: 10000;
+        border-radius: 0 0 4px 4px;
+        box-shadow: 0 7px 10px 1px rgb(0 0 0 / 30%);
+        animation: growDown 300ms ease-in-out forwards;
+        transform-origin: top center;
+
+        @keyframes growDown {
+            0% {
+                transform: scaleY(0);
+            }
+            80% {
+                transform: scaleY(1.1);
+            }
+            100% {
+                transform: scaleY(1);
+            }
+        }
+
+        ul {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+
+            li {
+                flex-grow: 1;
+                padding: 0.5em 1em;
+                list-style: none;
+                cursor: pointer;
+
+                &:hover {
+                    background: #333;
+                }
             }
         }
     }
