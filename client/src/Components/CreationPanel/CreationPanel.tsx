@@ -3,6 +3,7 @@ import Box from "../Box/Box";
 import Form from "../Form/Form";
 import { v4 as uuidv4 } from 'uuid';
 import "./CreationPanel.scss";
+import { deck } from "../Ship/Ship";
 
 export interface CreationPanel {
     deckMinWidth: number;
@@ -19,7 +20,7 @@ export interface CreationPanelProps {
     updateSketch(
         shipName: string,
         shipDestination: string,
-        decks: object,
+        decks: deck[],
         uuid?: string
     ): void;
     togglePanel(name: string): void;

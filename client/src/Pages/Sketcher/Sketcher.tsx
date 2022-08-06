@@ -2,7 +2,7 @@ import React from "react";
 import Toolbar from "../../Components/Toolbar/Toolbar";
 import InfoPanel from "../../Components/InfoPanel/InfoPanel";
 import MenuBar from "../../Components/MenuBar/MenuBar";
-import Ship from "../../Components/Ship/Ship";
+import Ship, { deck } from "../../Components/Ship/Ship";
 import Cargo, { cargo } from "../../Components/Cargo/Cargo";
 import EditPanel from "../../Components/EditPanel/EditPanel";
 import Diffuser from "../../Components/Diffuser/Diffuser";
@@ -250,19 +250,27 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         })
     }
 
-    // Update or create sketch
-    private updateSketch = (shipName: string, shipDestination: string, decks: any, uuid: string): void => {
+    // Update or create sketch, also checks for cargo with not associated deck.
+    private updateSketch = (shipName: string, shipDestination: string, decks: deck[], uuid: string): void => {
         this.setState(prevState => {
             // Get array of all deck indices.
-            const deckIndicices = prevState.decks.map(el => el.index);
+            const deckIndicices = decks.map(el => el.index);
 
             // Remove cargo that has no associated deck.
-            const cargo = prevState.cargo.filter(el => deckIndicices.includes(el.deckIndex));            
+            const cargo = prevState.cargo.filter(el => deckIndicices.includes(el.deckIndex));
 
             return { uuid, shipName, shipDestination, decks, cargo }
         })
     }
 
+    // Overwrite current sketch 
+    private overwriteSketch = (shipName: string, shipDestination: string, decks: object[], cargo: cargo[], uuid: string): void => {
+        this.setState(() => {
+            return { uuid, shipName, shipDestination, decks, cargo }
+        })
+    }
+
+    // Helper function to strip unnecessary keys from state before sending state to API.
     private removeKeysFromObject = (obj: any, arr: string[]): any => {
         const object = Object.assign({}, obj);
 
@@ -403,7 +411,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
                         { showLoadingPanel && <LoadingPanel 
                             togglePanel={this.togglePanel}
-                            updateSketch={this.updateSketch} /> }
+                            overwriteSketch={this.overwriteSketch} /> }
                         <MoonLoader loading={loading} size={35} color={"#fff"} />
                     </Diffuser>
 

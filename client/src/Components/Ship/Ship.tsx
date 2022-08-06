@@ -3,6 +3,14 @@ import Box from "../Box/Box";
 import Cargo from "../Cargo/Cargo";
 import './Ship.scss';
 
+export type deck = {
+    index: number, 
+    name: string,
+    visible: boolean,
+    width: number,
+    height: number
+}
+
 export interface Ship {
     deckRef: any;
 }

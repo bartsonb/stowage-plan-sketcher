@@ -4,13 +4,15 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { SyncLoader } from "react-spinners";
 import reloadIcon from "../../Assets/Icons/reload.svg";
+import { cargo } from "../Cargo/Cargo";
 
 export interface LoadingPanelProps {
     togglePanel(name: string): void;
-    updateSketch(
+    overwriteSketch(
         shipName: string,
         shipDestination: string,
-        decks: object,
+        decks: object[],
+        cargo: cargo[],
         uuid?: string
     ): void;
 }
@@ -18,10 +20,10 @@ export interface LoadingPanelProps {
 export const LoadingPanel = (props: LoadingPanelProps) => {
     const [loading, setLoading] = useState(false);
     const [sketches, setSketches] = useState([]);
-    const { togglePanel, updateSketch } = props;
+    const { togglePanel, overwriteSketch } = props;
 
-    const handleClick = ({ shipName, shipDestination, decks, uuid }) => {
-        updateSketch(shipName, shipDestination, decks, uuid );
+    const handleClick = ({ shipName, shipDestination, decks, cargo, uuid }) => {
+        overwriteSketch(shipName, shipDestination, decks, cargo, uuid);
         togglePanel("LoadingPanel")
     }
 
