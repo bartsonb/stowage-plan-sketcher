@@ -1,66 +1,5 @@
 const mongoose = require('mongoose');
 
-const CoordsSchema = new mongoose.Schema({
-    x: {
-        type: Number, 
-        required: true
-    }, 
-    y: {
-        type: Number, 
-        required: true
-    }, 
-})
-
-const CargoSchema = new mongoose.Schema({
-    index: {
-        type: Number, 
-        required: true
-    },
-    deckIndex: {
-        type: Number, 
-        required: true
-    },
-    coords: {
-        type: {CoordsSchema}, 
-        required: true
-    }, 
-    type: {
-        type: String, 
-        required: true
-    }, 
-    selected: {
-        type: Boolean, 
-        required: true
-    },
-    hazardous: {
-        type: Boolean, 
-        required: true
-    }
-});
-
-const DeckSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    index: {
-        type: Number, 
-        required: true
-    },
-    visible: {
-        type: Boolean,
-        required: true
-    },
-    width: {
-        type: Number,
-        required: true
-    }, 
-    height: {
-        type: Number,
-        required: true
-    }
-});
-
 const SketchSchema = new mongoose.Schema({
     uuid: {
         type: String,
@@ -72,11 +11,69 @@ const SketchSchema = new mongoose.Schema({
         required: true
     },
     decks: {
-        type: [DeckSchema],
+        type: [{
+            _id: false,
+            name: {
+                type: String,
+                required: true
+            },
+            index: {
+                type: Number, 
+                required: true
+            },
+            visible: {
+                type: Boolean,
+                required: true
+            },
+            width: {
+                type: Number,
+                required: true
+            }, 
+            height: {
+                type: Number,
+                required: true
+            }
+        }],
         required: true
     },
     cargo: {
-        type: [CargoSchema], 
+        type: [{
+            _id: false,
+            cargoIndex: {
+                type: Number, 
+                required: true
+            },
+            deckIndex: {
+                type: Number, 
+                required: true
+            },
+            coords: {
+                type: {
+                    _id: false,
+                    x: {
+                        type: Number, 
+                        required: true
+                    }, 
+                    y: {
+                        type: Number, 
+                        required: true
+                    }, 
+                }, 
+                required: true
+            }, 
+            cargoType: {
+                type: String, 
+                required: true
+            }, 
+            selected: {
+                type: Boolean, 
+                required: true
+            },
+            hazardous: {
+                type: Boolean, 
+                required: true
+            }
+        }], 
         required: true
     },
     shipDestination: {
