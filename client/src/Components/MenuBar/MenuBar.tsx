@@ -48,7 +48,7 @@ export const MenuBar = (props: MenuBarProps) => {
             >
                 <img src={saveIcon} alt="" />
                 Save
-                <span>(Saved last {savedTimestamp}s ago)</span>
+                {/* <span>(Saved last {savedTimestamp}s ago)</span> */}
             </div>
 
             <div
