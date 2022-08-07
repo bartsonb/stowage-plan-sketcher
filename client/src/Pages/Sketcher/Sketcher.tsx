@@ -9,9 +9,11 @@ import Diffuser from "../../Components/Diffuser/Diffuser";
 import LoadingPanel from "../../Components/LoadingPanel/LoadingPanel";
 import CreationPanel from "../../Components/CreationPanel/CreationPanel";
 import axios from "axios";
+import { toPng } from 'html-to-image';
 import { User } from "../../App";
-import "./Sketcher.scss";
 import { MoonLoader } from "react-spinners";
+import { saveAs } from "file-saver";
+import "./Sketcher.scss";
 
 export interface SketcherProps {
     user: User;
@@ -143,11 +145,8 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         }
     };
 
-    private handleDeckClick = (event: any, cargoIndex: number | null, coords?: any, deckIndex?: number): void => {
-        const { tool } = this.state;
-        event.stopPropagation();
-
-    };
+    // TODO deck und cargo click handler trennen
+    private handleDeckClick = this.handleCargoClick;
 
     // Sorting the selected cargo by their x or y coordiantes.
     // After sorting fhe first element will have the smallest coordiante.
@@ -312,7 +311,25 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
     }
 
     private exportSketch = (): void => {
-        console.log('export sketch');
+        this.setState({ loading: true });
+
+
+        axios({
+            method: "get", 
+            responseType: "blob",
+            url: `http://localhost:5000/api/sketches/${this.state.uuid}?download=1`,
+            data: { userId: this.props.user._id }
+        })
+            .then(res =>  {
+                const blob = new Blob([res.data], { type: "text/plain;charset=utf-8"});
+                saveAs(blob, 'pdfGenerator.js');
+            })
+            .catch(error => {
+                console.log(error);
+            })
+            .finally(() => {
+                this.setState({ loading: false });
+            })
     }
 
     // Toggle visibility of decks.

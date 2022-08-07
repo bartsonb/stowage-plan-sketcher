@@ -8,7 +8,8 @@ module.exports = router.get('/',
     SketchController.getAll
 );
 
-// @route   GET /api/sketches
+// @route   GET /api/sketches/:id
+// @query   download? 
 module.exports = router.get('/:id', 
     AuthMiddleware,
     SketchController.getOne
@@ -18,4 +19,10 @@ module.exports = router.get('/:id',
 module.exports = router.post('/', 
     AuthMiddleware,
     SketchController.store
+);
+
+// @route   DELETE /api/sketches/id
+module.exports = router.delete('/:id', 
+    AuthMiddleware,
+    SketchController.delete
 );
