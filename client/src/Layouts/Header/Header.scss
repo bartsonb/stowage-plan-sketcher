@@ -45,6 +45,8 @@
             position: relative;
             gap: 0.6em;
 
+            p span { color: #b3b3b3; }
+
             &:hover .Header__Dropdown {
                 display: flex;
             }
