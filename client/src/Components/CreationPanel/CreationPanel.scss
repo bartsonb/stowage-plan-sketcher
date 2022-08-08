@@ -109,9 +109,7 @@
         &__Element {
             display: flex;
             border-radius: 4px;
-            padding: 0.3em;
             flex-direction: column;
-            border: solid 2px #202020;
             background-color: #1e1e1e;
 
             &:not(:last-child) {

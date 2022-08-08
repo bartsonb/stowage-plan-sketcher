@@ -168,9 +168,7 @@ export class Ship extends React.Component<ShipProps, any> {
                 <Box
                     cssClass="Ship" 
                     title={`${name} - ${deckName} [${deckIndex + 1}]`}
-                    sizing={{ 
-                        width: (width + paddingWidth) + "px",
-                        height: (height + paddingHeight) + "px",
+                    sizing={{
                         top: ((window.innerHeight / 2) - (height / 2) - paddingHeight) + "px", 
                         left: ((window.innerWidth / 2) - (width / 2) - paddingWidth) + "px",
                         position: "absolute"
