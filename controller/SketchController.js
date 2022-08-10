@@ -9,11 +9,14 @@ const stream = require('stream');
  * @returns returns all sketches from user
  */
 exports.getAll = (req, res) => {
-    Sketch.find({ userId: req.user.id }, (error, sketches) => {
-        if (error) return res.status(400).json({ error });
-
-        return res.json({ sketches });
-    });
+    Sketch
+        .find({ userId: req.user.id })
+        .then(sketches => {
+            return res.json({ sketches });
+        })
+        .catch(error => {
+            return res.status(400).json({ error });
+        });
 };
 
 /**
@@ -23,24 +26,32 @@ exports.getAll = (req, res) => {
  * @returns returns the sketch with given ID
  */
 exports.getOne = (req, res) => {
-    Sketch.find({ uuid: req.params.id, userId: req.user.id }, (error, sketches) => {
-        if (error) return res.status(400).json({ error });
-
-        if (req.query.download === "1") {
-            PdfGenerator.generate()
-                .then(data => { 
-                    const readStream = new stream.PassThrough()
-                    readStream.end(data);
-                  
-                    res.set('Content-disposition', 'attachment; filename=' + "sketcherpdf.js");
-                    res.set('Content-Type', 'text/plain');         
-                    
-                    readStream.pipe(res);         
-                });
-        } else { 
-            return res.json({ sketches });
-        }
-    });
+    // Using mongoose query with lean to get a POJO instead of a mongoose document,
+    // because of object property conflicts with handlebars.
+    Sketch
+        .findOne({ uuid: req.params.id, userId: req.user.id })
+        .lean()
+        .then(async sketch => {
+    
+            if (req.query.download === "1") {
+                const pathToPdf = await PdfGenerator.create(sketch);
+                
+                return res.json({ pathToPdf });
+    
+                const readStream = new stream.PassThrough();
+                readStream.end(data);
+                
+                res.set('Content-disposition', 'attachment; filename=' + "sketcherpdf.js");
+                res.set('Content-Type', 'text/plain');         
+                
+                readStream.pipe(res);  
+            } else { 
+                return res.json({ sketch });
+            }
+        })
+        .catch(error => {
+            return res.status(400).json({ error });
+        });
 };
 
 /**
@@ -61,19 +72,26 @@ exports.store = (req, res) => {
     if (error) return res.status(400).json(error);
 
     // Get sketch and update, if sketch exists.
-    Sketch.findOneAndUpdate({ uuid: value.uuid }, value, { new: true }, (error, sketch) => {
-        if (error) return res.status(400).json({ message: error });
-        if (sketch) return res.json({ sketch });
+    Sketch
+        .findOneAndUpdate({ uuid: value.uuid }, value, { new: true },)
+        .then(sketch => {
+            if (sketch) return res.json({ sketch });
 
-        // Create sketch if it doesn't exist.
-        if (!sketch) {
-            Sketch.create(value, (error, sketch) => {
-                if (error) return res.status(500).json({ message: error });
-
-                return res.json({ sketch });
-            });
-        }
-    });
+            // Create sketch if it doesn't exist.
+            if (!sketch) {
+                Sketch
+                    .create(value)
+                    .then(sketch => {
+                        return res.json({ sketch });
+                    })
+                    .catch(error => {
+                        return res.status(500).json({ message: error });
+                    });
+            }
+        })
+        .catch(error => {
+            return res.status(400).json({ message: error });
+        })
 };
 
 /**
@@ -82,9 +100,12 @@ exports.store = (req, res) => {
  * @returns returns true if deleted.
  */
  exports.delete = (req, res) => {
-    Sketch.find({ userId: req.user.id }, (error, sketches) => {
-        if (error) return res.status(400).json({ error });
-
-        return res.json({ sketches });
-    });
+    Sketch
+        .findOneAndDelete({ userId: req.user.id })
+        .then(sketch => {
+            return res.json({ deleted: true });
+        })
+        .catch(error => {
+            return res.status(400).json({ error });  
+        });
 };

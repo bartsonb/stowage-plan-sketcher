@@ -18,24 +18,29 @@ exports.store = (req, res) => {
     if (error) return res.status(400).json(error);
 
     // Check if user with given email address already exists.
-    User.findOne({ email }, (err, user) => {
-        if (user) return res.status(400).json({ details: [{ message: 'User with this email already exists' }]});
+    User
+        .findOne({ email })
+        .then(user => {
+            if (user) return res.status(400).json({ details: [{ message: 'User with this email already exists' }]});
 
-        // Hash user password
-        bcrypt.hash(password, 10, (err, password) => {
-            User.create({ name, email, password }, (err, user) => {
-                if (error) return res.status(500).json({ details: [{ message: 'User creation failed unexpectedly' }]});
-
-                jwt.sign(
-                    { user: { id: user.id }},
-                    process.env.JWT_SECRET,
-                    { expiresIn: 86400 },
-                    (err, token) => {
-                        if (error) throw err;
-
-                        return res.send({ token });
-                });
+            // Hash user password
+            bcrypt.hash(password, 10, (err, password) => {
+                User
+                    .create({ name, email, password })
+                    .then(user => {
+                        jwt.sign(
+                            { user: { id: user.id }},
+                            process.env.JWT_SECRET,
+                            { expiresIn: 86400 },
+                            (err, token) => {
+                                if (error) throw err;
+        
+                                return res.send({ token });
+                        });
+                    })
+                    .catch(error => {
+                        return res.status(500).json({ details: [{ message: 'User creation failed unexpectedly' }]});
+                    })
             });
         });
-    });
 };
