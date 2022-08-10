@@ -315,8 +315,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         })
             .then(res =>  {
                 const blob = new Blob([res.data], { type: "application/pdf;charset=utf-8"});
-                saveAs(blob, 'meine.pdf');
-            
+                saveAs(blob, res.headers['x-filename']);
             })
             .catch(error => {
                 console.log(error);

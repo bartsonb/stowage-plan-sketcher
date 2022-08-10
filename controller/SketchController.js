@@ -53,6 +53,7 @@ exports.getOne = (req, res) => {
                     PdfGenerator
                         .create(data)
                         .then(pathToFile => {
+                            res.set("X-Filename", `${data.shipName}.pdf`);
                             return res.download(pathToFile);
                         });
     
