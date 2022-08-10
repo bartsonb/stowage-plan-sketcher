@@ -1,6 +1,7 @@
 import React from "react";
 import Box from "../Box/Box";
 import Cargo from "../Cargo/Cargo";
+import { isCargoTool, isSelectTool } from "../Toolbar/Toolbar";
 import './Ship.scss';
 
 export type deck = {
@@ -86,7 +87,7 @@ export class Ship extends React.Component<ShipProps, any> {
 
     //  Return the preview cargo element that is positioned at the user's mouse cursor.
     private getPreviewCargo = () => {
-        if (this.state.displayPreviewCargo && ['container', 'box'].includes(this.props.tool)) {
+        if (this.state.displayPreviewCargo && isCargoTool(this.props.tool)) {
             return <Cargo type={this.props.tool} preview={true} coords={this.state.mousePos} /> 
         }
     }
@@ -112,13 +113,13 @@ export class Ship extends React.Component<ShipProps, any> {
 
     // Handle mouseEnter and mouseLeave
     private handleMouseEnter = () => { 
-        if (['container', 'box'].includes(this.props.tool)) {
+        if (isCargoTool(this.props.tool)) {
             this.setState({ displayPreviewCargo: true }) 
         }
     };
 
     private handleMouseLeave = () => { 
-        if (this.props.tool === 'select' && this.state.isDragging) {
+        if (isSelectTool(this.props.tool) && this.state.isDragging) {
             this.props.getSelectionBoxCoords(this.state.selectionBox.pos, this.state.mousePos, this.props.deckIndex);
         }
 
@@ -131,7 +132,7 @@ export class Ship extends React.Component<ShipProps, any> {
     private handleMouseDown = (event: any): void => {
         const { target: { className }} = event;
 
-        if (this.props.tool === 'select' && className.includes('Deck')) {
+        if (isSelectTool(this.props.tool) && className.includes('Deck')) {
             this.setState({ 
                 isDragging: true,
                 selectionBox: { pos: { x: this.state.mousePos.x + 4, y: this.state.mousePos.y + 4 } }
@@ -139,7 +140,7 @@ export class Ship extends React.Component<ShipProps, any> {
         }
 
         // MouseDown on Cargo
-        if (this.props.tool === 'select' && className.includes('Cargo')) {
+        if (isSelectTool(this.props.tool) && className.includes('Cargo')) {
             this.setState({
                 isMoving: true
             });
@@ -148,12 +149,12 @@ export class Ship extends React.Component<ShipProps, any> {
 
     // Only end dragging status if dragging status was true.
     private handleMouseUp = (): void => { 
-        if (this.props.tool === 'select' && this.state.isDragging) {
+        if (isSelectTool(this.props.tool) && this.state.isDragging) {
             this.props.getSelectionBoxCoords(this.state.selectionBox.pos, this.state.mousePos, this.props.deckIndex);
             this.setState({ isDragging: false });
         }
 
-        if (this.props.tool === 'select' && this.state.isMoving) {
+        if (isSelectTool(this.props.tool) && this.state.isMoving) {
             this.setState({ isMoving: false })
         }
     }

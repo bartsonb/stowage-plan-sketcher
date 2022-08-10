@@ -1,20 +1,23 @@
 import ToolbarButton from "../ToolbarButton/ToolbarButton";
 import Box from "../Box/Box";
+import { cargoInfo, cargoTypeExists } from "../Cargo/Cargo";
 import "./Toolbar.scss";
 
-import selectImage from '../../Assets/Icons/tool-select-2.svg';
-import containerImage from '../../Assets/Icons/tool-container-2.svg';
-import boxImage from '../../Assets/Icons/tool-box-2.svg';
+import selectImage from '../../Assets/Icons/tool-select.svg';
+import containerImage from '../../Assets/Icons/tool-container.svg';
+import boxImage from '../../Assets/Icons/tool-box.svg';
 
 export interface ToolbarProps {
     selectedTool: string;
     updateTool: any;
 }
 
+export const isCargoTool = tool => cargoTypeExists(tool);
+export const isSelectTool = tool => tool === 'select';
+
 export const Toolbar = (props: ToolbarProps) => {
     const { selectedTool, updateTool } = props;
-
-    let handleOnClick = (toolName: string) => updateTool(toolName);
+    const handleOnClick = (toolName: string) => updateTool(toolName);
 
     return (
         <Box cssClass="Toolbar" title="Tools">
@@ -29,7 +32,7 @@ export const Toolbar = (props: ToolbarProps) => {
     
             <p className="Toolbar__Category">Add</p>
             <ToolbarButton
-                shortcutButton="c"
+                shortcutButton={cargoInfo['container'].shortcutKey}
                 onClick={() => {handleOnClick('container')}}
                 name={'Container'}
                 imgSrc={containerImage}
@@ -37,7 +40,7 @@ export const Toolbar = (props: ToolbarProps) => {
             />
 
             <ToolbarButton
-                shortcutButton="b"
+                shortcutButton={cargoInfo['box'].shortcutKey}
                 onClick={() => {handleOnClick('box')}}
                 name={'Box'}
                 imgSrc={boxImage}

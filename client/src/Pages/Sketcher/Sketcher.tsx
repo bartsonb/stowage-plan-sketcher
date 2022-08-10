@@ -1,5 +1,5 @@
 import React from "react";
-import Toolbar from "../../Components/Toolbar/Toolbar";
+import Toolbar, { isCargoTool, isSelectTool } from "../../Components/Toolbar/Toolbar";
 import InfoPanel from "../../Components/InfoPanel/InfoPanel";
 import MenuBar from "../../Components/MenuBar/MenuBar";
 import Ship, { deck } from "../../Components/Ship/Ship";
@@ -9,7 +9,6 @@ import Diffuser from "../../Components/Diffuser/Diffuser";
 import LoadingPanel from "../../Components/LoadingPanel/LoadingPanel";
 import CreationPanel from "../../Components/CreationPanel/CreationPanel";
 import axios from "axios";
-import { toPng } from 'html-to-image';
 import { User } from "../../App";
 import { MoonLoader } from "react-spinners";
 import { saveAs } from "file-saver";
@@ -104,7 +103,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         // Select the cargo with the given index
         // (Deselecting by clicking again was removed - caused problems during mouseUp 
         // event during moving of cargo)
-        if (tool === 'select' && cargoIndex !== null) {
+        if (isSelectTool(tool) && cargoIndex !== null) {
             this.setState(prevState => {
                 const newCargoState = prevState.cargo.map(el => ({
                     ...el,
@@ -116,12 +115,12 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         } 
 
         // Deselect all cargo, if background is clicked while any selection is active.
-        if (tool === 'select' && cargoIndex === null) {
+        if (isSelectTool(tool) && cargoIndex === null) {
             this.deselectCargo();
         }
 
         // Create new cargo if click was registered on the background and has deck coords.
-        if ((tool === 'container' || tool === 'box') && coords !== undefined) {
+        if (isCargoTool(tool) && coords !== undefined) {
             this.setState((prevState) => {
                 const newCargoState = prevState.cargo.map((el, index) => ({
                     ...el,

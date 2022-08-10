@@ -1,5 +1,26 @@
 import './Cargo.scss';
 
+export enum cargoType {
+    Container = 'container',
+    Box = 'box',
+    Pipes = 'pipes'
+}
+
+export const cargoInfo = {
+    container: {
+        abbreviation: 'cn', 
+        size: ["80px", "40px"],
+        shortcutKey: 'c'
+    }, 
+    box: {
+        abbreviation: 'bx', 
+        size: ["40px", "40px"],
+        shortcutKey: 'b'
+    }
+}
+
+export const cargoTypeExists = (value) => Object.values(cargoType).includes(value);
+
 export type cargo = {
     coords: {
         x: number,
@@ -23,19 +44,7 @@ export interface CargoProps {
 }
 
 export const Cargo = (props: CargoProps) => {
-    const getSize = (cargoType: string) => {
-        switch(cargoType) {
-            case 'container':
-                return ['80px', '40px'];
-            case 'box': 
-                return ['40px', '40px'];
-
-            default: 
-                return ['40px', '40px'];
-        }
-    }
-
-    const [ width, height ] = getSize(props.type);
+    const [ width, height ] = cargoInfo[props.type].size;
 
     // Return a simplified version of the cargo, if the preview param is true.
     if (props.preview) {

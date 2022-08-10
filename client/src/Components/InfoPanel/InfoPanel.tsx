@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Box from "../Box/Box";
+import { cargoInfo } from "../Cargo/Cargo";
 import "./InfoPanel.scss";
 
 export interface InfoPanelProps {
@@ -28,11 +29,6 @@ export const InfoPanel = (props: InfoPanelProps) => {
         return () => {};
     }, []);
 
-    const abbreviations = {
-        'container': 'cn',
-        'box': 'bx'
-    }
-
     // Return the list of cargo
     let cargoList = [];
     if (props.cargo) { 
@@ -41,7 +37,7 @@ export const InfoPanel = (props: InfoPanelProps) => {
                 <p 
                     key={index}
                     className="InfoPanel__Cargo__Element">
-                        {`${el.cargoIndex}.${abbreviations[el.cargoType]}${el.hazardous ? '(H)' : ''}`}
+                        {`${el.cargoIndex}.${cargoInfo[el.cargoType].abbreviation}${el.hazardous ? '(H)' : ''}`}
                 </p>
             )
         }) 
