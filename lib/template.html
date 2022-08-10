@@ -23,31 +23,36 @@
 		/* HEADER */
 		header {
 			display: flex;
-			padding: 0 0 2em 0;
+			flex-direction: column;
+		}
+		header .header-top {
+			text-align: center;
+			margin-bottom: 1em;
+		}
+		header .header-bottom {
+			display: flex;
+			padding: 1em 0;
+			align-items: center;
 			justify-content: space-between;
+			border-top: solid 2px lightblue;
 			border-bottom: solid 2px lightblue;
 		}
-		header .header-logo { 
-			margin-right: 2em;
-			background-image: url(); 
-			background-color: rgb(245, 245, 245);
-			width: 100px; height: 100px; 
-		}
 		header .header-infos {
+			margin-right: 2em;
 			display: flex;
 			flex-direction: column;
 			justify-content: flex-end;
-			flex-grow: 1;
 		}
 		header .header-qr {
-			width: 100px; height: 100px;
 			background-color: rgb(245, 245, 245);
-			margin-right: auto;
+		}
+		header .header-qr img {
+			width: 150px; height: 150px;
 		}
 
 		/* MAIN */
 		main {
-			padding: 5em 0 2em 0;
+			padding: 2em 0 2em 0;
 			display: flex;
 			flex-direction: column;
 			gap: 1em;
@@ -80,14 +85,24 @@
 </head>
 <body>
 	<header>
-		<div class="header-logo"></div>
-		<div class="header-infos">
-			<h2>Name: {{shipName}}</h2>
-			<h3>Destination: {{shipDestination}}</h3>
-			<p><strong>Created by:</strong> {{user.name}} ({{user.email}}) on {{createdAt}}</p>
+		<div class="header-top">
+			<h1>Stowage Plan Sketcher v1.0</h1>
 		</div>
-		<div class="header-qr"></div>
+		<div class="header-bottom">
+			<div class="header-infos">
+				<h2>Name: {{shipName}}</h2>
+				<h3>Destination: {{shipDestination}}</h3>
+				<p><strong>Created by:</strong> {{user.name}} ({{user.email}})</p>
+				<p><strong>Created at:</strong> {{createdAt}}</p>
+				<p><strong>Last updated at:</strong> {{updatedAt}}</p>
+			</div>	
+			<div class="header-qr">
+				{{getBase64Image qrcodeUrl}}
+			</div>		
+		</div>
+
 	</header>
+
 	<main>
 		{{#decks}}
 			<div class="deck">
