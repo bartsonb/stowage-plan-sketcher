@@ -1,5 +1,5 @@
 import MainLayout from "../../Layouts/MainLayout/MainLayout";
-import Sketcher from "../Sketcher/Sketcher";
+import Sketcher from "../../Components/Sketcher/Sketcher";
 import { User } from "../../App";
 
 export interface HomeProps {
