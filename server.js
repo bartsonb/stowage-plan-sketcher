@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { addHeaders } = require('./middleware/HeaderMiddleware');
 
 require('dotenv').config();
 
@@ -11,6 +12,7 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(express.json({ extended: false }));
 app.use(cors());
+app.use(addHeaders);
 
 const connectDB = async () => {
     await mongoose
