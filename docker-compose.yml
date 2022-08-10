@@ -24,7 +24,8 @@ services:
     # <localDir>:<workDirInContainer> 
     # :ro = read-only
     volumes:
-      - ./:/usr/src/backend:ro
+      - ./:/usr/src/backend
+      - /node_modules
     restart: always
     # "build" creates a custom image
     # . param = searches for Dockerfile in root dir
@@ -40,6 +41,7 @@ services:
 
   # MONGO CONTAINER
   mongo:
+    container_name: mongo
     image: mongo
     ports: 
       - 27017:27017
