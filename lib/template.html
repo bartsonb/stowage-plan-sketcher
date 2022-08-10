@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<head>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		body {
+			width: 900px;
+			display: flex;
+			flex-direction: column;
+			gap: 3em;
+			font-size: 17px;
+			font-family: sans-serif;
+			color: rgb(33, 33, 33);
+		}
+		p { word-wrap: break-word ;}
+
+		/* HEADER */
+		header {
+			display: flex;
+			padding: 0 0 2em 0;
+			justify-content: space-between;
+			border-bottom: solid 2px lightblue;
+		}
+		header .header-logo { 
+			margin-right: 2em;
+			background-image: url(); 
+			background-color: rgb(245, 245, 245);
+			width: 100px; height: 100px; 
+		}
+		header .header-infos {
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-end;
+			flex-grow: 1;
+		}
+		header .header-qr {
+			width: 100px; height: 100px;
+			background-color: rgb(245, 245, 245);
+			margin-right: auto;
+		}
+
+		/* MAIN */
+		main {
+			padding: 5em 0 2em 0;
+			display: flex;
+			flex-direction: column;
+			gap: 1em;
+		}
+		.deck {
+			display: flex;
+			flex-wrap: wrap;
+		}
+		.deck:not(:last-child) { margin-bottom: 2em;}
+		.deck .deck-image {
+		}
+		.deck .deck-image div { 
+			background-color: rgb(245, 245, 245);
+		}
+		.deck .deck-infos {
+			padding-right: 2em;
+		}
+		.deck .deck-infos ul { margin-top: 1em; }
+		.deck .deck-infos ul li { list-style-type: none; }
+
+		/* FOOTER */
+		footer {
+			padding: 1em 0;
+			text-align: center;
+		}
+
+		footer span { color: rgb(85, 85, 85) }
+	</style>
+	<meta charset="utf-8">
+</head>
+<body>
+	<header>
+		<div class="header-logo"></div>
+		<div class="header-infos">
+			<h2>Name: {{shipName}}</h2>
+			<h3>Destination: {{shipDestination}}</h3>
+			<p><strong>Created by:</strong> {{user.name}} ({{user.email}}) on {{createdAt}}</p>
+		</div>
+		<div class="header-qr"></div>
+	</header>
+	<main>
+		{{#decks}}
+			<div class="deck">
+				<div class="deck-infos">
+					<h3>Deck name: {{name}}</h3>
+					<h4>Destination: {{destination}}</h4>
+					<ul>
+						{{#cargo}}
+							<li>[{{cargoIndex}}] {{cargoType}}</li>
+						{{/cargo}}
+					</ul>
+				</div>
+				<div class="deck-image">
+					<div style="width: {{width}}px; height: {{height}}px"></div>
+				</div>
+			</div>
+		{{/decks}}
+	</main>
+	<footer>
+		<p>Stowage Plan Sketcher &copy; 2022</p>
+		<span>Generated with handlebars and puppeteer.</span>
+	</footer>
+</body>
+</html>
