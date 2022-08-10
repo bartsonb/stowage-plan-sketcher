@@ -294,10 +294,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         axios({
             method: 'post', 
             url: '/api/sketches',
-            data: {
-                ...data,
-                userId: this.props.user._id
-            }
+            data
         })
             .then(res =>  {
                 console.log(res);
@@ -314,12 +311,12 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         axios({
             method: "get", 
             responseType: "blob",
-            url: `/api/sketches/${this.state.uuid}?download=1`,
-            data: { userId: this.props.user._id }
+            url: `/api/sketches/${this.state.uuid}?download=1`
         })
             .then(res =>  {
-                const blob = new Blob([res.data], { type: "text/plain;charset=utf-8"});
-                saveAs(blob, 'pdfGenerator.js');
+                const blob = new Blob([res.data], { type: "application/pdf;charset=utf-8"});
+                saveAs(blob, 'meine.pdf');
+            
             })
             .catch(error => {
                 console.log(error);

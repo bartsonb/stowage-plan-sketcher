@@ -1,6 +1,8 @@
 const Sketch = require('../models/Sketch');
 const Joi = require('@hapi/joi');
 const PdfGenerator = require('../lib/PdfGenerator');
+const { attachCargoToDecks, toUsDate } = require('../lib/helpers');
+const QRCode = require('qrcode');
 const stream = require('stream');
 
 /**
@@ -32,19 +34,39 @@ exports.getOne = (req, res) => {
         .findOne({ uuid: req.params.id, userId: req.user.id })
         .lean()
         .then(async sketch => {
-    
             if (req.query.download === "1") {
-                const pathToPdf = await PdfGenerator.create(sketch);
-                
-                return res.json({ pathToPdf });
+                    // Generating the PDF from the sketch with puppeteer after
+                    // preparing the data.
+                    const data = attachCargoToDecks(sketch);
+
+                    // Also attaching the user object (from jwt) to access name and email in the
+                    // handlebars template.
+                    data.user = req.user;
+
+                    // Changing date format for createdAt and updatedAt to US date
+                    data.createdAt = toUsDate(data.createdAt);
+                    data.updatedAt = toUsDate(data.updatedAt);
+
+                    // Attaching QR Code
+                    data.qrcodeUrl = await QRCode.toDataURL("das istmeine adresse");
+
+                    PdfGenerator
+                        .create(data)
+                        .then(pathToFile => {
+                            return res.download(pathToFile);
+                        });
     
-                const readStream = new stream.PassThrough();
+                    /*
+                    
+                                    const readStream = new stream.PassThrough();
                 readStream.end(data);
                 
                 res.set('Content-disposition', 'attachment; filename=' + "sketcherpdf.js");
                 res.set('Content-Type', 'text/plain');         
                 
                 readStream.pipe(res);  
+                    */
+                    
             } else { 
                 return res.json({ sketch });
             }
@@ -59,7 +81,10 @@ exports.getOne = (req, res) => {
  * @route   POST /api/sketches
  * @returns returns the sketch that was stored
  */
-exports.store = (req, res) => {
+exports.store = (req, res) => {    
+    // Append userId from the JWT (auth middleware).
+    req.body.userId = req.user.id;
+
     let { value, error } = Joi.object({
         uuid: Joi.string().guid(),
         userId: Joi.string(),
