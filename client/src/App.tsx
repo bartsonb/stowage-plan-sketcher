@@ -31,6 +31,8 @@ export class App extends React.Component<AppProps, any> {
     componentDidMount(): void {
         const { user, token } = this.state;
 
+        axios.defaults.baseURL = "http://localhost:5000";
+
         if (token && token !== undefined && user && user !== undefined) {
             this.setState({ isAuthenticated: true });
             axios.defaults.headers.common['x-auth-token'] = token;

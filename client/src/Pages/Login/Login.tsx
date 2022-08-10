@@ -13,10 +13,11 @@ export const Login = (props: LoginProps) => {
         const token = req.data.token;
 
         // GET on the AUTH route, returns the current user if token is correct.
-        axios
-            .get("http://localhost:5000/api/auth", {
-                headers: { "x-auth-token": token },
-            })
+        axios({
+            method: "get",
+            url: "/api/auth",
+            headers: { "x-auth-token": token },
+        })
             .then((res) => {
                 props.loginUser(token, res.data);
             });

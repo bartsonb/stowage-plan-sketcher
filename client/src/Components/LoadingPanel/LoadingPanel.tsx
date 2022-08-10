@@ -52,7 +52,7 @@ export const LoadingPanel = (props: LoadingPanelProps) => {
 
         axios({
             method: "get",
-            url: "http://localhost:5000/api/sketches",
+            url: "/api/sketches",
         })
             .then((res) => {
                 setSketches(res.data.sketches);

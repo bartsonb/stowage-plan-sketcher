@@ -293,7 +293,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
         axios({
             method: 'post', 
-            url: 'http://localhost:5000/api/sketches',
+            url: '/api/sketches',
             data: {
                 ...data,
                 userId: this.props.user._id
@@ -301,22 +301,20 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         })
             .then(res =>  {
                 console.log(res);
-                this.setState({ loading: false });
             })
             .catch(error => {
                 console.log(error);
-                this.setState({ loading: false });
             })
+            .finally(() => this.setState({ loading: false }))
     }
 
     private exportSketch = (): void => {
         this.setState({ loading: true });
 
-
         axios({
             method: "get", 
             responseType: "blob",
-            url: `http://localhost:5000/api/sketches/${this.state.uuid}?download=1`,
+            url: `/api/sketches/${this.state.uuid}?download=1`,
             data: { userId: this.props.user._id }
         })
             .then(res =>  {

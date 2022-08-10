@@ -38,7 +38,7 @@ export const AuthForm = (props: AuthFormProps) => {
                 : 'users';
 
             axios({
-                url: "http://localhost:5000/api/" + route,
+                url: "/api/" + route,
                 method: "post",
                 data: { name, email, password },
             })
