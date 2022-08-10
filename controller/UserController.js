@@ -29,7 +29,7 @@ exports.store = (req, res) => {
                     .create({ name, email, password })
                     .then(user => {
                         jwt.sign(
-                            { user: { id: user.id }},
+                            { user: { id: user.id, name: user.name, email: user.email } },
                             process.env.JWT_SECRET,
                             { expiresIn: 86400 },
                             (err, token) => {

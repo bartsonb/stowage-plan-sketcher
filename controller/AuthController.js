@@ -43,7 +43,7 @@ exports.login = (req, res) => {
                 if (!isMatch) return res.status(400).json({ details: [{ message: 'Credentials are invalid' }]});
     
                 jwt.sign(
-                    { user: { id: user.id }},
+                    { user: { id: user.id, name: user.name, email: user.email } },
                     process.env.JWT_SECRET,
                     { expiresIn: 86400 },
                     (err, token) => {
