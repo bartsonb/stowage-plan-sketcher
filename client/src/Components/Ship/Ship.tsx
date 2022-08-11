@@ -24,9 +24,10 @@ export interface ShipProps {
     height: number;
     visible: boolean;
     tool: string;
-    handleClick: any;
-    moveCargo: any;
     children?: any;
+    setDeckRef(deckIndex: number, ref: any);
+    moveCargo: any;
+    handleClick: any;
     getSelectionBoxCoords: any;
 }
 
@@ -46,9 +47,8 @@ export class Ship extends React.Component<ShipProps, any> {
     }
 
     componentDidMount(): void {
-        this.setState({
-            deckIndex: this.props.deckIndex
-        });
+        // Save deckRef to sketcher state.
+        this.props.setDeckRef(this.props.deckIndex, this.deckRef);
     }
 
     // Handling the mouse movement to save mouse position
@@ -163,38 +163,36 @@ export class Ship extends React.Component<ShipProps, any> {
         const { deckName, name, deckIndex, width, height, visible } = this.props;
         const [ paddingWidth, paddingHeight ] = [30, 55];
 
-        // Only show Ship element if "visible" prop is true.
-        if (visible) {
-            return (
-                <Box
-                    cssClass="Ship" 
-                    title={`${name} - ${deckName} [${deckIndex + 1}]`}
-                    sizing={{
-                        top: ((window.innerHeight / 2) - (height / 2) - paddingHeight) + "px", 
-                        left: ((window.innerWidth / 2) - (width / 2) - paddingWidth) + "px",
-                        position: "absolute"
-                    }}>
-                    <div 
-                        className="Ship__Deck"
-                        style={{
-                            width: width + "px",
-                            height: height + "px"
-                        }}
-                        onMouseMove={this.handleMouseMove}
-                        ref={this.deckRef}
-                        onClick={(event) => {this.props.handleClick(event, null, this.state.mousePos, deckIndex)}}
-                        onMouseEnter={this.handleMouseEnter}
-                        onMouseLeave={this.handleMouseLeave}
-                        onMouseDown={event => {this.handleMouseDown(event)}}
-                        onMouseUp={this.handleMouseUp}>   
+        return (
+            <Box
+                hide={!visible}
+                cssClass="Ship" 
+                title={`${name} - ${deckName} [${deckIndex + 1}]`}
+                sizing={{
+                    top: ((window.innerHeight / 2) - (height / 2) - paddingHeight) + "px", 
+                    left: ((window.innerWidth / 2) - (width / 2) - paddingWidth) + "px",
+                    position: "absolute"
+                }}>
+                <div
+                    className="Ship__Deck"
+                    style={{
+                        width: width + "px",
+                        height: height + "px"
+                    }}
+                    onMouseMove={this.handleMouseMove}
+                    ref={this.deckRef}
+                    onClick={(event) => {this.props.handleClick(event, null, this.state.mousePos, deckIndex)}}
+                    onMouseEnter={this.handleMouseEnter}
+                    onMouseLeave={this.handleMouseLeave}
+                    onMouseDown={event => {this.handleMouseDown(event)}}
+                    onMouseUp={this.handleMouseUp}>   
 
-                        {this.getSelectionBox()}
-                        {this.getPreviewCargo()}
-                        {this.props.children}
-                    </div>
-                </Box>
-            )
-        }
+                    {this.getSelectionBox()}
+                    {this.getPreviewCargo()}
+                    {this.props.children}
+                </div>
+            </Box>
+        )
     }
 }
 

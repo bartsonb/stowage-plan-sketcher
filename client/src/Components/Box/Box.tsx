@@ -9,11 +9,21 @@ export interface BoxProps {
     children?: any;
     cssClass: string;
     sizing?: any;
+    hide?: boolean;
 }
 
 export const Box = (props: BoxProps) => {
-    const { title, children, cssClass, sizing } = props;
+    const { title, children, cssClass, hide } = props;
     const boxRef = React.useRef(null);
+
+    let sizing = { display: hide ? "none" : "flex" };
+
+    if (props.sizing) {
+        sizing = {
+            ...sizing, 
+            ...props.sizing
+        }
+    }
 
     return (
         <Draggable
@@ -22,6 +32,7 @@ export const Box = (props: BoxProps) => {
             defaultClassNameDragged="Draggable--Dragged"
             defaultClassNameDragging="Box--Dragging"
             nodeRef={boxRef}>
+
             <div 
                 className={"Box"} 
                 style={sizing}
@@ -33,8 +44,9 @@ export const Box = (props: BoxProps) => {
                 </div>
                 <div className={`Box__Content ` + cssClass}>{children}</div>
             </div>
+
         </Draggable>
     );
-};
+}
 
 export default Box;

@@ -76,6 +76,7 @@ export class CreationPanel extends React.Component<CreationPanelProps, any> {
                         width: "",
                         height: "",
                         visible: true,
+                        ref: null
                     },
                 ],
             };

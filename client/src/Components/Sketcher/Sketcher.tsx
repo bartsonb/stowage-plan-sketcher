@@ -254,6 +254,18 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         })
     }
 
+    // Used during mounting of decks to save ref in sketcher state.
+    private setDeckRef = (deckIndex: number, ref: any) => {
+        this.setState(prevState => {
+            const newDeckState = prevState.decks.map(el => ({
+                ...el,
+                ref: (el.index === deckIndex) ? ref : el.ref
+            }));
+
+            return ({ decks: newDeckState });
+        })
+    }
+
     // Update or create sketch, also checks for cargo with not associated deck.
     private updateSketch = (shipName: string, shipDestination: string, decks: deck[], uuid: string): void => {
         this.setState(prevState => {
@@ -298,6 +310,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         })
             .then(res =>  {
                 console.log(res);
+                // this.setState({ savedTimestamp: res.data.updatedAt })
             })
             .catch(error => {
                 console.log(error);
@@ -376,6 +389,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                         deckName={deck.name}
                         handleClick={this.handleDeckClick}
                         moveCargo={this.moveCargo}
+                        setDeckRef={this.setDeckRef}
                         getSelectionBoxCoords={this.getSelectionBoxCoords}>
                         
                         {cargoElements}
