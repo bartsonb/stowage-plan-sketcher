@@ -23,59 +23,71 @@ exports.getAll = (req, res) => {
 
 /**
  * @name    getOne
- * @route   GET /api/sketches/:id
- * @query   download?
+ * @route   GET /api/sketches/:uuid
  * @returns returns the sketch with given ID
  */
 exports.getOne = (req, res) => {
-    // Using mongoose query with lean to get a POJO instead of a mongoose document,
+    Sketch
+        .findOne({ uuid: req.params.uuid, userId: req.user.id })
+        .then(sketch => {
+            return res.json({ sketch });
+        })
+        .catch(error => {
+            return res.status(400).json({ error });
+        })
+};
+
+/**
+ * @name    export
+ * @route   POST /api/sketches/:uuid/export
+ * @returns PDF Blob
+ */
+exports.export = (req, res) => {   
+    const { dataUrls } = req.body;
+
+    // Using mongoose query with lean() to get a POJO instead of a mongoose document,
     // because of object property conflicts with handlebars.
     Sketch
-        .findOne({ uuid: req.params.id, userId: req.user.id })
+        .findOne({ uuid: req.params.uuid, userId: req.user.id })
         .lean()
         .then(async sketch => {
-            if (req.query.download === "1") {
-                    // Generating the PDF from the sketch with puppeteer after
-                    // preparing the data.
-                    const data = attachCargoToDecks(sketch);
+            // Generating the PDF from the sketch with puppeteer after
+            // preparing the data.
+            const data = attachCargoToDecks(sketch);
 
-                    // Also attaching the user object (from jwt) to access name and email in the
-                    // handlebars template.
-                    data.user = req.user;
+            // Also attaching the user object (from jwt) to access name and email in the
+            // handlebars template.
+            data.user = req.user;
 
-                    // Changing date format for createdAt and updatedAt to US date
-                    data.createdAt = toUsDate(data.createdAt);
-                    data.updatedAt = toUsDate(data.updatedAt);
+            // Changing date format for createdAt and updatedAt to US date
+            data.createdAt = toUsDate(data.createdAt);
+            data.updatedAt = toUsDate(data.updatedAt);
 
-                    // Attaching QR Code
-                    data.qrcodeUrl = await QRCode.toDataURL("das istmeine adresse");
+            // Attaching QR Code
+            data.qrcodeUrl = await QRCode.toDataURL(req.params.uuid);
 
-                    PdfGenerator
-                        .create(data)
-                        .then(pathToFile => {
-                            res.set("X-Filename", `${data.shipName}.pdf`);
-                            return res.download(pathToFile);
-                        });
-    
-                    /*
-                    
-                                    const readStream = new stream.PassThrough();
-                readStream.end(data);
-                
-                res.set('Content-disposition', 'attachment; filename=' + "sketcherpdf.js");
-                res.set('Content-Type', 'text/plain');         
-                
-                readStream.pipe(res);  
-                    */
-                    
-            } else { 
-                return res.json({ sketch });
-            }
+            // Attaching the dataUrls to the corresponding deck objs.
+            dataUrls.forEach(el => {
+                data.decks.map(deck => {
+                    if (el.index === deck.index) deck.dataUrl = el.dataUrl;
+                    return el;
+                });
+            });
+
+            PdfGenerator
+                .create(data)
+                .then(pathToFile => {
+                    res.set("X-Filename", `${data.shipName}.pdf`);
+                    return res.download(pathToFile);
+                })
+                .catch(error => {
+                    return res.status(400).json({ error });
+                });
         })
         .catch(error => {
             return res.status(400).json({ error });
         });
-};
+}
 
 /**
  * @name    store

@@ -11,6 +11,7 @@ import CreationPanel from "../CreationPanel/CreationPanel";
 import axios from "axios";
 import { User } from "../../App";
 import { MoonLoader } from "react-spinners";
+import { toPng } from 'html-to-image';
 import { saveAs } from "file-saver";
 import "./Sketcher.scss";
 
@@ -279,11 +280,16 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         })
     }
 
-    // Overwrite current sketch 
+    // Complete overwrite of current sketch. 
+    // Used when loading in already created sketches.
     private overwriteSketch = (shipName: string, shipDestination: string, decks: object[], cargo: cargo[], uuid: string): void => {
         this.setState(() => {
-            return { uuid, shipName, shipDestination, decks, cargo }
-        })
+            // Need to clear decks state, so react creates new deck components from scratch.
+            // Important, because deckRefs are created onMount. 
+            return { decks: [] };
+        }, () => {
+            this.setState({ uuid, shipName, shipDestination, decks, cargo });
+        });
     }
 
     // Helper function to strip unnecessary keys from state before sending state to API.
@@ -300,8 +306,11 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
     private saveSketch = (): void => {
         this.setState({ loading: true });
 
-        // Clear state from unnecessary keys.
-        const data = this.removeKeysFromObject(this.state, ['saved', 'savedTimestamp', 'showCreationPanel', 'showLoadingPanel', 'tool']);
+        // Remove unnecessary keys from state.
+        let data = this.removeKeysFromObject(this.state, ['saved', 'savedTimestamp', 'showCreationPanel', 'showLoadingPanel', 'tool']);
+        
+        // Remove refs from decks. Caused problems because of circular structure. 
+        data.decks = data.decks.map(el => ({ ...el, ref: null }));
 
         axios({
             method: 'post', 
@@ -309,8 +318,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             data
         })
             .then(res =>  {
-                console.log(res);
-                // this.setState({ savedTimestamp: res.data.updatedAt })
+                this.setState({ savedTimestamp: res.data.sketch.updatedAt })
             })
             .catch(error => {
                 console.log(error);
@@ -318,17 +326,30 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             .finally(() => this.setState({ loading: false }))
     }
 
-    private exportSketch = (): void => {
+    private exportSketch = async () => {
         this.setState({ loading: true });
 
+        // Loop through all decks and generate Base64-encoded images
+        // of their deck+cargos based on their ref.
+        
+        const dataUrls = await Promise.all(this.state.decks.map(async el => {
+            const dataUrl = await toPng(el.ref);
+
+            return { index: el.index, dataUrl };
+        }));
+
         axios({
-            method: "get", 
-            responseType: "blob",
-            url: `/api/sketches/${this.state.uuid}?download=1`
+            method: "post", 
+            url: `/api/sketches/${this.state.uuid}/export`, 
+            responseType: 'blob',
+            data: { dataUrls }
         })
             .then(res =>  {
-                const blob = new Blob([res.data], { type: "application/pdf;charset=utf-8"});
-                saveAs(blob, res.headers['x-filename']);
+                saveAs(new File(
+                    [res.data], 
+                    res.headers['x-filename'], 
+                    { type: res.headers['content-type'] + ';charset=utf-8' }
+                ));
             })
             .catch(error => {
                 console.log(error);

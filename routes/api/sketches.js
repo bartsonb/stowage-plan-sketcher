@@ -8,11 +8,16 @@ module.exports = router.get('/',
     SketchController.getAll
 );
 
-// @route   GET /api/sketches/:id
-// @query   download? 
-module.exports = router.get('/:id', 
+// @route   GET /api/sketches/:uuid
+module.exports = router.get('/:uuid', 
     AuthMiddleware,
     SketchController.getOne
+);
+
+// @route   POST /api/sketches/:uuid/export
+module.exports = router.post('/:uuid/export', 
+    AuthMiddleware,
+    SketchController.export
 );
 
 // @route   POST /api/sketches

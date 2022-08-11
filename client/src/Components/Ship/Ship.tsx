@@ -48,7 +48,7 @@ export class Ship extends React.Component<ShipProps, any> {
 
     componentDidMount(): void {
         // Save deckRef to sketcher state.
-        this.props.setDeckRef(this.props.deckIndex, this.deckRef);
+        this.props.setDeckRef(this.props.deckIndex, this.deckRef.current);
     }
 
     // Handling the mouse movement to save mouse position
