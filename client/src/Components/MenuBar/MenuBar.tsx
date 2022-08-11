@@ -1,13 +1,15 @@
 import "./MenuBar.scss";
 
+import React from "react";
 import editIcon from "../../Assets/Icons/edit.svg";
 import createIcon from "../../Assets/Icons/create.svg";
 import saveIcon from "../../Assets/Icons/save.svg";
 import exportIcon from "../../Assets/Icons/export.svg";
+import { useEffect, useState } from "react";
 
 export interface MenuBarProps {
     sketchLoaded: any;
-    savedTimestamp: number;
+    savedTimestamp: Date;
     saved: boolean;
     showCreationPanel: boolean;
     showLoadingPanel: boolean;
@@ -17,7 +19,37 @@ export interface MenuBarProps {
 }
 
 export const MenuBar = (props: MenuBarProps) => {
+    const [ timeSinceSaved, setTimeSinceSaved ] = useState("");
+    const timerRef = React.useRef(null);
     const { savedTimestamp, saved, sketchLoaded, togglePanel, saveSketch, exportSketch, showCreationPanel, showLoadingPanel } = props;
+
+    const calculateTimeSinceSaved = () => {
+        // getTime() returns time in miliseconds
+        const secondsPassed = Math.round((new Date().getTime() - savedTimestamp.getTime()) / 1000);
+        let timeScale = "s";
+        let timeAdjustedToScale = secondsPassed;
+        
+        if (secondsPassed > 59) { 
+            timeScale = "m";
+            timeAdjustedToScale = secondsPassed / 60;
+        }
+        else if (secondsPassed > 3600) { 
+            timeScale = "h";
+            timeAdjustedToScale = secondsPassed / 3600;
+        }
+        else if (secondsPassed > 86399) { 
+            timeScale = "d";
+            timeAdjustedToScale = secondsPassed / 86400;
+        }
+
+        setTimeSinceSaved(Math.round(timeAdjustedToScale) + timeScale);
+    }
+
+    useEffect(() => {
+        timerRef.current = setInterval(calculateTimeSinceSaved, 1000);
+
+        return () => clearInterval(timerRef.current);
+    }, [savedTimestamp]);
 
     return (
         <div className="MenuBar">
@@ -48,7 +80,7 @@ export const MenuBar = (props: MenuBarProps) => {
             >
                 <img src={saveIcon} alt="" />
                 Save
-                {/* <span>(Saved last {savedTimestamp}s ago)</span> */}
+                <span>(Saved last {timeSinceSaved} ago)</span>
             </div>
 
             <div

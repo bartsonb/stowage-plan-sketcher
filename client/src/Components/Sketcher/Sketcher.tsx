@@ -26,7 +26,7 @@ export interface SketcherState {
     decks: any[],
     cargo: cargo[],
     tool: string,
-    savedTimestamp: number,
+    savedTimestamp: Date,
     saved: boolean,
     showCreationPanel: boolean,
     showLoadingPanel: boolean,
@@ -44,7 +44,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             decks: [],
             cargo: [],
             tool: "select",
-            savedTimestamp: null,
+            savedTimestamp: new Date(),
             saved: false,
             showCreationPanel: false,
             showLoadingPanel: false,
@@ -54,12 +54,13 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
     componentDidMount(): void {
         window.addEventListener("keypress", this.handleKeyPress);
-        // window.onbeforeunload = () => 'Leave page? You still have unsaved progress.';
+        window.onbeforeunload = () => 'Leave page? You still have unsaved progress.';
     }
 
     componentWillUnmount(): void {
         // Remove unneccessary event listeners
         window.addEventListener("keypress", this.handleKeyPress);
+        window.onbeforeunload = null;
     }
 
     // Updating the selected tool in state
@@ -318,7 +319,8 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             data
         })
             .then(res =>  {
-                this.setState({ savedTimestamp: res.data.sketch.updatedAt })
+                console.log(new Date(res.data.sketch.updatedAt));
+                this.setState({ savedTimestamp: new Date(res.data.sketch.updatedAt) })
             })
             .catch(error => {
                 console.log(error);
