@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 export interface MenuBarProps {
     sketchLoaded: any;
     savedTimestamp: Date;
-    saved: boolean;
     showCreationPanel: boolean;
     showLoadingPanel: boolean;
     togglePanel(name: string): void;
@@ -21,7 +20,7 @@ export interface MenuBarProps {
 export const MenuBar = (props: MenuBarProps) => {
     const [ timeSinceSaved, setTimeSinceSaved ] = useState("");
     const timerRef = React.useRef(null);
-    const { savedTimestamp, saved, sketchLoaded, togglePanel, saveSketch, exportSketch, showCreationPanel, showLoadingPanel } = props;
+    const { savedTimestamp, sketchLoaded, togglePanel, saveSketch, exportSketch, showCreationPanel, showLoadingPanel } = props;
 
     const calculateTimeSinceSaved = () => {
         // getTime() returns time in miliseconds
@@ -46,7 +45,9 @@ export const MenuBar = (props: MenuBarProps) => {
     }
 
     useEffect(() => {
-        timerRef.current = setInterval(calculateTimeSinceSaved, 1000);
+        if (savedTimestamp) {
+            timerRef.current = setInterval(calculateTimeSinceSaved, 1000);
+        }
 
         return () => clearInterval(timerRef.current);
     }, [savedTimestamp]);

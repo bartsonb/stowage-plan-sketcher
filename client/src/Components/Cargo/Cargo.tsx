@@ -2,8 +2,7 @@ import './Cargo.scss';
 
 export enum cargoType {
     Container = 'container',
-    Box = 'box',
-    Pipes = 'pipes'
+    Box = 'box'
 }
 
 export const cargoInfo = {

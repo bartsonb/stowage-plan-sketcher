@@ -43,12 +43,8 @@
 			flex-direction: column;
 			justify-content: flex-end;
 		}
-		header .header-qr {
-			background-color: rgb(245, 245, 245);
-		}
-		header .header-qr img {
-			width: 150px; height: 150px;
-		}
+		header .header-qr { background-color: rgb(245, 245, 245); }
+		header .header-qr img { width: 150px; height: 150px; }
 
 		/* MAIN */
 		main {
@@ -57,19 +53,10 @@
 			flex-direction: column;
 			gap: 1em;
 		}
-		.deck {
-			display: flex;
-			flex-wrap: wrap;
-		}
+		.deck { display: flex; flex-wrap: wrap; }
 		.deck:not(:last-child) { margin-bottom: 2em;}
-		.deck .deck-image {
-		}
-		.deck .deck-image div { 
-			background-color: rgb(245, 245, 245);
-		}
-		.deck .deck-infos {
-			padding-right: 2em;
-		}
+		.deck .deck-image { border: solid 1px rgb(204, 204, 204); }
+		.deck .deck-infos { padding-right: 2em; }
 		.deck .deck-infos ul { margin-top: 1em; }
 		.deck .deck-infos ul li { list-style-type: none; }
 
@@ -111,7 +98,7 @@
 					<h4>Destination: {{destination}}</h4>
 					<ul>
 						{{#cargo}}
-							<li>[{{cargoIndex}}] {{cargoType}}</li>
+							<li>[ID {{cargoIndex}}] {{cargoType}}</li>
 						{{/cargo}}
 					</ul>
 				</div>
