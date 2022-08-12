@@ -18,9 +18,13 @@ export interface MenuBarProps {
 }
 
 export const MenuBar = (props: MenuBarProps) => {
+    const { 
+        savedTimestamp, sketchLoaded, togglePanel, saveSketch, exportSketch, 
+        showCreationPanel, showLoadingPanel,
+    } = props;
+
     const [ timeSinceSaved, setTimeSinceSaved ] = useState("");
     const timerRef = React.useRef(null);
-    const { savedTimestamp, sketchLoaded, togglePanel, saveSketch, exportSketch, showCreationPanel, showLoadingPanel } = props;
 
     const calculateTimeSinceSaved = () => {
         // getTime() returns time in miliseconds

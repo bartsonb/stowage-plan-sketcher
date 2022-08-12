@@ -1,9 +1,9 @@
 import React from "react";
-import Toolbar, { isCargoTool, isSelectTool } from "../Toolbar/Toolbar";
+import Toolbar, { isSelectTool } from "../Toolbar/Toolbar";
 import InfoPanel from "../InfoPanel/InfoPanel";
 import MenuBar from "../MenuBar/MenuBar";
 import Deck, { deck } from "../Deck/Deck";
-import Cargo, { cargo, cargoInfo } from "../Cargo/Cargo";
+import Cargo, { cargo, cargoInfo, cargoType } from "../Cargo/Cargo";
 import EditPanel from "../EditPanel/EditPanel";
 import Diffuser from "../Diffuser/Diffuser";
 import LoadingPanel from "../LoadingPanel/LoadingPanel";
@@ -52,7 +52,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
     componentDidMount(): void {
         window.addEventListener("keypress", this.handleKeyPress);
-        window.onbeforeunload = () => 'Leave page? You still have unsaved progress.';
+        window.onbeforeunload = () => 'Make sure that you have saved your progress.';
     }
 
     componentWillUnmount(): void {
@@ -61,13 +61,8 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         window.onbeforeunload = null;
     }
 
-    // Updating the selected tool in state
-    // and recovering the selected tool from localStorage
-    private updateTool = (tool) => {
-        this.setState({
-            tool: tool,
-        });
-    };
+    // Updating the given tool in state
+    private updateTool = tool => this.setState({tool});
 
     // Used to toggle Creation and Loading panels
     private togglePanel = (name: string): void => {
@@ -100,59 +95,24 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         if (Object.keys(keyToTool).includes(key)) this.updateTool(keyToTool[key]);
     }
 
-    // Handeling the clicks on the ship and cargo elements
-    // Event is needed to stop the eventPropagation
+    // Handeling clicks on the cargo elements
     // cargoIndex is used to indentify the clicked cargo element
-    private handleCargoClick = (event: any, cargoIndex: number | null, coords?: any, deckIndex?: number): void => {
+    private handleCargoClick = (event: any, cargoIndex: number): void => {
         const { tool } = this.state;
         event.stopPropagation();
 
         // Select the cargo with the given index
-        // (Deselecting by clicking again was removed - caused problems during mouseUp 
-        // event during moving of cargo)
-        if (isSelectTool(tool) && cargoIndex !== null) {
+        if (isSelectTool(tool)) {
             this.setState(prevState => {
-                const newCargoState = prevState.cargo.map(el => ({
-                    ...el,
-                    selected: el.selected ? true : false
-                }));
-
-                return { cargo: newCargoState }
-            });
-        } 
-
-        // Deselect all cargo, if background is clicked while any selection is active.
-        if (isSelectTool(tool) && cargoIndex === null) {
-            this.deselectCargo();
-        }
-
-        // Create new cargo if click was registered on the background and has deck coords.
-        if (isCargoTool(tool) && coords !== undefined) {
-            this.setState((prevState) => {
-                const newCargoState = prevState.cargo.map((el, index) => ({
-                    ...el,
-                    cargoIndex: index
-                }));
-
-                return {
-                    cargo: [...newCargoState, { 
-                        cargoType: tool, 
-                        cargoIndex: prevState.cargo.length,
-                        deckIndex: deckIndex, 
-                        coords: {
-                            x: coords.x,
-                            y: coords.y
-                        }, 
-                        selected: false,
-                        hazardous: false
-                    }]
+                return { 
+                    cargo: prevState.cargo.map(el => ({
+                        ...el,
+                        selected: (el.cargoIndex === cargoIndex) ? true : false
+                    })) 
                 }
             });
-        }
+        } 
     };
-
-    // TODO deck und cargo click handler trennen
-    private handleDeckClick = this.handleCargoClick;
 
     // Sorting the selected cargo by their x or y coordiantes.
     // After sorting fhe first element will have the smallest coordiante.
@@ -178,7 +138,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                 }
             });
 
-            // Set all selected cargos with the smallest coordiante
+            // Set all selected cargos with the smallest coordinate
             const newCargoState = prevState.cargo.map(el => ({
                 ...el,
                 coords: {
@@ -193,7 +153,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
     // Get the coords of the selection box (top-left and bottom-right) and determine which cargo gets selected.
     // deckIndex needs to be given to identify the correct deck.
-    public getSelectionBoxCoords = ({ x: x1, y: y1 }, { x: x2, y: y2 }, deckIndex: number): void => {
+    public selectMultipleCargo = ({ x: x1, y: y1 }, { x: x2, y: y2 }, deckIndex: number): void => {
         this.setState(prevState => {
             const newCargoState = prevState.cargo.map(el => {
                 const insideOfSelection = el.coords.x > x1 && el.coords.x < x2 && el.coords.y > y1 && el.coords.y < y2;
@@ -208,6 +168,27 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         });
     }
 
+    private addCargo = (coords: {x, y}, deckIndex: number, cargoType: cargoType) => {
+        this.setState((prevState) => {
+            // Reassign new indices for all cargos.
+            const newCargoState = prevState.cargo.map((el, index) => ({
+                ...el,
+                cargoIndex: index
+            }));
+
+            return {
+                cargo: [...newCargoState, { 
+                    cargoType: cargoType, 
+                    cargoIndex: prevState.cargo.length,
+                    deckIndex: deckIndex, 
+                    coords: { x: coords.x, y: coords.y }, 
+                    selected: false,
+                    hazardous: false
+                }]
+            }
+        });
+    }
+
     // x, y are the relative movements from the last mouse position
     // The difference in direction gets applied to every cargo.
     // TODO fix weird behaviour
@@ -216,8 +197,8 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             const newCargoState = prevState.cargo.map(el => ({
                 ...el,
                 coords: {
-                    x: (el.selected) ? el.coords.x + x : el.coords.x,
-                    y: (el.selected) ? el.coords.y + y : el.coords.y
+                    x: (el.selected && (el.coords.x + x) >= 0) ? el.coords.x + x : el.coords.x,
+                    y: (el.selected && (el.coords.y + y) >= 0) ? el.coords.y + y : el.coords.y
                 }
             }));
 
@@ -225,6 +206,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         });
     }
 
+    // TODO only reassign cargo indexes of cargo on the current deck
     private deleteCargo = (): void => {
         this.setState(prevState => {
             const newCargoState = prevState.cargo
@@ -410,10 +392,9 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                         tool={tool}
                         name={shipName}
                         deckName={deck.name}
-                        handleClick={this.handleDeckClick}
                         moveCargo={this.moveCargo}
                         setDeckRef={this.setDeckRef}
-                        getSelectionBoxCoords={this.getSelectionBoxCoords}>
+                        selectMultipleCargo={this.selectMultipleCargo}>
                         
                         {cargoElements}
                     </Deck>

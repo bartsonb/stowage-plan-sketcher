@@ -39,7 +39,7 @@ export interface CargoProps {
     selected?: boolean;
     hazardous?: boolean;
     index?: number;
-    handleClick?: any;
+    handleClick?(event: any, cargoIndex: number): any;
 }
 
 export const Cargo = (props: CargoProps) => {

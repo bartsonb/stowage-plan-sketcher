@@ -25,10 +25,9 @@ export interface DeckProps {
     visible: boolean;
     tool: string;
     children?: any;
-    setDeckRef(deckIndex: number, ref: any);
     moveCargo: any;
-    handleClick: any;
-    getSelectionBoxCoords: any;
+    setDeckRef(deckIndex: number, ref: any);
+    selectMultipleCargo(coords1: {x, y}, coords2: {x, y}, deckIndex): any;
 }
 
 export class Deck extends React.Component<DeckProps, any> {
@@ -36,8 +35,9 @@ export class Deck extends React.Component<DeckProps, any> {
         super(props);
         
         this.state = {
+            startPos: { x: 0, y: 0 },
             mousePos: { x: 0, y: 0, moveX: 0, moveY: 0 },
-            selectionBox: { pos: { x: 0, y: 0 }, width: 0, height: 0 },
+            selectionBox: { width: 0, height: 0 },
             displayPreviewCargo: false,
             isDragging: false,
             isMoving: false
@@ -54,27 +54,25 @@ export class Deck extends React.Component<DeckProps, any> {
     // Handling the mouse movement to save mouse position
     // and normalizing the coords to be relative to the deck div.
     public handleMouseMove = ({ clientX, clientY, movementX, movementY }): void => {
-        const { mousePos, selectionBox, isDragging, isMoving } = this.state;
-        const boundingRect = this.deckRef.current.getBoundingClientRect();
+        const { startPos, mousePos, isDragging, isMoving } = this.state;
 
         this.setState(() => {
+            const [x, y] = this.getRelativeCoords(clientX, clientY);
+
             return { 
-                mousePos: { 
-                    x: clientX - boundingRect.left, 
-                    y: clientY - boundingRect.top,
-                    moveX: movementX,
-                    moveY: movementY
-                }
+                displayPreviewCargo: isCargoTool(this.props.tool),
+                mousePos: { x, y, moveX: movementX, moveY: movementY }, 
+                isDragging: this.enoughDistanceForDrag(startPos.x, startPos.y, x, y)
             }
         }, () => {
 
             // Set width and height for selection box while dragging
             if (isDragging) {
-                const w = mousePos.x - selectionBox.pos.x;
-                const h = mousePos.y - selectionBox.pos.y;
-
-                this.setState({
-                    selectionBox: { width: w + 'px', height: h + 'px', pos: selectionBox.pos }
+                this.setState({ 
+                    selectionBox: { 
+                        width: mousePos.x - startPos.x + "px", 
+                        height: mousePos.y - startPos.y + "px" 
+                    } 
                 });
             }
 
@@ -83,6 +81,60 @@ export class Deck extends React.Component<DeckProps, any> {
                 this.props.moveCargo(mousePos.moveX, mousePos.moveY);
             }
         });
+    }
+
+    private handleMouseDown = (event: any): void => {
+        const { target: { className }} = event;
+        const [x, y] = this.getRelativeCoords(event.clientX, event.clientY);
+
+        // Set start position of mouseDown
+        this.setState({ startPos: { x, y } });
+
+        // MouseDown on Cargo
+        if (isSelectTool(this.props.tool) && className.includes('Cargo')) {
+            this.setState({ isMoving: true }); 
+        }
+    }
+
+    // Only end dragging status if dragging status was true.
+    private handleMouseUp = (): void => { 
+        if (isSelectTool(this.props.tool) && this.state.isDragging) {
+            this.props.selectMultipleCargo(this.state.startPos, this.state.mousePos, this.props.deckIndex);
+        }
+
+        if (isSelectTool(this.props.tool) && this.state.isMoving) {
+            this.setState({ isMoving: false })
+        }
+
+        this.setState({
+            isDragging: false
+        })
+    }
+
+    // Handle mouseLeave
+    private handleMouseLeave = () => { 
+        if (isSelectTool(this.props.tool) && this.state.isDragging) {
+            this.props.selectMultipleCargo(this.state.startPos, this.state.mousePos, this.props.deckIndex);
+        }
+
+        this.setState({ displayPreviewCargo: false, isDragging: false }) 
+    };
+
+    // Compares two sets of coordinates and check if the distance is greater
+    // than the given delta.
+    private enoughDistanceForDrag = (x1, y1, x2, y2) => {
+        const delta = 6; 
+
+        const diffX = Math.abs(x2 - x1);
+        const diffY = Math.abs(y2 - y1);
+
+        return (diffX > delta && diffY > delta);
+    }
+
+    private getRelativeCoords = (x, y): any => {
+        const boundingRect = this.deckRef.current.getBoundingClientRect();
+
+        return [x - boundingRect.left, y - boundingRect.top];
     }
 
     //  Return the preview cargo element that is positioned at the user's mouse cursor.
@@ -94,68 +146,22 @@ export class Deck extends React.Component<DeckProps, any> {
 
     // Return the selection box
     private getSelectionBox = () => {
+        const { startPos, selectionBox } = this.state;
+
         // checking if the user is dragging and making sure that the selection box
         // coords have already been updated.
-        if (this.state.isDragging && this.state.selectionBox.pos.hasOwnProperty('x')) {
+        if (this.state.isDragging) {
             return (
                 <div 
                     className="Deck Deck__Selection"
                     style={{ 
-                        left: this.state.selectionBox.pos.x,  
-                        top: this.state.selectionBox.pos.y,
-                        width: this.state.selectionBox.width, 
-                        height: this.state.selectionBox.height
+                        left: startPos.x,
+                        top: startPos.y,
+                        width: selectionBox.width, 
+                        height: selectionBox.height
                     }}>
                 </div>
             )
-        }
-    }
-
-    // Handle mouseEnter and mouseLeave
-    private handleMouseEnter = () => { 
-        if (isCargoTool(this.props.tool)) {
-            this.setState({ displayPreviewCargo: true }) 
-        }
-    };
-
-    private handleMouseLeave = () => { 
-        if (isSelectTool(this.props.tool) && this.state.isDragging) {
-            this.props.getSelectionBoxCoords(this.state.selectionBox.pos, this.state.mousePos, this.props.deckIndex);
-        }
-
-        this.setState({ displayPreviewCargo: false, isDragging: false }) 
-    };
-
-    // Adding 4px to selection box position, so the selection box div doesn't get in the way of
-    // other click events.
-    // Also making sure that the drag only registers on the background and not on a cargo element.
-    private handleMouseDown = (event: any): void => {
-        const { target: { className }} = event;
-
-        if (isSelectTool(this.props.tool) && className.includes('Deck')) {
-            this.setState({ 
-                isDragging: true,
-                selectionBox: { pos: { x: this.state.mousePos.x + 4, y: this.state.mousePos.y + 4 } }
-            }) 
-        }
-
-        // MouseDown on Cargo
-        if (isSelectTool(this.props.tool) && className.includes('Cargo')) {
-            this.setState({
-                isMoving: true
-            });
-        }
-    }
-
-    // Only end dragging status if dragging status was true.
-    private handleMouseUp = (): void => { 
-        if (isSelectTool(this.props.tool) && this.state.isDragging) {
-            this.props.getSelectionBoxCoords(this.state.selectionBox.pos, this.state.mousePos, this.props.deckIndex);
-            this.setState({ isDragging: false });
-        }
-
-        if (isSelectTool(this.props.tool) && this.state.isMoving) {
-            this.setState({ isMoving: false })
         }
     }
 
@@ -178,10 +184,8 @@ export class Deck extends React.Component<DeckProps, any> {
                         width: width + "px",
                         height: height + "px"
                     }}
-                    onMouseMove={this.handleMouseMove}
                     ref={this.deckRef}
-                    onClick={(event) => {this.props.handleClick(event, null, this.state.mousePos, deckIndex)}}
-                    onMouseEnter={this.handleMouseEnter}
+                    onMouseMove={this.handleMouseMove}
                     onMouseLeave={this.handleMouseLeave}
                     onMouseDown={event => {this.handleMouseDown(event)}}
                     onMouseUp={this.handleMouseUp}>   
