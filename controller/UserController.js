@@ -31,7 +31,6 @@ exports.store = (req, res) => {
                         jwt.sign(
                             { user: { id: user.id, name: user.name, email: user.email } },
                             process.env.JWT_SECRET,
-                            { expiresIn: 86400 },
                             (err, token) => {
                                 if (error) throw err;
         

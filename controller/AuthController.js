@@ -45,7 +45,6 @@ exports.login = (req, res) => {
                 jwt.sign(
                     { user: { id: user.id, name: user.name, email: user.email } },
                     process.env.JWT_SECRET,
-                    { expiresIn: 86400 },
                     (err, token) => {
                         if (err) return res.status(500).json({ details: [{ message: err }]});
     
