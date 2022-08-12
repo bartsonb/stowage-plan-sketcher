@@ -2,7 +2,7 @@ import React from "react";
 import Box from "../Box/Box";
 import Cargo from "../Cargo/Cargo";
 import { isCargoTool, isSelectTool } from "../Toolbar/Toolbar";
-import './Ship.scss';
+import './Deck.scss';
 
 export type deck = {
     index: number, 
@@ -12,11 +12,11 @@ export type deck = {
     height: number
 }
 
-export interface Ship {
+export interface Deck {
     deckRef: any;
 }
 
-export interface ShipProps {
+export interface DeckProps {
     deckIndex: number;
     deckName: string;
     name: string;
@@ -31,7 +31,7 @@ export interface ShipProps {
     getSelectionBoxCoords: any;
 }
 
-export class Ship extends React.Component<ShipProps, any> {
+export class Deck extends React.Component<DeckProps, any> {
     constructor(props) {
         super(props);
         
@@ -99,7 +99,7 @@ export class Ship extends React.Component<ShipProps, any> {
         if (this.state.isDragging && this.state.selectionBox.pos.hasOwnProperty('x')) {
             return (
                 <div 
-                    className="Ship__Deck__Selection"
+                    className="Deck Deck__Selection"
                     style={{ 
                         left: this.state.selectionBox.pos.x,  
                         top: this.state.selectionBox.pos.y,
@@ -166,7 +166,6 @@ export class Ship extends React.Component<ShipProps, any> {
         return (
             <Box
                 hide={!visible}
-                cssClass="Ship" 
                 title={`${name} - ${deckName} [${deckIndex + 1}]`}
                 sizing={{
                     top: ((window.innerHeight / 2) - (height / 2) - paddingHeight) + "px", 
@@ -174,7 +173,7 @@ export class Ship extends React.Component<ShipProps, any> {
                     position: "absolute"
                 }}>
                 <div
-                    className="Ship__Deck"
+                    className="Deck"
                     style={{
                         width: width + "px",
                         height: height + "px"
@@ -196,4 +195,4 @@ export class Ship extends React.Component<ShipProps, any> {
     }
 }
 
-export default Ship;
+export default Deck;

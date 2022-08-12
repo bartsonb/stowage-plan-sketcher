@@ -1,6 +1,6 @@
-.Ship__Deck {
+.Deck {
     position: relative;
-    background-color: #efefef;
+    background-color: #fff;
     border-radius: 4px;
 
     &__Selection {
@@ -8,10 +8,7 @@
         z-index: 9999;
         border: solid 1px #ccc;
         background:rgba(0, 0, 0, 0.02);
-        -webkit-user-drag: none;
         user-select: none;
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
+        -webkit-user-drag: none;
     }
 }
