@@ -87,7 +87,6 @@ export class Deck extends React.Component<DeckProps, any> {
         // mouseUp counts as click, when not enough distance was traveled after mouseDown.
         // see: enoughDistanceForDrag().
         if (!isSelecting) {
-            console.log('click');
             this.props.deselectCargo();
         }
 

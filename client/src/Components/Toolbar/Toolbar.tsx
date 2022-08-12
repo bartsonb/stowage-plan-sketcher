@@ -32,7 +32,7 @@ export const Toolbar = (props: ToolbarProps) => {
     
             <p className="Toolbar__Category">Add</p>
             <ToolbarButton
-                shortcutButton={cargoInfo['container'].shortcutKey}
+                shortcutButton={cargoInfo['container'].hotkey}
                 onClick={() => {handleOnClick('container')}}
                 name={'Container'}
                 imgSrc={containerImage}
@@ -40,7 +40,7 @@ export const Toolbar = (props: ToolbarProps) => {
             />
 
             <ToolbarButton
-                shortcutButton={cargoInfo['box'].shortcutKey}
+                shortcutButton={cargoInfo['box'].hotkey}
                 onClick={() => {handleOnClick('box')}}
                 name={'Box'}
                 imgSrc={boxImage}

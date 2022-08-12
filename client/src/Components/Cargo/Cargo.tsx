@@ -9,12 +9,12 @@ export const cargoInfo = {
     container: {
         abbreviation: 'cn', 
         size: ["80px", "40px"],
-        shortcutKey: 'c'
+        hotkey: 'c'
     }, 
     box: {
         abbreviation: 'bx', 
         size: ["40px", "40px"],
-        shortcutKey: 'b'
+        hotkey: 'b'
     }
 }
 
