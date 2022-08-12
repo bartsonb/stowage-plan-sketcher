@@ -7,7 +7,7 @@ import dragIcon from '../../Assets/Icons/drag.svg';
 export interface BoxProps {
     title?: string;
     children?: any;
-    cssClass: string;
+    cssClass?: string;
     sizing?: any;
     hide?: boolean;
 }

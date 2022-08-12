@@ -7,6 +7,8 @@
     min-width: 13em;
     box-shadow: 0 0 10px 6px rgb(0, 0, 0, 0.15);
     animation: box-shadow 0.3s ease-in-out;
+    user-select: none;
+    -webkit-user-drag: none;
 
     &__Handle {
         cursor: grab;
