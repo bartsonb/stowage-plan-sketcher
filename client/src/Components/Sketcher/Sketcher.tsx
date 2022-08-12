@@ -88,7 +88,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         // Add shortcut keys from cargoInfo definition in Cargo.tsx to
         // lookup object.
         for (const cargoType in cargoInfo) {
-            keyToTool[cargoInfo[cargoType].shortcutKey] = cargoType;
+            keyToTool[cargoInfo[cargoType].hotkey] = cargoType;
         }
 
         // Only update tool if the pressed key exists in the keyToTool object
@@ -151,12 +151,18 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         });
     }
 
-    // Get the coords of the selection box (top-left and bottom-right) and determine which cargo gets selected.
+    // Get the start and end coords of selection box and determine which cargo gets selected.
     // deckIndex needs to be given to identify the correct deck.
     public selectMultipleCargo = ({ x: x1, y: y1 }, { x: x2, y: y2 }, deckIndex: number): void => {
         this.setState(prevState => {
             const newCargoState = prevState.cargo.map(el => {
-                const insideOfSelection = el.coords.x > x1 && el.coords.x < x2 && el.coords.y > y1 && el.coords.y < y2;
+                const { x: elX, y: elY } = el.coords;
+                const insideOfSelection = (
+                    // dragged left to right, then bottom or top
+                    (elX > x1 && elX < x2 && (elY > y1 && elY < y2 || elY < y1 && elY > y2)) ||
+                    // dragged right to left, then bottom or top
+                    (elX < x1 && elX > x2 && (elY > y1 && elY < y2 || elY < y1 && elY > y2))  
+                )
 
                 return {
                     ...el, 
