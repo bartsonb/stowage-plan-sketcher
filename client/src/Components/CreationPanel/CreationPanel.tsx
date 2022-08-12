@@ -3,7 +3,7 @@ import Box from "../Box/Box";
 import Form from "../Form/Form";
 import { v4 as uuidv4 } from "uuid";
 import "./CreationPanel.scss";
-import { deck } from "../Ship/Ship";
+import { deck } from "../Deck/Deck";
 
 export interface CreationPanel {
     deckMinWidth: number;

@@ -2,8 +2,8 @@ import React from "react";
 import Toolbar, { isCargoTool, isSelectTool } from "../Toolbar/Toolbar";
 import InfoPanel from "../InfoPanel/InfoPanel";
 import MenuBar from "../MenuBar/MenuBar";
-import Ship, { deck } from "../Ship/Ship";
-import Cargo, { cargo } from "../Cargo/Cargo";
+import Deck, { deck } from "../Deck/Deck";
+import Cargo, { cargo, cargoInfo } from "../Cargo/Cargo";
 import EditPanel from "../EditPanel/EditPanel";
 import Diffuser from "../Diffuser/Diffuser";
 import LoadingPanel from "../LoadingPanel/LoadingPanel";
@@ -27,7 +27,6 @@ export interface SketcherState {
     cargo: cargo[],
     tool: string,
     savedTimestamp: Date,
-    saved: boolean,
     showCreationPanel: boolean,
     showLoadingPanel: boolean,
     loading: boolean,
@@ -45,7 +44,6 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             cargo: [],
             tool: "select",
             savedTimestamp: new Date(),
-            saved: false,
             showCreationPanel: false,
             showLoadingPanel: false,
             loading: false
@@ -75,24 +73,31 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
     private togglePanel = (name: string): void => {
         switch (name) {
             case "CreationPanel":
-                return this.setState({ showCreationPanel: !this.state.showCreationPanel });
+                return this.setState({ 
+                    showCreationPanel: !this.state.showCreationPanel,
+                    showLoadingPanel: false
+                });
             case "LoadingPanel":
-                return this.setState({ showLoadingPanel: !this.state.showLoadingPanel });
+                return this.setState({ 
+                    showLoadingPanel: !this.state.showLoadingPanel,
+                    showCreationPanel: false
+                });
         }
     }
 
-    // Handeling key presses to check if a shortcut button for a tool was clicked.
-    private handleKeyPress = ({ key }: any): void => {
-        const keyToTool = {
-            'v': 'select', 
-            'b': 'box', 
-            'c': 'container'
+    // Handeling key presses to check if a shortcut button for a tool was pressed
+    private handleKeyPress = ({ ctrlKey, key }: any): void => {
+        // Lookup object, key -> tool
+        const keyToTool = { 'v': 'select'}
+
+        // Add shortcut keys from cargoInfo definition in Cargo.tsx to
+        // lookup object.
+        for (const cargoType in cargoInfo) {
+            keyToTool[cargoInfo[cargoType].shortcutKey] = cargoType;
         }
 
         // Only update tool if the pressed key exists in the keyToTool object
-        if (Object.keys(keyToTool).includes(key)) {
-            this.updateTool(keyToTool[key]);
-        }
+        if (Object.keys(keyToTool).includes(key)) this.updateTool(keyToTool[key]);
     }
 
     // Handeling the clicks on the ship and cargo elements
@@ -289,7 +294,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             // Important, because deckRefs are created onMount. 
             return { decks: [] };
         }, () => {
-            this.setState({ uuid, shipName, shipDestination, decks, cargo });
+            this.setState({ savedTimestamp: new Date(), uuid, shipName, shipDestination, decks, cargo });
         });
     }
 
@@ -318,13 +323,8 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             url: '/api/sketches',
             data
         })
-            .then(res =>  {
-                console.log(new Date(res.data.sketch.updatedAt));
-                this.setState({ savedTimestamp: new Date(res.data.sketch.updatedAt) })
-            })
-            .catch(error => {
-                console.log(error);
-            })
+            .then(res =>  this.setState({ savedTimestamp: new Date(res.data.sketch.updatedAt) }))
+            .catch(error => console.log(error))
             .finally(() => this.setState({ loading: false }))
     }
 
@@ -375,14 +375,14 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
     public render() {
         const { 
-            uuid, saved, savedTimestamp, shipName, shipDestination, cargo, 
+            uuid, savedTimestamp, shipName, shipDestination, cargo, 
             decks, tool, showCreationPanel, showLoadingPanel, loading
         } = this.state;
         
-        let shipElements;
+        let deckElements;
 
         if (decks.length > 0) {
-            shipElements = decks.map(deck => {
+            deckElements = decks.map(deck => {
                 // Get all cargo elements for the current deck
                 const cargoElements = cargo
                     .filter(cargo => cargo.deckIndex === deck.index)
@@ -401,7 +401,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                     });
 
                 return (
-                    <Ship 
+                    <Deck 
                         key={deck.index}
                         deckIndex={deck.index}
                         width={deck.width}
@@ -416,7 +416,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                         getSelectionBoxCoords={this.getSelectionBoxCoords}>
                         
                         {cargoElements}
-                    </Ship>
+                    </Deck>
                 )
             })
         }
@@ -427,9 +427,8 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                     togglePanel={this.togglePanel}
                     showCreationPanel={showCreationPanel}
                     showLoadingPanel={showLoadingPanel}
-                    saved={saved} 
                     savedTimestamp={savedTimestamp} 
-                    sketchLoaded={decks.length > 0}
+                    sketchLoaded={uuid}
                     saveSketch={this.saveSketch}
                     exportSketch={this.exportSketch}
                     />
@@ -468,7 +467,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                         <MoonLoader loading={loading} size={35} color={"#fff"} />
                     </Diffuser>
 
-                    {shipElements}
+                    {deckElements}
                 </div>
             </div>
         );
