@@ -116,9 +116,11 @@ export class Deck extends React.Component<DeckProps, any> {
         }) 
     };
 
-    // Compares two sets of coordinates and check if the distance is greater
+    // Compares two sets of coordinates (start and end) and check if the distance is greater
     // than the given delta.
     private enoughDistanceForDrag = (x1, y1, x2, y2) => {
+        // Default startPos is null, whichs acts as a 0 when used in calculation.
+        // -> Need to abort otherwise this function would always return true.
         if (x1 === null || x2 === null) return false;
 
         const delta = 3; 
@@ -141,24 +143,40 @@ export class Deck extends React.Component<DeckProps, any> {
         }
     }
 
-    // Return the selection box
+    // Return the selection box element
     private getSelectionBox = () => {
-        const { startPos, mousePos } = this.state;
-
-        // checking if the user is dragging and making sure that the selection box
-        // coords have already been updated.
         if (this.state.isSelecting) {
-            return (
-                <div 
-                    className="Deck Deck__Selection"
-                    style={{ 
-                        left: startPos.x,
-                        top: startPos.y,
-                        width: (mousePos.x - startPos.x) + "px", 
-                        height: (mousePos.y - startPos.y) + "px", 
-                    }}>
-                </div>
-            )
+            const { x: x1, y: y1 } = this.state.startPos;
+            const { x: x2, y: y2 } = this.state.mousePos;
+    
+            let left = 0; 
+            let top = 0;
+            let width = ""; 
+            let height = "";
+
+            // downward
+            if (y2 > y1) {
+                // -> right
+                if (x2 > x1) {
+                    left = x1; top = y1; width = (x2 - x1) + "px"; height = (y2 - y1) +  "px";
+                } 
+                // -> left
+                else {
+                    left = x2; top = y1; width = (x1 - x2) + "px"; height = (y2 - y1) + "px";
+                }
+            // upward
+            } else {
+                // -> right
+                if (x2 > x1) {
+                    left = x1; top = y2; width = (x2 - x1) + "px"; height = (y1 - y2) + "px"; 
+                } 
+                // -> left
+                else {
+                    left = x2; top = y2; width = (x1 - x2) + "px"; height = (y1 - y2) + "px"; 
+                }
+            }
+
+            return (<div className="Deck Deck__Selection" style={{ left, top, width, height }}></div>)
         }
     }
 
