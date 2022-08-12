@@ -394,6 +394,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                         deckName={deck.name}
                         moveCargo={this.moveCargo}
                         setDeckRef={this.setDeckRef}
+                        deselectCargo={this.deselectCargo}
                         selectMultipleCargo={this.selectMultipleCargo}>
                         
                         {cargoElements}

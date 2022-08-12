@@ -26,7 +26,8 @@ export interface DeckProps {
     tool: string;
     children?: any;
     moveCargo: any;
-    setDeckRef(deckIndex: number, ref: any);
+    setDeckRef(deckIndex: number, ref: any): void;
+    deselectCargo(): void;
     selectMultipleCargo(coords1: {x, y}, coords2: {x, y}, deckIndex): any;
 }
 
@@ -35,11 +36,10 @@ export class Deck extends React.Component<DeckProps, any> {
         super(props);
         
         this.state = {
-            startPos: { x: 0, y: 0 },
+            startPos: { x: null , y: null  },
             mousePos: { x: 0, y: 0, moveX: 0, moveY: 0 },
-            selectionBox: { width: 0, height: 0 },
             displayPreviewCargo: false,
-            isDragging: false,
+            isSelecting: false,
             isMoving: false
         }
 
@@ -51,10 +51,9 @@ export class Deck extends React.Component<DeckProps, any> {
         this.props.setDeckRef(this.props.deckIndex, this.deckRef.current);
     }
 
-    // Handling the mouse movement to save mouse position
-    // and normalizing the coords to be relative to the deck div.
+    // Handling the mouse movement
     public handleMouseMove = ({ clientX, clientY, movementX, movementY }): void => {
-        const { startPos, mousePos, isDragging, isMoving } = this.state;
+        const { startPos, mousePos, isMoving } = this.state;
 
         this.setState(() => {
             const [x, y] = this.getRelativeCoords(clientX, clientY);
@@ -62,24 +61,10 @@ export class Deck extends React.Component<DeckProps, any> {
             return { 
                 displayPreviewCargo: isCargoTool(this.props.tool),
                 mousePos: { x, y, moveX: movementX, moveY: movementY }, 
-                isDragging: this.enoughDistanceForDrag(startPos.x, startPos.y, x, y)
+                isSelecting: (!isMoving && this.enoughDistanceForDrag(startPos.x, startPos.y, x, y))
             }
         }, () => {
-
-            // Set width and height for selection box while dragging
-            if (isDragging) {
-                this.setState({ 
-                    selectionBox: { 
-                        width: mousePos.x - startPos.x + "px", 
-                        height: mousePos.y - startPos.y + "px" 
-                    } 
-                });
-            }
-
-            // Move cargo while isMoving is true
-            if (isMoving) {
-                this.props.moveCargo(mousePos.moveX, mousePos.moveY);
-            }
+            if (isMoving) this.props.moveCargo(mousePos.moveX, mousePos.moveY);
         });
     }
 
@@ -96,35 +81,48 @@ export class Deck extends React.Component<DeckProps, any> {
         }
     }
 
-    // Only end dragging status if dragging status was true.
     private handleMouseUp = (): void => { 
-        if (isSelectTool(this.props.tool) && this.state.isDragging) {
-            this.props.selectMultipleCargo(this.state.startPos, this.state.mousePos, this.props.deckIndex);
+        const { isSelecting, mousePos, startPos } = this.state;
+
+        // mouseUp counts as click, when not enough distance was traveled after mouseDown.
+        // see: enoughDistanceForDrag().
+        if (!isSelecting) {
+            console.log('click');
+            this.props.deselectCargo();
         }
 
-        if (isSelectTool(this.props.tool) && this.state.isMoving) {
-            this.setState({ isMoving: false })
+        if (isSelectTool(this.props.tool) && isSelecting) {
+            this.props.selectMultipleCargo(startPos, mousePos, this.props.deckIndex);
         }
 
         this.setState({
-            isDragging: false
+            startPos: { x: null, y: null },
+            isSelecting: false, 
+            isMoving: false
         })
     }
 
-    // Handle mouseLeave
     private handleMouseLeave = () => { 
-        if (isSelectTool(this.props.tool) && this.state.isDragging) {
-            this.props.selectMultipleCargo(this.state.startPos, this.state.mousePos, this.props.deckIndex);
+        const { isSelecting, mousePos, startPos } = this.state;
+
+        // End selection box, when mouse leaves the deck while dragging.
+        if (isSelectTool(this.props.tool) && isSelecting) {
+            this.props.selectMultipleCargo(startPos, mousePos, this.props.deckIndex);
         }
 
-        this.setState({ displayPreviewCargo: false, isDragging: false }) 
+        this.setState({ 
+            startPos: { x: null, y: null },
+            isSelecting: false,
+            displayPreviewCargo: false 
+        }) 
     };
 
     // Compares two sets of coordinates and check if the distance is greater
     // than the given delta.
     private enoughDistanceForDrag = (x1, y1, x2, y2) => {
-        const delta = 6; 
+        if (x1 === null || x2 === null) return false;
 
+        const delta = 3; 
         const diffX = Math.abs(x2 - x1);
         const diffY = Math.abs(y2 - y1);
 
@@ -146,19 +144,19 @@ export class Deck extends React.Component<DeckProps, any> {
 
     // Return the selection box
     private getSelectionBox = () => {
-        const { startPos, selectionBox } = this.state;
+        const { startPos, mousePos } = this.state;
 
         // checking if the user is dragging and making sure that the selection box
         // coords have already been updated.
-        if (this.state.isDragging) {
+        if (this.state.isSelecting) {
             return (
                 <div 
                     className="Deck Deck__Selection"
                     style={{ 
                         left: startPos.x,
                         top: startPos.y,
-                        width: selectionBox.width, 
-                        height: selectionBox.height
+                        width: (mousePos.x - startPos.x) + "px", 
+                        height: (mousePos.y - startPos.y) + "px", 
                     }}>
                 </div>
             )
@@ -168,6 +166,13 @@ export class Deck extends React.Component<DeckProps, any> {
     render() {
         const { deckName, name, deckIndex, width, height, visible } = this.props;
         const [ paddingWidth, paddingHeight ] = [30, 55];
+
+        let stateView = [];
+
+        for (const key in this.state) {
+            const showKey = ['startPos', 'isSelecting', 'isMoving', 'displayPreviewCargo'];
+            if (showKey.includes(key)) stateView.push(<p style={{ color: "#222"}}>{key}: {JSON.stringify(this.state[key])}</p> )
+        }
 
         return (
             <Box
@@ -189,7 +194,7 @@ export class Deck extends React.Component<DeckProps, any> {
                     onMouseLeave={this.handleMouseLeave}
                     onMouseDown={event => {this.handleMouseDown(event)}}
                     onMouseUp={this.handleMouseUp}>   
-
+                    {stateView}
                     {this.getSelectionBox()}
                     {this.getPreviewCargo()}
                     {this.props.children}
