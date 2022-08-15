@@ -105,7 +105,9 @@ export class Deck extends React.Component<DeckProps, any> {
             if (isCargoTool(tool)) addCargo(mousePos, deckIndex, tool);
         }
 
-        if (isSelectTool(tool) && isSelecting) selectMultipleCargo(startPos, mousePos, deckIndex);
+        if (isSelectTool(tool) && isSelecting) {
+            selectMultipleCargo(startPos, mousePos, deckIndex);
+        }
 
         this.setState({
             startPos: { x: null, y: null },
@@ -139,7 +141,7 @@ export class Deck extends React.Component<DeckProps, any> {
         // -> Need to abort otherwise this function would always return true.
         if (x1 === null || x2 === null) return false;
 
-        const delta = 3; 
+        const delta = 5; 
         const diffX = Math.abs(x2 - x1);
         const diffY = Math.abs(y2 - y1);
 
@@ -204,7 +206,7 @@ export class Deck extends React.Component<DeckProps, any> {
 
         for (const key in this.state) {
             const showKey = ['startPos', 'isSelecting', 'isMoving', 'displayPreviewCargo'];
-            if (showKey.includes(key)) stateView.push(<p style={{ padding: ".5em", color: "#777"}}>{key}: {JSON.stringify(this.state[key])}</p> )
+            if (showKey.includes(key)) stateView.push(<p style={{ padding: ".3em", color: "#777"}}>{key}: {JSON.stringify(this.state[key])}</p> )
         }
 
         return (
@@ -225,7 +227,7 @@ export class Deck extends React.Component<DeckProps, any> {
                     ref={this.deckRef}
                     onMouseMove={this.handleMouseMove}
                     onMouseLeave={this.handleMouseLeave}
-                    onMouseDown={event => {this.handleMouseDown(event)}}
+                    onMouseDown={this.handleMouseDown}
                     onMouseUp={this.handleMouseUp}>   
                     {stateView}
                     {this.getSelectionBox()}

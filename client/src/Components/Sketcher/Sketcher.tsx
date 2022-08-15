@@ -176,7 +176,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             }));
 
             return { cargo: newCargoState }
-        })
+        });
     }
 
     // Deselects ALL cargo.
@@ -186,7 +186,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                 ...el,
                 selected: false
             }))}
-        })
+        });
     }
 
     private getCargoInformation = (cargoIndex: number): cargo => {
@@ -228,7 +228,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             }));
 
             return { cargo: newCargoState }
-        }, () => console.log("updated"));
+        });
     }
 
     // TODO only reassign cargo indexes of cargo on the current deck
