@@ -59,8 +59,7 @@ export const Cargo = (props: CargoProps) => {
             <div 
                 className={`Cargo Cargo__${type} ${selected ? 'Cargo--selected' : ''} ${hazardous ? 'Cargo--hazardous' : ''}`}
                 data-index={index}
-                style={{width, height, top: coords.y, left: coords.x}}
-                onClick={(event) => { handleClick(event, index) }}>
+                style={{width, height, top: coords.y, left: coords.x}}>
     
                 <div className="Cargo__Description" data-index={index}>
                     <p className={"Cargo__Description__Element Cargo__Description__Element--index"} data-index={index}>{index}</p>

@@ -107,25 +107,6 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         if (Object.keys(keyToTool).includes(key)) this.updateTool(keyToTool[key]);
     }
 
-    // Handeling clicks on the cargo elements
-    // cargoIndex is used to indentify the clicked cargo element
-    private handleCargoClick = (event: any, cargoIndex: number): void => {
-        const { tool } = this.state;
-        event.stopPropagation();
-
-        // Select the cargo with the given index
-        if (isSelectTool(tool)) {
-            this.setState(prevState => {
-                return { 
-                    cargo: prevState.cargo.map(el => ({
-                        ...el,
-                        selected: (el.cargoIndex === cargoIndex) ? true : false
-                    })) 
-                }
-            });
-        } 
-    };
-
     // Sorting the selected cargo by their x or y coordiantes.
     // After sorting fhe first element will have the smallest coordiante.
     public alignCargo = (direction: string): void => {
@@ -413,8 +394,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                     .map(cargo => {
                         return (
                             <Cargo 
-                                key={cargo.cargoIndex} 
-                                handleClick={this.handleCargoClick}
+                                key={cargo.cargoIndex}
                                 index={cargo.cargoIndex} 
                                 selected={cargo.selected} 
                                 hazardous={cargo.hazardous}
