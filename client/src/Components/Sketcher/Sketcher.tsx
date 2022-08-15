@@ -1,4 +1,4 @@
-import React, { Component, MutableRefObject } from "react";
+import React from "react";
 import Toolbar, { isSelectTool } from "../Toolbar/Toolbar";
 import InfoPanel from "../InfoPanel/InfoPanel";
 import MenuBar from "../MenuBar/MenuBar";
@@ -24,7 +24,7 @@ export interface SketcherState {
     uuid: string,
     shipName: string,
     shipDestination: string,
-    decks: any[],
+    decks: deck[],
     cargo: cargo[],
     tool: string,
     savedTimestamp: Date,
@@ -186,6 +186,28 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         });
     }
 
+    // Select cargo with given index - doesn't deselect other cargo.
+    private selectCargo = (cargoIndex: number): void => {
+        this.setState(prevState => {    
+            const newCargoState = prevState.cargo.map(el => ({
+                ...el, 
+                selected: (el.cargoIndex === cargoIndex) ? true : el.selected
+            }));
+
+            return { cargo: newCargoState }
+        })
+    }
+
+    // Deselects ALL cargo.
+    private deselectCargo = (): void => {
+        this.setState(prevState => {
+            return { cargo: prevState.cargo.map(el => ({
+                ...el,
+                selected: false
+            }))}
+        })
+    }
+
     private addCargo = (coords: {x, y}, deckIndex: number, cargoType: cargoType) => {
         this.setState((prevState) => {
             // Reassign new indices for all cargos.
@@ -239,17 +261,6 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         })
     };
 
-    private deselectCargo = (): void => {
-        this.setState(prevState => {
-            const newCargoState = prevState.cargo.map(el => ({
-                ...el,
-                selected: false
-            }));
-
-            return { cargo: newCargoState }
-        });
-    }
-
     // Edit cargo with given index
     private editCargo = (cargoIndex: number, key: string, value: any): void => {
         this.setState(prevState => {
@@ -290,7 +301,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
     // Complete overwrite of current sketch. 
     // Used when loading in already created sketches.
-    private overwriteSketch = (shipName: string, shipDestination: string, decks: object[], cargo: cargo[], uuid: string): void => {
+    private overwriteSketch = (shipName: string, shipDestination: string, decks: deck[], cargo: cargo[], uuid: string): void => {
         this.setState(() => {
             // Need to clear decks state, so react creates new deck components from scratch.
             // Important, because deckRefs are created onMount. 
@@ -422,6 +433,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                         deckName={deck.name}
                         moveCargo={this.moveCargo}
                         setDeckRef={this.setDeckRef}
+                        selectCargo={this.selectCargo}
                         deselectCargo={this.deselectCargo}
                         selectMultipleCargo={this.selectMultipleCargo}>
                         

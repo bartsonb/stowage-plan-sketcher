@@ -43,27 +43,29 @@ export interface CargoProps {
 }
 
 export const Cargo = (props: CargoProps) => {
+    const { index, type, selected, hazardous, coords, preview, handleClick } = props;
     const [ width, height ] = cargoInfo[props.type].size;
 
     // Return a simplified version of the cargo, if the preview param is true.
-    if (props.preview) {
+    if (preview) {
         return (
             <div 
                 className={`Cargo Cargo__Preview`}
-                style={{width: width, height: height, top: props.coords.y, left: props.coords.x}}>
+                style={{width, height, top: coords.y, left: coords.x}}>
             </div> 
         )
     } else {
         return (
             <div 
-                className={`Cargo Cargo__${props.type} ${props.selected ? 'Cargo--selected' : ''} ${props.hazardous ? 'Cargo--hazardous' : ''}`}
-                style={{width: width, height: height, top: props.coords.y, left: props.coords.x}}
-                onClick={(event) => { props.handleClick(event, props.index) }}>
+                className={`Cargo Cargo__${type} ${selected ? 'Cargo--selected' : ''} ${hazardous ? 'Cargo--hazardous' : ''}`}
+                data-index={index}
+                style={{width, height, top: coords.y, left: coords.x}}
+                onClick={(event) => { handleClick(event, index) }}>
     
-                <div className="Cargo__Description" style={{ display: props.preview ? 'hidden' : 'flex'}}>
-                    <p className={"Cargo__Description__Element Cargo__Description__Element--index"}>{props.index}</p>
-                    <p className={"Cargo__Description__Element Cargo__Description__Element--type"}>
-                        {props.type} {props.hazardous ? '(H)' : ''}
+                <div className="Cargo__Description" data-index={index}>
+                    <p className={"Cargo__Description__Element Cargo__Description__Element--index"} data-index={index}>{index}</p>
+                    <p className={"Cargo__Description__Element Cargo__Description__Element--type"} data-index={index}>
+                        {type} {hazardous ? '(H)' : ''}
                     </p>
                 </div>
             </div> 

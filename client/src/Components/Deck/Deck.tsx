@@ -1,4 +1,4 @@
-import React from "react";
+import React, { RefObject } from "react";
 import Box from "../Box/Box";
 import Cargo from "../Cargo/Cargo";
 import { isCargoTool, isSelectTool } from "../Toolbar/Toolbar";
@@ -10,6 +10,7 @@ export type deck = {
     visible: boolean,
     width: number,
     height: number
+    ref: HTMLElement
 }
 
 export interface Deck {
@@ -27,8 +28,9 @@ export interface DeckProps {
     children?: any;
     moveCargo: any;
     setDeckRef(deckIndex: number, ref: any): void;
+    selectCargo(cargoIndex?: number): void;
     deselectCargo(): void;
-    selectMultipleCargo(coords1: {x, y}, coords2: {x, y}, deckIndex): any;
+    selectMultipleCargo(coords1: {x, y}, coords2: {x, y}, deckIndex): void;
 }
 
 export class Deck extends React.Component<DeckProps, any> {
@@ -69,27 +71,25 @@ export class Deck extends React.Component<DeckProps, any> {
     }
 
     private handleMouseDown = (event: any): void => {
-        const { target: { className }} = event;
+        const { target } = event;
         const [x, y] = this.getRelativeCoords(event.clientX, event.clientY);
 
         // Set start position of mouseDown
         this.setState({ startPos: { x, y } });
 
-        // TODO move instantly
         // MouseDown on Cargo
-        if (isSelectTool(this.props.tool) && className.includes('Cargo')) {
+        if (isSelectTool(this.props.tool) && target.className.includes('Cargo')) {
+            // Select clicked cargo to make it move.
+            this.props.selectCargo(parseInt(target.getAttribute('data-index')))
             this.setState({ isMoving: true }); 
         }
     }
 
+    // mouseUp counts as click, when NOT selecting.
     private handleMouseUp = (): void => { 
-        const { isSelecting, mousePos, startPos } = this.state;
+        const { isSelecting, isMoving, mousePos, startPos } = this.state;
 
-        // mouseUp counts as click, when not enough distance was traveled after mouseDown.
-        // see: enoughDistanceForDrag().
-        if (!isSelecting) {
-            this.props.deselectCargo();
-        }
+        if (!isSelecting) this.props.deselectCargo();
 
         if (isSelectTool(this.props.tool) && isSelecting) {
             this.props.selectMultipleCargo(startPos, mousePos, this.props.deckIndex);
