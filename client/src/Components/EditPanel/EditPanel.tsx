@@ -38,12 +38,12 @@ export const EditPanel = (props: EditPanelProps) => {
 
     return (
         <Box cssClass="EditPanel" title="Editing">
-            <p className="EditPanel__Category">
+            <p className="Box__Content__Category">
                 Selected Cargo ({selectedCargoList.length})
             </p>
             <div className="EditPanel__Cargo">{selectedCargoList}</div>
 
-            <p className="EditPanel__Category">Alignment</p>
+            <p className="Box__Content__Category">Alignment</p>
             <div className="EditPanel__Buttons EditPanel__Buttons__Alignment">
                 <button
                     className="EditPanel__Buttons__Alignment EditPanel__Buttons__Alignment--left"
@@ -79,7 +79,7 @@ export const EditPanel = (props: EditPanelProps) => {
                 </button>
             </div>
 
-            <p className="EditPanel__Category">Organization</p>
+            <p className="Box__Content__Category">Organization</p>
             <div className="EditPanel__Buttons EditPanel__Buttons__Organization">
                 <button
                     onClick={props.deleteCargo}
