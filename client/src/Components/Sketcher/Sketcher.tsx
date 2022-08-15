@@ -186,12 +186,12 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         });
     }
 
-    // Select cargo with given index - doesn't deselect other cargo.
+    // Select cargo with given index-.
     private selectCargo = (cargoIndex: number): void => {
         this.setState(prevState => {    
             const newCargoState = prevState.cargo.map(el => ({
                 ...el, 
-                selected: (el.cargoIndex === cargoIndex) ? true : el.selected
+                selected: (el.cargoIndex === cargoIndex) ? true : false
             }));
 
             return { cargo: newCargoState }
@@ -208,7 +208,11 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         })
     }
 
-    private addCargo = (coords: {x, y}, deckIndex: number, cargoType: cargoType) => {
+    private getCargoInformation = (cargoIndex: number): cargo => {
+        return this.state.cargo.filter(el => el.cargoIndex === cargoIndex)[0];
+    }
+
+    private addCargo = (coords: {x, y}, deckIndex: number, cargoType: string) => {
         this.setState((prevState) => {
             // Reassign new indices for all cargos.
             const newCargoState = prevState.cargo.map((el, index) => ({
@@ -218,10 +222,10 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
             return {
                 cargo: [...newCargoState, { 
-                    cargoType: cargoType, 
+                    cargoType, 
+                    deckIndex, 
+                    coords, 
                     cargoIndex: prevState.cargo.length,
-                    deckIndex: deckIndex, 
-                    coords: { x: coords.x, y: coords.y }, 
                     selected: false,
                     hazardous: false
                 }]
@@ -231,7 +235,6 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
     // x, y are the relative movements from the last mouse position
     // The difference in direction gets applied to every cargo.
-    // TODO fix weird behaviour
     private moveCargo = (x: number, y: number): void => {
         // Todo theoretisches viereck für boundaries
         this.setState(prevState => {
@@ -244,7 +247,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             }));
 
             return { cargo: newCargoState }
-        });
+        }, () => console.log("updated"));
     }
 
     // TODO only reassign cargo indexes of cargo on the current deck
@@ -431,7 +434,9 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                         tool={tool}
                         name={shipName}
                         deckName={deck.name}
+                        getCargoInformation={this.getCargoInformation}
                         moveCargo={this.moveCargo}
+                        addCargo={this.addCargo}
                         setDeckRef={this.setDeckRef}
                         selectCargo={this.selectCargo}
                         deselectCargo={this.deselectCargo}

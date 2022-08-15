@@ -1,6 +1,6 @@
 import React, { RefObject } from "react";
 import Box from "../Box/Box";
-import Cargo from "../Cargo/Cargo";
+import Cargo, { cargo, cargoType } from "../Cargo/Cargo";
 import { isCargoTool, isSelectTool } from "../Toolbar/Toolbar";
 import './Deck.scss';
 
@@ -26,8 +26,10 @@ export interface DeckProps {
     visible: boolean;
     tool: string;
     children?: any;
-    moveCargo: any;
+    getCargoInformation(cargoIndex: number): cargo;
+    moveCargo(x: number, y: number): void;
     setDeckRef(deckIndex: number, ref: any): void;
+    addCargo(coords: {x, y}, deckIndex: number, cargoType: string): void;
     selectCargo(cargoIndex?: number): void;
     deselectCargo(): void;
     selectMultipleCargo(coords1: {x, y}, coords2: {x, y}, deckIndex): void;
@@ -45,7 +47,7 @@ export class Deck extends React.Component<DeckProps, any> {
             isMoving: false
         }
 
-        this.deckRef = React.createRef();
+        this.deckRef = React.createRef<HTMLElement>();
     }
 
     componentDidMount(): void {
@@ -55,15 +57,15 @@ export class Deck extends React.Component<DeckProps, any> {
 
     // Handling the mouse movement
     public handleMouseMove = ({ clientX, clientY, movementX, movementY }): void => {
-        const { startPos, mousePos, isMoving } = this.state;
+        const { startPos, mousePos, isMoving, isSelecting } = this.state;
 
         this.setState(() => {
             const [x, y] = this.getRelativeCoords(clientX, clientY);
 
             return { 
                 displayPreviewCargo: isCargoTool(this.props.tool),
-                mousePos: { x, y, moveX: movementX, moveY: movementY }, 
-                isSelecting: (!isMoving && this.enoughDistanceForDrag(startPos.x, startPos.y, x, y))
+                mousePos: { x, y, moveX: movementX, moveY: movementY },
+                isSelecting: (!isMoving && this.enoughDistanceForDrag(startPos, { x, y }))
             }
         }, () => {
             if (isMoving) this.props.moveCargo(mousePos.moveX, mousePos.moveY);
@@ -71,29 +73,39 @@ export class Deck extends React.Component<DeckProps, any> {
     }
 
     private handleMouseDown = (event: any): void => {
-        const { target } = event;
-        const [x, y] = this.getRelativeCoords(event.clientX, event.clientY);
+        const { target, clientX, clientY } = event;
+        const [x, y] = this.getRelativeCoords(clientX, clientY);
 
         // Set start position of mouseDown
         this.setState({ startPos: { x, y } });
 
-        // MouseDown on Cargo
+        // MouseDown on Cargo means isMoving is true
         if (isSelectTool(this.props.tool) && target.className.includes('Cargo')) {
-            // Select clicked cargo to make it move.
-            this.props.selectCargo(parseInt(target.getAttribute('data-index')))
-            this.setState({ isMoving: true }); 
+            const index = parseInt(target.getAttribute('data-index'));
+            const cargo = this.props.getCargoInformation(index);
+
+            // If already selected cargo is clicked (probably after mutliselect), 
+            // selection stays the same.
+            // If unselected cargo is clicked, only the clicked cargo becomes selected.
+            if (!cargo.selected) this.props.selectCargo(cargo.cargoIndex);
+
+            this.setState({ isMoving: true });
         }
     }
 
-    // mouseUp counts as click, when NOT selecting.
     private handleMouseUp = (): void => { 
-        const { isSelecting, isMoving, mousePos, startPos } = this.state;
+        const { isSelecting, mousePos, startPos } = this.state;
+        const { tool, deckIndex, addCargo, deselectCargo, selectMultipleCargo } = this.props;
 
-        if (!isSelecting) this.props.deselectCargo();
-
-        if (isSelectTool(this.props.tool) && isSelecting) {
-            this.props.selectMultipleCargo(startPos, mousePos, this.props.deckIndex);
+        // CLICK EVENT HAPPENS HERE
+        // during mouseUp check if enough distance was moved between mouseDown and mouseUp
+        // see: enoughDistanceForDrag()
+        if (!this.enoughDistanceForDrag(startPos, mousePos)) {
+            if (isSelectTool(tool)) deselectCargo();
+            if (isCargoTool(tool)) addCargo(mousePos, deckIndex, tool);
         }
+
+        if (isSelectTool(tool) && isSelecting) selectMultipleCargo(startPos, mousePos, deckIndex);
 
         this.setState({
             startPos: { x: null, y: null },
@@ -119,7 +131,10 @@ export class Deck extends React.Component<DeckProps, any> {
 
     // Compares two sets of coordinates (start and end) and check if the distance is greater
     // than the given delta.
-    private enoughDistanceForDrag = (x1, y1, x2, y2) => {
+    private enoughDistanceForDrag = (coords1: { x, y }, coords2: { x, y }) => {
+        const { x: x1, y: y1 } = coords1;
+        const { x: x2, y: y2 } = coords2;
+
         // Default startPos is null, whichs acts as a 0 when used in calculation.
         // -> Need to abort otherwise this function would always return true.
         if (x1 === null || x2 === null) return false;
