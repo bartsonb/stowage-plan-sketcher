@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component, MutableRefObject } from "react";
 import Toolbar, { isSelectTool } from "../Toolbar/Toolbar";
 import InfoPanel from "../InfoPanel/InfoPanel";
 import MenuBar from "../MenuBar/MenuBar";
@@ -13,6 +13,7 @@ import { User } from "../../App";
 import { MoonLoader } from "react-spinners";
 import { toPng } from 'html-to-image';
 import { saveAs } from "file-saver";
+import Toasty, { ToasterTypes } from "../Toasty/Toasty";
 import "./Sketcher.scss";
 
 export interface SketcherProps {
@@ -32,6 +33,10 @@ export interface SketcherState {
     loading: boolean,
 }
 
+export interface Sketcher {
+    toastyRef: React.RefObject<Toasty | null>
+}
+
 export class Sketcher extends React.Component<SketcherProps, SketcherState> {
     constructor(props: SketcherProps) {
         super(props);
@@ -48,9 +53,14 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             showLoadingPanel: false,
             loading: false
         }
+
+        this.toastyRef = React.createRef<Toasty>();
     }
 
     componentDidMount(): void {
+        // Create wrapper function to make for cleaner code
+        this.notify = this.toastyRef.current?.notify.bind({});
+
         window.addEventListener("keypress", this.handleKeyPress);
         window.onbeforeunload = () => 'Make sure that you have saved your progress.';
     }
@@ -60,6 +70,8 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         window.addEventListener("keypress", this.handleKeyPress);
         window.onbeforeunload = null;
     }
+
+    private notify;
 
     // Updating the given tool in state
     private updateTool = tool => this.setState({tool});
@@ -141,10 +153,10 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             // Set all selected cargos with the smallest coordinate
             const newCargoState = prevState.cargo.map(el => ({
                 ...el,
-                coords: {
+                coords: (el.selected) ? {
                     ...el.coords, 
                     [axisToAlign]: value
-                }
+                } : el.coords
             }));
 
             return { cargo: newCargoState }
@@ -199,6 +211,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
     // The difference in direction gets applied to every cargo.
     // TODO fix weird behaviour
     private moveCargo = (x: number, y: number): void => {
+        // Todo theoretisches viereck für boundaries
         this.setState(prevState => {
             const newCargoState = prevState.cargo.map(el => ({
                 ...el,
@@ -270,6 +283,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             // Remove cargo that has no associated deck.
             const cargo = prevState.cargo.filter(el => deckIndicices.includes(el.deckIndex));
 
+            this.notify("Success!", `Created "${shipName}" with ${decks.length} decks.`, ToasterTypes.SUCCESS);
             return { uuid, shipName, shipDestination, decks, cargo }
         })
     }
@@ -283,6 +297,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             return { decks: [] };
         }, () => {
             this.setState({ savedTimestamp: new Date(), uuid, shipName, shipDestination, decks, cargo });
+            this.notify("Success!", `Loaded sketch "${shipName}".`, ToasterTypes.SUCCESS);
         });
     }
 
@@ -311,8 +326,14 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             url: '/api/sketches',
             data
         })
-            .then(res =>  this.setState({ savedTimestamp: new Date(res.data.sketch.updatedAt) }))
-            .catch(error => console.log(error))
+            .then(res => {
+                this.setState({ savedTimestamp: new Date(res.data.sketch.updatedAt) });
+                this.notify("Success!", `Saved sketch "${this.state.shipName}."`, ToasterTypes.SUCCESS);
+            })
+            .catch(error => {
+                console.log(error);
+                this.notify("Error!", "Saving failed. Check the console for more information.", ToasterTypes.FAILURE);
+            })
             .finally(() => this.setState({ loading: false }))
     }
 
@@ -343,6 +364,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             })
             .catch(error => {
                 console.log(error);
+                this.notify("Error!", `Failed to export "${this.state.shipName}`, ToasterTypes.FAILURE);
             })
             .finally(() => {
                 this.setState({ loading: false });
@@ -454,6 +476,8 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                             overwriteSketch={this.overwriteSketch} /> }
                         <MoonLoader loading={loading} size={35} color={"#fff"} />
                     </Diffuser>
+
+                    <Toasty timeToClose={4000} ref={this.toastyRef} />
 
                     {deckElements}
                 </div>

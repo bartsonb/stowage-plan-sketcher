@@ -1,0 +1,92 @@
+.Toasty {
+    right: 2em;
+    top: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6em;
+    color: #efefef;
+    position: absolute;
+
+    &__Element {
+        background: #212121;
+        color: #efefef;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        box-shadow: 0 0 10px 6px rgb(0 0 0 / 15%);
+        justify-items: flex-start;
+        border-radius: 4px;
+        margin-bottom: 1em;
+        min-width: 20em;
+        transform-origin: top center;
+        transition: background 0.3s ease-in-out;
+    
+        &:hover {
+            background: lighten(#212121, 4%);
+            cursor: pointer;
+        }
+    
+        &:hover .Toasty__Element_Text p:nth-child(2) {
+            color: #ccc;
+            border-color: #ccc;
+        }
+    
+        @keyframes fadeIn {
+            0% { transform: scaleY(0) }
+            70% { transform: scaleY(1.15) }
+            100% { transform: scaleY(1) }
+        }
+    
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        &_Text {
+            display: flex;
+            gap: 1.2em;
+            padding: 1.2em 1.4em;
+            justify-content: space-between;
+            align-items: center;
+
+            p:nth-child(1) {
+                display: flex;
+                font-weight: bold;
+                flex-direction: column;
+
+                span {
+                    font-weight: normal;
+                    margin-top: .3em;
+                }
+            }
+
+            p:nth-child(2) {
+                transition: all 0.3s ease-in-out;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-weight: bold;
+                width: 1em;
+                padding: 1em;
+                height: 1em;
+                color: #555;
+                border: solid 2px #444;
+                border-radius: 6px;
+            }
+        }
+    
+        &_ProgressBar {
+            height: .15em;
+            width: 100%;
+            border-radius: 0 0 4px 4px;
+            animation: shrink;
+            animation-timing-function: linear;
+    
+            @keyframes shrink {
+                from { width: 100%; }
+                to { width: 0%; }
+            }
+        }
+    }
+    
+}

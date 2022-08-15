@@ -75,6 +75,7 @@ export class Deck extends React.Component<DeckProps, any> {
         // Set start position of mouseDown
         this.setState({ startPos: { x, y } });
 
+        // TODO move instantly
         // MouseDown on Cargo
         if (isSelectTool(this.props.tool) && className.includes('Cargo')) {
             this.setState({ isMoving: true }); 
@@ -188,7 +189,7 @@ export class Deck extends React.Component<DeckProps, any> {
 
         for (const key in this.state) {
             const showKey = ['startPos', 'isSelecting', 'isMoving', 'displayPreviewCargo'];
-            if (showKey.includes(key)) stateView.push(<p style={{ color: "#222"}}>{key}: {JSON.stringify(this.state[key])}</p> )
+            if (showKey.includes(key)) stateView.push(<p style={{ padding: ".5em", color: "#777"}}>{key}: {JSON.stringify(this.state[key])}</p> )
         }
 
         return (
