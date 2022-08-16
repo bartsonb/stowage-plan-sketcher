@@ -80,8 +80,8 @@ export class Deck extends React.Component<DeckProps, any> {
         this.setState({ startPos: { x, y } });
 
         // MouseDown on Cargo means isMoving is true
-        if (isSelectTool(this.props.tool) && target.className.includes('Cargo')) {
-            const index = parseInt(target.getAttribute('data-index'));
+        if (isSelectTool(this.props.tool) && target.className.includes("Cargo")) {
+            const index = parseInt(target.getAttribute("data-index"));
             const cargo = this.props.getCargoInformation(index);
 
             // If already selected cargo is clicked (probably after mutliselect), 
@@ -93,7 +93,7 @@ export class Deck extends React.Component<DeckProps, any> {
         }
     }
 
-    private handleMouseUp = (): void => { 
+    private handleMouseUp = (event: any): void => { 
         const { isSelecting, mousePos, startPos } = this.state;
         const { tool, deckIndex, addCargo, deselectCargo, selectMultipleCargo } = this.props;
 
@@ -101,7 +101,8 @@ export class Deck extends React.Component<DeckProps, any> {
         // during mouseUp check if enough distance was moved between mouseDown and mouseUp
         // see: enoughDistanceForDrag()
         if (!this.enoughDistanceForDrag(startPos, mousePos)) {
-            if (isSelectTool(tool)) deselectCargo();
+            if (isSelectTool(tool) && event.target.className.includes("Deck")) deselectCargo();
+
             if (isCargoTool(tool)) addCargo(mousePos, deckIndex, tool);
         }
 
