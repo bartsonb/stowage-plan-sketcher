@@ -1,18 +1,22 @@
 # Stowage Plan Sketcher
 
-This is a web-based 2D stowage plan sketcher that helps you with creating, importing and exporting stowage plans.
+This is a web-based 2D stowage plan sketcher built with MERN, that helps you create, import and export stowage plans. It is supposed fill the middle ground between extremely complex naval stowage plans and simple hand-drawn sketches by students of naval architecture.
 
 ![main application](/docs/images/application.png)
 
 # Features
+A quick overview of the main features:
 
 ## Placing, moving and aligning cargo
 You can create stowage plans by using the tools supplied by this application.
 
 ![placing, moving, aligning of cargo](/docs/gif/create-and-align.gif)
 
+## Saving and loading of sketches
+All sketches can be saved at anytime and are hosted on the web server. That means you can resume work anytime you feel like it with no worrying about data loss.
+
 ## Exporting as PDF
-A main feature of this application is the ability to export sketches as PDFs. Below is an example of such a file.
+One of the most important feature of this application is the ability to export sketches as PDFs. Below is an example of such a file.
 
 ![pdf excerpt](/docs/images/pdf-excerpt.png)
 
