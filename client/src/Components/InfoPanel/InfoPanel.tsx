@@ -13,7 +13,7 @@ export interface InfoPanelProps {
 }
 
 export const InfoPanel = (props: InfoPanelProps) => {
-    const { decks, cargo } = props;
+    const { decks, cargo, shipDestination, shipName, } = props;
     const [isCollapsed, setIsCollapsed] = useState(null);
 
     const handleClick = (e): void => {
@@ -63,10 +63,10 @@ export const InfoPanel = (props: InfoPanelProps) => {
         <Box cssClass="InfoPanel" title="Info Panel">
             <p className="InfoPanel__Category">Sketch</p>
             <div className="InfoPanel__Ship">
-                <p><span>Name</span>{props.shipName}</p>
+                {shipName && <p><span>Name</span>{shipName}</p>}
             </div>
             <div className="InfoPanel__Ship">
-                <p><span>Destination</span>{props.shipDestination}</p>
+                {shipDestination && <p><span>Destination</span>{shipDestination}</p>}
             </div>
 
             <p className="InfoPanel__Category">Decktoggler</p>

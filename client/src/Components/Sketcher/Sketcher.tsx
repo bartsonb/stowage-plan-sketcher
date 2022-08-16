@@ -368,6 +368,26 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             })
     }
 
+    private deleteSketch = (uuid: string): void => {
+        this.setState({ loading: true });
+
+        axios({
+            method: "delete", 
+            url: `/api/sketches/${uuid}`
+        })
+            .then(res =>  {
+                this.togglePanel("LoadingPanel");
+                this.notify("Success!", `Sketch "${res.data.sketch.shipName}" deleted.`, ToasterTypes.SUCCESS);
+            })
+            .catch(error => {
+                console.log(error);
+                this.notify("Error!", `Failed to delete. Check console for more information.`, ToasterTypes.FAILURE);
+            })
+            .finally(() => {
+                this.setState({ loading: false });
+            })
+    }
+
     // Toggle visibility of decks.
     private toggleDecks = (deckIndex: number, visible: boolean): void => {
         this.setState(prevState => {
@@ -474,6 +494,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
 
                         { showLoadingPanel && <LoadingPanel 
                             togglePanel={this.togglePanel}
+                            deleteSketch={this.deleteSketch}
                             overwriteSketch={this.overwriteSketch} /> }
                         <MoonLoader loading={loading} size={35} color={"#fff"} />
                     </Diffuser>

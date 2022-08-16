@@ -1,3 +1,5 @@
+@import "../../Assets/Styles/variables";
+
 .LoadingPanel {
     position: relative;
     display: flex;
@@ -12,67 +14,91 @@
         padding: 1em;
     }
 
+    &__Category {
+        text-transform: uppercase;
+        font-size: 0.7em;
+        font-weight: bold;
+        color: #737e83;
+        display: flex;
+        text-align: center;
+        margin-bottom: 0.5em;
+
+        &:not(:first-child) {
+            margin-top: 1em;
+        }
+    }
+
     &__Content {
-        &__Category {
-            text-transform: uppercase;
-            font-size: 0.7em;
-            font-weight: bold;
-            color: #737e83;
-            display: flex;
-            text-align: center;
-            margin-bottom: .5em;
-    
-            &:not(:first-child) {
-                margin-top: 1em;
-            }
-        }
-    
-        &__Reload {
-            padding: 0.5em 0.7em;
-            border: solid 3px transparent;
-            border-radius: 3px;
-            transition: all 0.3s ease-in-out;
-            background: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #fff;
-            font-weight: bold;
-    
-            img {
-                width: 1.5em;
-            }
-    
-            &:hover {
-                border-color: #3f9aff;
-            }
-        }
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 1em;
+        row-gap: 1em;
+    }
+}
 
-        &__SketchElement {
-            padding: .5em;
+.SketchElement {
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+
+    &:hover &__Buttons button { opacity: 1; }
+
+    &__Decks {
+        margin-bottom: .8em;
+    }
+
+    &__Buttons {
+        margin-top: auto;
+        display: flex;
+        gap: .5em;
+        justify-content: space-between; 
+        transition: all .3s ease-in-out;
+
+        button {
+            opacity: .5;
+            padding: .5em 1em;
+            font-weight: bold;
+            font-size: 1em;
+            color: #ccc;
             border-radius: 4px;
-
-            &:hover {
-                background: #333;
-                cursor: pointer;
-            }
-            
-            p { 
-                font-style: italic;
-                
-                span {
-                    font-style: normal;
-                }
-            }
-
-            &:not(:last-child) {
-                margin-bottom: .8em;
-            }
-    
-            &__Name {
-                font-weight: bold;
-                margin-bottom: .3em;
-            }
+            border: solid 2px #555;
+            transition: all 0.2s ease-in-out;
+            color: #fff;
+            background-color: #212121;
+            text-align: center;
+            cursor: pointer;
+            justify-content: center;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
         }
+
+        &--load {
+            &:hover { background: darken($color__general, 10%); color: #fff; border-color: transparent; }
+        }
+        &--delete {
+            &:hover { background: darken($color__warning, 10%); color: #fff; border-color: transparent; }
+        }
+    }
+    
+    p { 
+        color: #777;
+        font-style: italic;
+        display: flex;
+        justify-content: space-between;
+        gap: .5em;
+
+        span {
+            color: #fff;
+            font-style: normal;
+        }
+    }
+
+    &__Name p {
+        font-style: normal;
+        color: #fff;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: .3em;
     }
 }

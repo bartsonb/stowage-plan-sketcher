@@ -134,14 +134,14 @@ exports.store = (req, res) => {
 
 /**
  * @name    delete
- * @route   GET /api/sketches/:id
+ * @route   GET /api/sketches/:uuid
  * @returns returns true if deleted.
  */
  exports.delete = (req, res) => {
     Sketch
-        .findOneAndDelete({ userId: req.user.id })
+        .findOneAndDelete({ uuid: req.params.uuid, userId: req.user.id })
         .then(sketch => {
-            return res.json({ deleted: true });
+            return res.json({ sketch });
         })
         .catch(error => {
             return res.status(400).json({ error });  

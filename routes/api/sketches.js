@@ -27,7 +27,7 @@ module.exports = router.post('/',
 );
 
 // @route   DELETE /api/sketches/id
-module.exports = router.delete('/:id', 
+module.exports = router.delete('/:uuid', 
     AuthMiddleware,
     SketchController.delete
 );

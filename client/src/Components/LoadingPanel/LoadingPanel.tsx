@@ -1,13 +1,13 @@
 import Box from "../Box/Box";
-import "./LoadingPanel.scss";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SyncLoader } from "react-spinners";
-import reloadIcon from "../../Assets/Icons/reload.svg";
 import { cargo } from "../Cargo/Cargo";
+import "./LoadingPanel.scss";
 
 export interface LoadingPanelProps {
     togglePanel(name: string): void;
+    deleteSketch(uuid: string): void;
     overwriteSketch(
         shipName: string,
         shipDestination: string,
@@ -22,22 +22,33 @@ export const LoadingPanel = (props: LoadingPanelProps) => {
     const [sketches, setSketches] = useState([]);
     const { togglePanel, overwriteSketch } = props;
 
-    const handleClick = ({ shipName, shipDestination, decks, cargo, uuid }) => {
+    const handleLoad = ({ shipName, shipDestination, decks, cargo, uuid }): void => {
         overwriteSketch(shipName, shipDestination, decks, cargo, uuid);
-        togglePanel("LoadingPanel")
+        togglePanel("LoadingPanel");
+    };
+
+    const handleDelete = (uuid: string): void => {
+        props.deleteSketch(uuid);
+        togglePanel("LoadingPanel");
     }
 
     const getSketchElements = () => {
         return sketches.map((el, index) => (
-            <div key={index} onClick={() => {handleClick(el)}}className="LoadingPanel__Content__SketchElement">
-                <div className="LoadingPanel__Content__SketchElement__Name">
-                    <p><span>[{index}]</span> {el.shipName}</p> 
+            <div key={index} className="SketchElement">
+                <div className="SketchElement__Name">
+                    <p>{el.shipName}</p>
                 </div>
-                <div className="LoadingPanel__Content__SketchElement__Destination">
+                <div className="SketchElement__Destination">
                     <p>Destination: <span>{el.shipDestination}</span></p>
                 </div>
-                <div className="LoadingPanel__Content__SketchElement__Decks">
-                    {el.decks.map((deck, index) => <p key={index}>Deck "{deck.name}": <span> ({deck.height} x {deck.width})</span></p>)}
+                <div className="SketchElement__Decks">
+                    {el.decks.map((deck, index) => (
+                        <p key={index}>Deck "{deck.name}":{" "}<span>{" "}({deck.height} x {deck.width})</span></p>
+                    ))}
+                </div>
+                <div className="SketchElement__Buttons">
+                        <button className="SketchElement__Buttons SketchElement__Buttons--load" onClick={() => {handleLoad(el)}}>Load</button>
+                        <button className="SketchElement__Buttons SketchElement__Buttons--delete" onClick={() => {handleDelete(el.uuid)}}>Delete</button>
                 </div>
             </div>
         ));
@@ -62,31 +73,23 @@ export const LoadingPanel = (props: LoadingPanelProps) => {
                 setLoading(false);
             });
     };
-    
-    return (
-        <Box cssClass="LoadingPanel" title="Load sketch">
-            {loading ? (
-                <div className="LoadingPanel__Spinner"><SyncLoader size={8} color="#ccc" /></div>
-            ) : (
-                <div className="LoadingPanel__Content">
-                    <div className="LoadingPanel__Content__Category">Options</div>
-                    <button
-                        className={`LoadingPanel__Content__Reload${
-                            loading ? " LoadingPanel__Content__Reload--loading" : ""
-                        }`}
-                        onClick={loadSketches}
-                    >
-                        <img src={reloadIcon} />
-                    </button>
 
-                    <div className="LoadingPanel__Content__Category">
-                        All sketches
-                    </div>
-                    {getSketchElements()}
+    if (loading) {
+        return (
+            <Box cssClass="LoadingPanel" title="Load sketch">
+                <div className="LoadingPanel__Spinner">
+                    <SyncLoader size={8} color="#ccc" />
                 </div>
-            )}
-        </Box>
-    );
+            </Box>
+        );
+    } else {
+        return (
+            <Box cssClass="LoadingPanel" title="Load sketch">
+                <div className="LoadingPanel__Category">Your sketches</div>
+                <div className="LoadingPanel__Content">{getSketchElements()}</div>
+            </Box>
+        );
+    }
 };
 
 export default LoadingPanel;

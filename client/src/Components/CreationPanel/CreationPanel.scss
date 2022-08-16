@@ -74,12 +74,12 @@
     }
 
     button[name="delete"] {
-        background: #e84128;
+        background: $color__warning;
         color: #fff;
         font-weight: bold;  
 
         &:hover {
-            background: darken(#e84128, 10%);
+            background: darken($color__warning, 10%);
         }
     }
 

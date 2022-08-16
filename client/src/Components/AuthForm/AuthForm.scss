@@ -48,7 +48,7 @@
     
         &--error, 
         &--error:focus {
-            border: solid 2px #b1311e;
+            border: solid 2px $color__warning;
         }
     }
 
@@ -57,6 +57,6 @@
         border-radius: 4px;
         padding: 0.5em 1em;
         margin-bottom: 1em;
-        background-color: #b1311e;
+        background-color: $color__warning;
     }
 }
