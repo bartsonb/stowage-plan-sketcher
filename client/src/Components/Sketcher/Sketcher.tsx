@@ -332,40 +332,46 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             .finally(() => this.setState({ loading: false }))
     }
 
-    private exportSketch = async () => {
-        this.setState({ loading: true });
+    private exportSketch = async () => {            
+        // Decks must be visible so that the HTML is rendered and can be converted
+        // to an image.
+        this.setState({ 
+            loading: true, 
+            decks: this.state.decks.map(el => ({
+                ...el, visible: true
+            })) 
+        }, async () => {
+            // Loop through all decks and generate Base64-encoded images
+            // of their deck+cargos based on their ref.
+            const dataUrls = await Promise.all(this.state.decks.map(async el => {            
+                const dataUrl = await toPng(el.ref);
 
-        // Loop through all decks and generate Base64-encoded images
-        // of their deck+cargos based on their ref.
-        
-        const dataUrls = await Promise.all(this.state.decks.map(async el => {
-            const dataUrl = await toPng(el.ref);
+                return { index: el.index, dataUrl };
+            }));
 
-            return { index: el.index, dataUrl };
-        }));
-
-        axios({
-            method: "post", 
-            url: `/api/sketches/${this.state.uuid}/export`, 
-            responseType: 'blob',
-            data: { dataUrls }
-        })
-            .then(res =>  {
-                saveAs(new File(
-                    [res.data], 
-                    res.headers['x-filename'], 
-                    { type: res.headers['content-type'] + ';charset=utf-8' }
-                ));
-
-                this.notify("Success!", `Saved sketch as "${res.headers['x-filename']}".`, ToasterTypes.SUCCESS);
+            axios({
+                method: "post", 
+                url: `/api/sketches/${this.state.uuid}/export`, 
+                responseType: 'blob',
+                data: { dataUrls }
             })
-            .catch(error => {
-                console.log(error);
-                this.notify("Error!", `Failed to export "${this.state.shipName}".`, ToasterTypes.FAILURE);
-            })
-            .finally(() => {
-                this.setState({ loading: false });
-            })
+                .then(res =>  {
+                    saveAs(new File(
+                        [res.data], 
+                        res.headers['x-filename'], 
+                        { type: res.headers['content-type'] + ';charset=utf-8' }
+                    ));
+    
+                    this.notify("Success!", `Saved sketch as "${res.headers['x-filename']}".`, ToasterTypes.SUCCESS);
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.notify("Error!", `Failed to export "${this.state.shipName}".`, ToasterTypes.FAILURE);
+                })
+                .finally(() => {
+                    this.setState({ loading: false });
+                })
+        });
     }
 
     private deleteSketch = (uuid: string): void => {
@@ -468,13 +474,12 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                         updateTool={this.updateTool}
                     />
 
-                    <InfoPanel
+                    {uuid && <InfoPanel
                         shipName={shipName}
                         shipDestination={shipDestination}
                         decks={decks}
                         cargo={cargo}
-                        toggleDecks={this.toggleDecks}
-                    />
+                        toggleDecks={this.toggleDecks} />}
 
                     <EditPanel 
                         editCargo={this.editCargo}
