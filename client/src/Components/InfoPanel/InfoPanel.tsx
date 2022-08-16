@@ -60,7 +60,7 @@ export const InfoPanel = (props: InfoPanelProps) => {
     })
 
     return (
-        <Box cssClass="InfoPanel" title="Info Panel" sizing={{ position: "absolute", top: 300 }}>
+        <Box cssClass="InfoPanel" title="Info Panel" sizing={{ position: "absolute", top: 40, right: 40 }}>
             <p className="InfoPanel__Category">Sketch</p>
             <div className="InfoPanel__Ship">
                 {shipName && <p><span>Name</span>{shipName}</p>}
