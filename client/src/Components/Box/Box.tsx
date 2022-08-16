@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import Draggable from "react-draggable";
 import "./Box.scss";
 
@@ -8,7 +8,7 @@ export interface BoxProps {
     title?: string;
     children?: any;
     cssClass?: string;
-    sizing?: any;
+    sizing?: CSSProperties;
     hide?: boolean;
 }
 
@@ -16,14 +16,11 @@ export const Box = (props: BoxProps) => {
     const { title, children, cssClass, hide } = props;
     const boxRef = React.useRef(null);
 
-    let sizing = { display: hide ? "none" : "flex" };
+    // Default sizing object
+    let sizing: CSSProperties = { display: hide ? "none" : "flex" };
 
-    if (props.sizing) {
-        sizing = {
-            ...sizing, 
-            ...props.sizing
-        }
-    }
+    // Add css properties from props
+    if (props.sizing) sizing = { ...sizing, ...props.sizing }
 
     return (
         <Draggable

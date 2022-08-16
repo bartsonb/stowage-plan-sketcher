@@ -37,7 +37,7 @@ export const EditPanel = (props: EditPanelProps) => {
     }
 
     return (
-        <Box cssClass="EditPanel" title="Editing">
+        <Box cssClass="EditPanel" title="Editing" sizing={{ position: "absolute", top: 470 }}>
             <p className="Box__Content__Category">
                 Selected Cargo ({selectedCargoList.length})
             </p>

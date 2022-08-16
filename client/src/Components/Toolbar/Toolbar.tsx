@@ -20,7 +20,7 @@ export const Toolbar = (props: ToolbarProps) => {
     const handleOnClick = (toolName: string) => updateTool(toolName);
 
     return (
-        <Box cssClass="Toolbar" title="Tools">
+        <Box cssClass="Toolbar" title="Tools" sizing={{ position: "absolute", top: 40  }}>
             <p className="Toolbar__Category">Organization</p>
             <ToolbarButton
                 shortcutButton="v"

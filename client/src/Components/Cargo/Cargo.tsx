@@ -64,7 +64,7 @@ export const Cargo = (props: CargoProps) => {
                 <div className="Cargo__Description" data-index={index}>
                     <p className={"Cargo__Description__Element Cargo__Description__Element--index"} data-index={index}>{index}</p>
                     <p className={"Cargo__Description__Element Cargo__Description__Element--type"} data-index={index}>
-                        {type} {hazardous ? '(H)' : ''}
+                        {hazardous ? '(H)' : ''}
                     </p>
                 </div>
             </div> 

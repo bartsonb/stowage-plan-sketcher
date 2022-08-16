@@ -8,14 +8,9 @@
 
     &__Window {
         position: relative;
-        display: flex;
         flex-grow: 1;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
         background: url(../../Assets/Icons/grid-cross-50.png) repeat;
         background-size: 2.5em;
         padding: 2em;
-        gap: 2em;
     }
 }
