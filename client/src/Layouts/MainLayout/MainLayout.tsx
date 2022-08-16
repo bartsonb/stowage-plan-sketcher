@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "../Header/Header";
+import Header from "../../Components/Header/Header";
 import { User } from "../../App";
 import "./MainLayout.scss";
 
