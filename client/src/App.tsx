@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import {
     BrowserRouter as Router,
     Routes,
@@ -12,6 +12,7 @@ import Home from "./Pages/Home/Home";
 import "./Assets/Styles/_general.scss";
 import ErrorPage from "./Components/404/404";
 import axios from "axios";
+import Toasty, { ToasterTypes } from "./Components/Toasty/Toasty";
 
 export type User = {
     name: string;
@@ -21,12 +22,24 @@ export type User = {
 
 export interface AppProps {}
 
+export interface App {
+    toastyRef: React.RefObject<Toasty | null>
+}
+
 export class App extends React.Component<AppProps, any> {
-    public state = {
-        isAuthenticated: false,
-        user: JSON.parse(localStorage.getItem("user") as string) || null,
-        token: localStorage.getItem("token") || null,
-    };
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isAuthenticated: false,
+            user: JSON.parse(localStorage.getItem("user") as string) || null,
+            token: localStorage.getItem("token") || null,
+        };
+
+        this.toastyRef = React.createRef<Toasty>();
+    }
+    
+    private notify;
 
     componentDidMount(): void {
         const { user, token } = this.state;
@@ -37,6 +50,8 @@ export class App extends React.Component<AppProps, any> {
             this.setState({ isAuthenticated: true });
             axios.defaults.headers.common['x-auth-token'] = token;
         }
+
+        this.notify = this.toastyRef.current?.notify.bind({});
     }
 
     public handleUserLogin = (token: string, user: any) => {
@@ -47,6 +62,8 @@ export class App extends React.Component<AppProps, any> {
 
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
+
+        this.notify("Welcome!", `Authenticated as ${user.name}`, ToasterTypes.SUCCESS);
     };
 
     public handleUserLogout = () => {
@@ -61,6 +78,9 @@ export class App extends React.Component<AppProps, any> {
 
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+
+
+        this.notify("See you soon!", `You successfully logged out.`, ToasterTypes.SUCCESS);
     };
 
     render() {
@@ -113,10 +133,14 @@ export class App extends React.Component<AppProps, any> {
                     />
                     <Route path="*" element={<ErrorPage />} />
                 </Routes>
+                
             );
         }
 
-        return <Router>{routes}</Router>;
+        return <Fragment>
+            <Router>{routes}</Router>
+            <Toasty timeToClose={4000} ref={this.toastyRef} css={{ right: "1em", top: "5em", bottom: "unset" }} />
+        </Fragment>;
     }
 }
 

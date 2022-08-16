@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { CSSProperties, useEffect } from "react";
 import "./Toasty.scss";
 const { v4 } = require('uuid');
 
@@ -10,6 +10,7 @@ export enum ToasterTypes {
 
 export interface ToastyProps {
     timeToClose: number;
+    css?: CSSProperties;
 }
 
 export interface ToastyState {
@@ -56,7 +57,7 @@ export class Toasty extends React.Component<ToastyProps, ToastyState> {
         ));
 
         return (
-            <div className="Toasty">
+            <div className="Toasty" style={this.props.css}>
                 {toastyElements}
             </div>
         );
