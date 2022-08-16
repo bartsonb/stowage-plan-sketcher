@@ -7,9 +7,13 @@ This is a web-based 2D stowage plan sketcher that helps you with creating, impor
 # Features
 
 ## Placing, moving and aligning cargo
+You can create stowage plans by using the tools supplied by this application.
+
 ![placing, moving, aligning of cargo](/docs/gif/create-and-align.gif)
 
 ## Exporting as PDF
+A main feature of this application is the ability to export sketches as PDFs. Below is an example of such a file.
+
 ![pdf excerpt](/docs/images/pdf-excerpt.png)
 
 # Details
