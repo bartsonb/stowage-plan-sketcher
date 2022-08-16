@@ -323,7 +323,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
         })
             .then(res => {
                 this.setState({ savedTimestamp: new Date(res.data.sketch.updatedAt) });
-                this.notify("Success!", `Saved sketch "${this.state.shipName}."`, ToasterTypes.SUCCESS);
+                this.notify("Success!", `Saved sketch "${this.state.shipName}".`, ToasterTypes.SUCCESS);
             })
             .catch(error => {
                 console.log(error);
@@ -359,7 +359,7 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
             })
             .catch(error => {
                 console.log(error);
-                this.notify("Error!", `Failed to export "${this.state.shipName}`, ToasterTypes.FAILURE);
+                this.notify("Error!", `Failed to export "${this.state.shipName}".`, ToasterTypes.FAILURE);
             })
             .finally(() => {
                 this.setState({ loading: false });
