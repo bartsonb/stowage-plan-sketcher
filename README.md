@@ -27,9 +27,13 @@ The project was realized in the MERN stack and setup with CRA using the typescri
 
 ## Run the project
 
-To start the project (both frontend and backend with docker), run:
+To start the project with docker, run:
 
 ```shell
-docker-compose up -d
+    docker-compose up -d --build
 ```
 
+| Flag | Description |
+| - | - |
+| -d   | Run containers in the background |
+| --build | Can be omitted after the first build
