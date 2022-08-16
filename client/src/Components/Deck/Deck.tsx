@@ -202,13 +202,6 @@ export class Deck extends React.Component<DeckProps, any> {
         const { deckName, name, deckIndex, width, height, visible } = this.props;
         const [ paddingWidth, paddingHeight ] = [30, 55];
 
-        let stateView = [];
-
-        for (const key in this.state) {
-            const showKey = ['startPos', 'isSelecting', 'isMoving', 'displayPreviewCargo'];
-            if (showKey.includes(key)) stateView.push(<p style={{ padding: ".3em", color: "#777"}}>{key}: {JSON.stringify(this.state[key])}</p> )
-        }
-
         return (
             <Box
                 hide={!visible}
@@ -228,8 +221,7 @@ export class Deck extends React.Component<DeckProps, any> {
                     onMouseMove={this.handleMouseMove}
                     onMouseLeave={this.handleMouseLeave}
                     onMouseDown={this.handleMouseDown}
-                    onMouseUp={this.handleMouseUp}>   
-                    {stateView}
+                    onMouseUp={this.handleMouseUp}>
                     {this.getSelectionBox()}
                     {this.getPreviewCargo()}
                     {this.props.children}
