@@ -33,9 +33,9 @@ export const InfoPanel = (props: InfoPanelProps) => {
     }, []);
 
     // Return the list of cargo
-    let cargoList = [];
+    let stats = [];
     if (props.cargo) { 
-        cargoList = cargo.map((el, index) => {
+        stats = cargo.map((el, index) => {
             return (
                 <p 
                     key={index}
@@ -53,7 +53,7 @@ export const InfoPanel = (props: InfoPanelProps) => {
             <button 
                 key={index}
                 onClick={() => {props.toggleDecks(index, el.visible)}}
-                className={el.visible ? 'InfoPanel__Buttons__Button--active' : ''}>
+                className={el.visible ? 'active' : ''}>
                     Deck {index + 1}
             </button>
         )
@@ -81,7 +81,7 @@ export const InfoPanel = (props: InfoPanelProps) => {
                 <span className={'InfoPanel__Category__Toggle ' + (isCollapsed ? 'InfoPanel__Category__Toggle--active' : '')}>&#9660;</span>
             </p>
             <div className="InfoPanel__Cargo" style={{ display: `${isCollapsed ? "none" : "flex"}` }}>
-                {cargoList}
+                {stats}
             </div>
         </Box>
     );

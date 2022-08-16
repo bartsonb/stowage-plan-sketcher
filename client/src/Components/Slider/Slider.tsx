@@ -7,11 +7,6 @@ export interface SliderProps {
 }
 
 export const Slider = (props: SliderProps) => {
-
-    useEffect(() => {
-
-    });
-
     return (
         <div className="Slider">
             <img src={heroImage} alt="" />

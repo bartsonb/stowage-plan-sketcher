@@ -57,24 +57,26 @@
         gap: .5em;
 
         button {
+            font-size: 1em;
             border: solid 1px transparent;
             border-radius: 3px;
             padding: .4em;
             flex-grow: 1;
             min-height: 2.4em;
-        }
+            color: #212121;
+            background: #fff;
 
-        button:hover {
-            background: darken(rgb(239, 239, 239), 10%);
-        }
-
-        &__Button {
-            &--active {
-                background: #3f9aff;
-                color: #fff;
+            &:hover {
+                background: darken(#fff, 10%);
             }
-            &--active:hover {
-                background: darken(#3f9aff, 10%);
+        }
+
+        .active {
+            background: $color__general;
+            color: #fff;
+
+            &:hover {
+                background: darken($color__general, 10%);
             }
         }
     }
