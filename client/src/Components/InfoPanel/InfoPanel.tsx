@@ -14,37 +14,16 @@ export interface InfoPanelProps {
 
 export const InfoPanel = (props: InfoPanelProps) => {
     const { decks, cargo, shipDestination, shipName, } = props;
-    const [isCollapsed, setIsCollapsed] = useState(null);
 
-    const handleClick = (e): void => {
-        setIsCollapsed(!isCollapsed);
-        localStorage.setItem(
-            "infoPanelIsCollapsed",
-            JSON.stringify(!isCollapsed)
-        );
-    };
+    // Return information about decks
+    let stats = decks.map((deck, index) => {
 
-    useEffect(() => {
-        setIsCollapsed(
-            JSON.parse(localStorage.getItem("infoPanelIsCollapsed") || "false")
-        );
-
-        return () => {};
-    }, []);
-
-    // Return the list of cargo
-    let stats = [];
-    if (props.cargo) { 
-        stats = cargo.map((el, index) => {
-            return (
-                <p 
-                    key={index}
-                    className="InfoPanel__Cargo__Element">
-                        {`${el.cargoIndex}.${cargoInfo[el.cargoType].abbreviation}${el.hazardous ? '(H)' : ''}`}
-                </p>
-            )
-        }) 
-    }
+        return <div className="deckStats" key={index}>
+            <div className="deckStats__Category">{deck.name}</div>
+            <p><span>Amount of cargo: </span> {cargo.filter(cargo => cargo.deckIndex === deck.index).length}</p>
+            <p><span>Hazardous: </span> {cargo.filter(cargo => (cargo.deckIndex === deck.index) && cargo.hazardous).length}</p>
+        </div>;
+    }); 
 
     // Return the buttons that are used to switch the deck view,
     // hightlighting the currently visible decks.
@@ -74,13 +53,7 @@ export const InfoPanel = (props: InfoPanelProps) => {
                 {deckSwitchButtons}
             </div>
 
-            <p 
-                className="InfoPanel__Category" 
-                onClick={handleClick}>
-                    Cargo Information 
-                <span className={'InfoPanel__Category__Toggle ' + (isCollapsed ? 'InfoPanel__Category__Toggle--active' : '')}>&#9660;</span>
-            </p>
-            <div className="InfoPanel__Cargo" style={{ display: `${isCollapsed ? "none" : "flex"}` }}>
+            <div className="InfoPanel__Cargo">
                 {stats}
             </div>
         </Box>
