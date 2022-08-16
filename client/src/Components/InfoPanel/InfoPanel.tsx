@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import Box from "../Box/Box";
-import { cargoInfo } from "../Cargo/Cargo";
+import { cargo, cargoInfo } from "../Cargo/Cargo";
+import { deck } from "../Deck/Deck";
 import "./InfoPanel.scss";
 
 export interface InfoPanelProps {
-    decks?: any;
-    cargo?: any;
+    shipDestination?: string;
+    shipName?: string;
+    decks?: deck[];
+    cargo?: cargo[];
     toggleDecks: any;
 }
 
@@ -58,6 +61,14 @@ export const InfoPanel = (props: InfoPanelProps) => {
 
     return (
         <Box cssClass="InfoPanel" title="Info Panel">
+            <p className="InfoPanel__Category">Sketch</p>
+            <div className="InfoPanel__Ship">
+                <p><span>Name</span>{props.shipName}</p>
+            </div>
+            <div className="InfoPanel__Ship">
+                <p><span>Destination</span>{props.shipDestination}</p>
+            </div>
+
             <p className="InfoPanel__Category">Decktoggler</p>
             <div className="InfoPanel__Buttons">
                 {deckSwitchButtons}

@@ -25,6 +25,23 @@
         }
     }
 
+    &__Ship {
+
+        p {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .15em 0;
+
+            span {
+                text-transform: uppercase;
+                color: #ccc;
+                font-weight: bold;
+                font-size: .7em;
+            }
+        }
+    }
+
     &__Cargo {
         display: flex;
         flex-wrap: wrap;

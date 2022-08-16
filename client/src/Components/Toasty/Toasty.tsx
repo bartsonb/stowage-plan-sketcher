@@ -78,7 +78,7 @@ export const ToastyElement = (props: ToastyElementProps) => {
     const getColor = (type: ToasterTypes) => {
         switch(type) {
             case ToasterTypes.SUCCESS:
-                return "green";
+                return "#3f9aff";
             case ToasterTypes.WARNING:
                 return "yellow";
             case ToasterTypes.FAILURE:

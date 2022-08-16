@@ -447,6 +447,8 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                     />
 
                     <InfoPanel
+                        shipName={shipName}
+                        shipDestination={shipDestination}
                         decks={decks}
                         cargo={cargo}
                         toggleDecks={this.toggleDecks}
