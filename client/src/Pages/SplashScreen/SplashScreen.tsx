@@ -2,7 +2,7 @@ import MainLayout from "../../Layouts/MainLayout/MainLayout";
 import "./SplashScreen.scss";
 import { User } from "../../App";
 import { Link } from "react-router-dom";
-import penIcon from "../../Assets/Icons/pen.svg";
+import Slider from "../../Components/Slider/Slider";
 
 export interface SplashScreenProps {
     isAuthenticated: Boolean;
@@ -18,26 +18,46 @@ export const SplashScreen = (props: SplashScreenProps) => {
             user={props.user}
         >
             <div className="SplashScreen">
-                <div className="SplashScreen__HeroImage">
-                    <h1>Stowage Plan Sketcher <span>v1.0</span></h1>
-                    <p>Efficiently make stowage plans.</p>
-                    {props.isAuthenticated ? (
-                        <Link to={"/app"}>
-                            <button className="SplashScreen__HeroImage__Button">
-                                <img src={penIcon} alt="pen icon" />
-                                Start sketching now!
-                            </button>
-                        </Link>
-                    ) : (
-                        ""
-                    )}
-                </div>
+                <div className="Hero">
+                    <div className="Hero__Container">
+                        <div className="Hero__Container__Left">
+                            <h1>Stowage Plan Sketcher</h1>
+                            <p>Efficiently make stowage plans.</p>
 
-                <div className="SplashScreen__Reviews">
+                            {props.isAuthenticated && <Link to={"/app"}>
+                                <div className="Hero__Container__Left__Buttons">
+                                    <button className="filled pulsing">
+                                        Start <span>Sketcher</span>
+                                    </button>
+                                </div>
+                                </Link>}
+
+                            {!props.isAuthenticated && 
+                                <div className="Hero__Container__Left__Buttons">
+                                    <Link to={"/register"}>
+                                        <button className="filled">
+                                            Register
+                                        </button>
+                                    </Link>
+                                    <Link to={"/login"}>
+                                        <button className="">
+                                            Login
+                                        </button>   
+                                    </Link>
+                                </div>}
+                        </div>
+                        <div className="Hero__Container__Right">
+                            <Slider speed={4000} />
+                        </div>
+                    </div>
+                </div>
+                    
+
+                <div className="Reviews">
                     <h1>Reviews</h1>
                 </div>
 
-                <div className="SplashScreen__Footer">
+                <div className="Footer">
                     <h1>Footer</h1>
                     <p>Some resources and a copyright.</p>
                 </div>
