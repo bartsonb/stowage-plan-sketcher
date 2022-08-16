@@ -63,7 +63,7 @@ export class App extends React.Component<AppProps, any> {
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
 
-        this.notify("Welcome!", `Authenticated as ${user.name}`, ToasterTypes.SUCCESS);
+        this.notify("Welcome!", `Authenticated as ${user.name}.`, ToasterTypes.SUCCESS);
     };
 
     public handleUserLogout = () => {
