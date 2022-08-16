@@ -356,6 +356,8 @@ export class Sketcher extends React.Component<SketcherProps, SketcherState> {
                     res.headers['x-filename'], 
                     { type: res.headers['content-type'] + ';charset=utf-8' }
                 ));
+
+                this.notify("Success!", `Saved sketch as "${res.headers['x-filename']}".`, ToasterTypes.SUCCESS);
             })
             .catch(error => {
                 console.log(error);
