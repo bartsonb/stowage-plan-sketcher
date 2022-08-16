@@ -53,12 +53,35 @@
 			flex-direction: column;
 			gap: 1em;
 		}
-		.deck { display: flex; flex-wrap: wrap; }
+		.deck { display: flex; flex-wrap: wrap; gap: 3%; justify-content: space-between; }
 		.deck:not(:last-child) { margin-bottom: 2em;}
-		.deck .deck-image { border: solid 2px rgb(204, 204, 204); }
-		.deck .deck-infos { padding-right: 2em; }
+		.deck .deck-image { 
+			width: 48%; 
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: stretch;
+		}
+		.deck .deck-image img { border: solid 2px rgb(204, 204, 204); }
+		.deck .deck-infos {
+			width: 48%; 
+		}
+		.deck .deck-infos h2 { margin-bottom: 10px; }
+		.deck .deck-infos-cargo{ 
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 1em;
+			row-gap: 1em;
+		}
 		.deck .deck-infos ul { margin-top: 1em; }
 		.deck .deck-infos ul li { list-style-type: none; }
+
+		.cargo { padding: 5px; border-radius: 4px; border: solid 1px rgb(248, 248, 248); }
+		.cargo span { font-weight: bold; }
+		.cargo p { display: flex; gap: 5px; }
+		.cargo .id { }
+		.cargo .type { }
+		.cargo .hazardous { }
 
 		/* FOOTER */
 		footer {
@@ -94,13 +117,16 @@
 		{{#decks}}
 			<div class="deck">
 				<div class="deck-infos">
-					<h3>Deck name: {{name}}</h3>
-					<h4>Destination: {{destination}}</h4>
-					<ul>
+					<h2>Deck name: {{name}}</h2>
+					<div class="deck-infos-cargo">
 						{{#cargo}}
-							<li>[ID {{cargoIndex}}] {{cargoType}}</li>
+							<div class="cargo">
+								<p class="id"><span>ID: </span>{{cargoIndex}}</p>
+								<p class="type"><span>Type: </span>{{cargoType}}</p>
+								<p class="hazardous"><span>hazardous: </span>{{hazardous}}</p>
+							</div>
 						{{/cargo}}
-					</ul>
+					</div>
 				</div>
 				<div class="deck-image">
 					{{getBase64Image dataUrl}}
