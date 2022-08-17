@@ -25,6 +25,11 @@
         gap: 3em;
 
         &__Left {
+
+            .disclaimer {
+                color: #dddddd;
+                font-size: .8em;
+            }
             
             h1 {
                 color: #fff;
@@ -40,7 +45,7 @@
             }
         
             &__Buttons {
-                margin-top: 1.5em;
+                margin: 1.5em 0;
                 display: flex;
                 gap: 1.5em;
                 flex-wrap: wrap;

@@ -45,6 +45,7 @@ export const SplashScreen = (props: SplashScreenProps) => {
                                         </button>   
                                     </Link>
                                 </div>}
+                            <p className="disclaimer">Registration and usage are currently free of charge.</p>
                         </div>
                         <div className="Hero__Container__Right">
                             <Slider speed={4000} />
