@@ -9,7 +9,7 @@ services:
       dockerfile: react.Dockerfile
     volumes:
       - ./client:/usr/src/client
-      - /client/node_modules
+      - /usr/src/client/node_modules
     ports:
       - 3000:3000
     environment:
@@ -25,7 +25,7 @@ services:
     # :ro = read-only
     volumes:
       - ./:/usr/src/backend
-      - /node_modules
+      - /usr/src/backend/node_modules
     restart: always
     # "build" creates a custom image
     # . param = searches for Dockerfile in root dir
